@@ -3,6 +3,7 @@ import 'aos/dist/aos.css'; // Import AOS styles
 import Aos from 'aos';
 import { useEffect } from 'react';
 import Header from '../../components/Header';
+import { Link } from 'react-router-dom';
 
 const CreateAccountPage = () => {
   useEffect(() => {
@@ -44,11 +45,11 @@ const CreateAccountPage = () => {
               <input type="password" id="confirmPassword" name="confirmPassword" required className="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-lg shadow-sm focus:ring-blue-500 focus:border-blue-500 text-gray-900" placeholder="********" data-aos="fade-left"/>
             </div>
 
-            <div className="flex items-center justify-between">
-              <div className="text-sm">
-                <a href="#" className="font-medium text-blue-600 hover:text-blue-500">
-                  Already have an account?
-                </a>
+            <div className="flex items-center font-normal justify-between">
+              <div className="text-sm text-center w-full">
+                <Link to="/login" className="text-gray-400">
+                  Already have an account? <span className="text-blue-600 hover:text-blue-500">Login</span>
+                </Link>
               </div>
             </div>
 

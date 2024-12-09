@@ -25,13 +25,13 @@ export default function Hero() {
                 <Link to="/" className="rounded-md cl2 w-[150px] py-2 text-[16] font-semibold text-white shadow-lg text-center transition-all hover:bg-blue-700">
                   Log In
                 </Link>
-                <Link to="/" className="rounded-md cl3 w-[150px] py-2 text-[16] font-semibold text-white shadow-lg text-center transition-all hover:bg-green-700">
+                <Link to="/" className="rounded-md cl3 w-[150px] py-2 text-[16] font-semibold text-white shadow-lg text-center transition-all hover:bg-lime-500">
                   Register
                 </Link>
               </div>
             </div>
             <div className="lg:w-[48%] sm:w-[97%] w-full" data-aos="fade-left">
-              <img src="/bg.png" alt="Virtual Top Up" className="rounded-lg shadow-xl" />
+              <img src="/bg.png" alt="Virtual Top Up" className="rounded-lg shado" />
             </div>
           </div>
         </div>

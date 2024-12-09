@@ -22,7 +22,7 @@ export default function Sections1() {
     },
     {
       id: 2,
-      logo: 'https://upload.wikimedia.org/wikipedia/commons/thumb/5/53/9mobile_logo.svg/1200px-9mobile_logo.svg.png',
+      logo: 'https://upload.wikimedia.org/wikipedia/commons/thumb/3/3a/Airtel_logo-01.png/1200px-Airtel_logo-01.png',
       head: 'Airtel Data Plan',
       plan1: '750MB 30 Days - #150',
       plan2: '1.5GB 30 Days - #300',
@@ -48,23 +48,15 @@ export default function Sections1() {
   ];
 
   return (
-    <div className="bg-gray-50 py-20">
-      <h1 className="text-center text-4xl font-bold mb-10 text-transparent bg-clip-text bg-gradient-to-r from-blue-500 to-green-500" data-aos="fade-down">
+    <div className="bg-gray-100 py-20">
+      <h1 className="text-center lg:text-5xl text-3xl font-bold md:mb-14 mb-10 text-transparent bg-clip-text bg-gradient-to-r from-blue-500 to-green-500" data-aos="fade-down">
         Explore Our Data Plans
       </h1>
-      <div className="md:max-w-[90%] max-w-[97%] mx-auto">
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-10">
+      <div className="md:max-w-[90%] max-w-[95%] mx-auto">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5">
           {dataServices.map((service) => (
-            <div
-              key={service.id}
-              data-aos="zoom-in-up"
-              className="relative border border-gray-200 rounded-xl shadow-lg bg-white p-6 transform hover:scale-105 transition-transform duration-300 ease-in-out"
-            >
-              <img
-                src={service.logo}
-                alt={`${service.head} logo`}
-                className="mx-auto max-w-[80px] mb-4"
-              />
+            <div key={service.id} data-aos="zoom-in-up" className="relative border border-gray-200 rounded-xl shadow-lg bg-white p-6 transform hover:scale-105 transition-transform duration-300 ease-in-out">
+              <img src={service.logo} alt={`${service.head} logo`} className="mx-auto max-w-[80px] rounded-full mb-4"/>
               <h2 className="text-blue-800 text-center text-xl font-semibold">{service.head}</h2>
               <ul className="list-none text-center text-gray-700 space-y-1 mt-4">
                 <li className="text-sm">{service.plan1}</li>
