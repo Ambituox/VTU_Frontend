@@ -5,6 +5,7 @@ import Header from '../components/Header';
 import Section3 from '../components/home_components/Section3';
 import Testimonial from '../components/Testimonial';
 import FAQ from '../components/home_components/Faqs';
+import { Link } from 'react-router-dom';
 
 const About_page = () => {
   // Initialize AOS on page load
@@ -68,7 +69,9 @@ const About_page = () => {
               We are committed to providing top-notch services that make your life easier and more connected. Whether it's making sure you never run out of mobile data or ensuring your gaming experience is always on point, [Your Website Name] is here to make it happen.
             </p>
             <button className="mt-8 px-6 py-3 bg-blue-600 text-white rounded-full text-xl hover:bg-blue-700 transition duration-300" data-aos="bounce">
-              Get Started
+              <Link to={'/login'}>
+                Get Started
+              </Link>
             </button>
           </div>
         </div>
