@@ -3,6 +3,7 @@ import "aos/dist/aos.css";
 import Aos from 'aos';
 import { useEffect } from 'react';
 import Header from '../../components/Header';
+import Footer from '../../components/Footer';
 
 const SignIn = () => {
   const [email, setEmail] = useState("");
@@ -62,20 +63,13 @@ const SignIn = () => {
 
             <div className="flex items-center justify-between">
               <div className="flex items-center">
-                <input
-                  type="checkbox"
-                  id="remember"
-                  className="h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring focus:ring-blue-300"
-                />
+                <input type="checkbox" id="remember" className="h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring focus:ring-blue-300"/>
                 <label htmlFor="remember" className="ml-2 text-sm text-gray-600">Remember me</label>
               </div>
               <a href="#" className="text-sm text-blue-600 hover:underline">Forgot password?</a>
             </div>
 
-            <button
-              type="submit"
-              className="w-full rounded bg-blue-600 px-4 py-3 text-white font-semibold hover:bg-blue-700 focus:outline-none focus:ring focus:ring-blue-300"
-            >
+            <button type="submit" className="w-full rounded bg-blue-600 px-4 py-3 text-white font-semibold hover:bg-blue-700 focus:outline-none focus:ring focus:ring-blue-300">
               Sign In
             </button>
           </form>
@@ -86,6 +80,7 @@ const SignIn = () => {
           </p>
         </div>
       </div>
+      <Footer/>
     </>
   );
 };

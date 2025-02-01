@@ -8,6 +8,7 @@ import FAQ from '../components/home_components/Faqs'
 import Testimonial from '../components/Testimonial'
 import ClientsLogos from '../components/Clients_logo'
 import Achievements from '../components/Achievements'
+import Footer from '../components/Footer'
 
 export default function Home() {
   return (
@@ -21,6 +22,7 @@ export default function Home() {
       <FAQ />
       <ClientsLogos/>
       <Achievements/>
+      <Footer/>
     </div>
   )
 }

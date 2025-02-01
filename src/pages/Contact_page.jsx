@@ -3,6 +3,7 @@ import 'aos/dist/aos.css';
 import Aos from 'aos';
 import { useEffect } from 'react';
 import Header from '../components/Header';
+import Footer from '../components/Footer';
 
 const ContactPage = () => {
   const [formData, setFormData] = useState({ name: '', email: '', message: '' });
@@ -64,6 +65,7 @@ const ContactPage = () => {
           </div>
           <p className="text-sm text-gray-400">We strive to respond within 24 hours.</p>
         </div>
+        <Footer/>
       </div>
     </>
   );

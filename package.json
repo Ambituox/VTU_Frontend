@@ -10,7 +10,11 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@emotion/react": "^11.14.0",
+    "@emotion/styled": "^11.14.0",
     "@headlessui/react": "^2.2.0",
+    "@mui/joy": "^5.0.0-beta.51",
+    "@mui/material": "^6.2.1",
     "aos": "^2.3.4",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",

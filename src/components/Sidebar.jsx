@@ -17,7 +17,7 @@ const Sidebar = () => {
   return (
     <div>
       {/* Sidebar Toggle Button */}
-      <button onClick={() => setSidebarOpen(!sidebarOpen)} className="p-2 text-black cl2 text-white fixed top-4 right-4 z-50 rounded-md transition-transform hover:scale-105">
+      <button onClick={() => setSidebarOpen(!sidebarOpen)} className="p-2 cl2 text-white fixed top-4 right-4 z-50 rounded-md transition-transform hover:scale-105">
         {sidebarOpen ? <FaRegWindowClose className="text-2xl" /> : <RiMenu4Line className="text-2xl" />}
       </button>
 

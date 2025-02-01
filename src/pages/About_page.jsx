@@ -6,6 +6,7 @@ import Section3 from '../components/home_components/Section3';
 import Testimonial from '../components/Testimonial';
 import FAQ from '../components/home_components/Faqs';
 import { Link } from 'react-router-dom';
+import Footer from '../components/Footer';
 
 const About_page = () => {
   // Initialize AOS on page load
@@ -75,6 +76,7 @@ const About_page = () => {
             </button>
           </div>
         </div>
+        <Footer/>
       </div>
     </>
   );
