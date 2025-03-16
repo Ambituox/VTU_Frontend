@@ -1,36 +1,56 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import "aos/dist/aos.css";
 import Aos from 'aos';
-import { useEffect } from 'react';
 import Header from '../../components/Header';
 import Footer from '../../components/Footer';
+import { Link } from 'react-router-dom';
 
 const SignIn = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     Aos.init({ duration: 1000 });
   }, []);
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
     if (!email || !password) {
       setError("Please fill in all fields");
       return;
     }
-    // Add actual submit logic here, like an API request
+
     setError("");
-    console.log("Form Submitted", { email, password });
+    setLoading(true);
+
+    try {
+      const response = await fetch('https://vtu-xpwk.onrender.com/api/v1', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email, password })
+      });
+
+      const data = await response.json();
+      if (!response.ok) {
+        throw new Error(data.message || 'Sign in failed');
+      }
+      alert('Sign in successful!');
+    } catch (error) {
+      console.error('Error:', error);
+      setError(error.message);
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
     <>
-    <Header/>
-      <div className="flex min-h-screen bg-gray-50 items-center justify-center p-6">
-        <div className="w-full max-w-md rounded-lg bg-white shadow-lg p-8" data-aos="fade-up">
+      <Header />
+      <div className="flex min-h-screen bg-gradient-to-r from-blue-500 to-purple-600 items-center justify-center lg:p-6 p-3">
+        <div className="w-full max-w-md rounded-lg bg-white shadow-lg lg:p-8 p-6" data-aos="fade-up">
           <h2 className="text-3xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-[#ADF802] text-center mb-6">Sign In</h2>
           <form className="space-y-6" onSubmit={handleSubmit}>
             <div className="flex flex-col">
@@ -61,26 +81,22 @@ const SignIn = () => {
 
             {error && <p className="text-red-500 text-sm">{error}</p>}
 
-            <div className="flex items-center justify-between">
-              <div className="flex items-center">
-                <input type="checkbox" id="remember" className="h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring focus:ring-blue-300"/>
-                <label htmlFor="remember" className="ml-2 text-sm text-gray-600">Remember me</label>
-              </div>
-              <a href="#" className="text-sm text-blue-600 hover:underline">Forgot password?</a>
+            <div className="flex items-end justify-end">
+              <Link to="/forgot-password" className="text-sm text-blue-600 hover:underline">Forgot password?</Link>
             </div>
 
-            <button type="submit" className="w-full rounded bg-blue-600 px-4 py-3 text-white font-semibold hover:bg-blue-700 focus:outline-none focus:ring focus:ring-blue-300">
-              Sign In
+            <p className="text-center text-sm text-gray-600">
+              Don't have an account?{' '}
+              <Link to="/signup" className="font-medium text-blue-600 hover:underline">Sign Up</Link>
+            </p>
+            <button  type="submit"  className="w-full py-3 px-4 bg-gradient-to-r from-blue-600 to-[#ADF802] text-white font-semibold rounded-lg hover:from-blue-500 hover:to-purple-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:bg-gray-400"  disabled={loading}>
+              {loading ? 'Authenticating...' : 'Sign In'}
             </button>
           </form>
 
-          <p className="mt-6 text-center text-sm text-gray-600">
-            Don't have an account?{' '}
-            <a href="/signup" className="font-medium text-blue-600 hover:underline">Sign Up</a>
-          </p>
         </div>
       </div>
-      <Footer/>
+      <Footer />
     </>
   );
 };

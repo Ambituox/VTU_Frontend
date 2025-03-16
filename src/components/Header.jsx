@@ -17,8 +17,8 @@ export default function Header() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
 
   return (
-    <header className="shadow-md sticky top-0 z-50 bg-white">
-      <nav aria-label="Global" className="flex items-center justify-between p-6 max-w-screen-xl mx-auto">
+    <header className="shadow-sm sticky top-0 z-50 bg-white">
+      <nav aria-label="Global" className="flex items-center justify-between p-4 max-w-screen-xl mx-auto">
         <div className="flex">
           <Link to="/" className="font-extrabold text-3xl text-gray-900 transition duration-300 ease-in-out transform hover:scale-110"> 
             Ambitioux
@@ -41,7 +41,7 @@ export default function Header() {
             </Link>
           </div>
 
-          <div className="md:hidden block">
+          <div className="lg:hidden block">
             <Sidebar/>
           </div>
         </div>

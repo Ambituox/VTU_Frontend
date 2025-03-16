@@ -10,22 +10,24 @@ const DashboardHeader = () => {
   return (
     <div className="bg-blue-500 lg:py-18 py-6 text-white md:px-6 px-3 rounded-lg shadow-md">
       <h1 className="text-2xl font-bold">Welcome to Ambitious</h1>
-      <p className="mt-2">
+      <p className="mt-2 text-sm">
         To enjoy our referral program, refer friends and family to gladtidingsdata.com and ensure they upgrade their accounts.
         You will earn 500 referral bonus and also earn ₦1 commission on each successful MTN data purchase made by your
         downliners on the portal. <span className="font-bold">THIS IS CALLED SALARY FOR LIFE!</span>
       </p>
-      <p className="mt-2">
+      <p className="mt-2 text-sm">
         Referral Link: {" "}
         <Link to="https://www.gladtidingsdata.com/signup/?referal=Ambitious@" className="underline text-lime-300">
           https://www.gladtidingsdata.com/signup/?referal=Ambitious@
         </Link>{" "}
-        <button className="bg-gray-700 text-gray-50 text-sm px-2 py-1 rounded-full ml-2">
+        <button className="mt-2 bg-gray-700 text-gray-50 text-sm px-2 py-1 rounded-full ml-2">
           copy
         </button>
       </p>
       <button className="bg-yellow-400 text-white font-semibold  px-4 py-2 rounded-full mt-4">
-        Fund Wallet
+        <Link to={'fund_wallet'}>
+          Fund Wallet
+        </Link>
       </button>
     </div>
   );

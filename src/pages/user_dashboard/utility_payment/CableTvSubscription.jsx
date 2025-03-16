@@ -1,248 +1,133 @@
 import React, { useState } from "react";
 
-const CableTvSubscription = () => {
-  const [formData, setFormData] = useState({
-    provider: "",
-    phoneNumber: "",
-    plan: "",
-  });
-  const [loading, setLoading] = useState(false);
-  const [message, setMessage] = useState("");
-  const [error, setError] = useState("");
-  const [balance, setBalance] = useState(5000); // Mock user balance
-  const [transactions, setTransactions] = useState([]); // Transaction history
+const cablePlans = {
+  DSTV: [
+    "DSTV Padi = N4400",
+    "DSTV Yanga = N6000",
+    "DSTV CONFAM = N11000",
+    "DSTV Compact = N19000",
+    "DSTV Compact XtraView + HDPVR = N24000",
+    "DSTV premium extra view = N24500",
+    "DSTV Compact Plus = N30000",
+    "DSTV Asia French = N39000",
+    "DSTV Premium = N44500",
+  ],
+  GOTV: [
+    "GOtv Smallie-monthly = N1900",
+    "GOtv Jinja = N3900",
+    "GOtv Smallie - Quarterly = N5700",
+    "GOtv Jolli = N5800",
+    "GOtv Max = N8500",
+    "GOtv Supa monthly = N11400",
+    "GOtv Supa plus monthly = N16800",
+    "GOtv Smallie - Yearly = N22800",
+  ],
+  Startimes: [
+    "Nova - 1 Week = N600",
+    "Basic - 1 Week = N1550",
+    "Smart - 1 Week = N1550",
+    "Classic - 1 Week = N1900",
+    "Nova - 1 Month = N1900",
+    "Nova = N1900",
+    "Super - 1 Week = N3000",
+    "Basic - 1 Month = N3700",
+    "Smart - 1 Month = N3800",
+    "Classic - 1 Month = N5500",
+    "Super - 1 Month = N9000",
+  ],
+};
 
-  // Dummy data for cable TV plans
-  const cableTvPlans = {
-    Dstv: [
-      { id: 1, plan: "DSTV Compact", price: 3500 },
-      { id: 2, plan: "DSTV Premium", price: 7500 },
-      { id: 3, plan: "DSTV Family", price: 5000 },
-    ],
-    Gotv: [
-      { id: 1, plan: "GOtv Max", price: 2000 },
-      { id: 2, plan: "GOtv Jolli", price: 1500 },
-      { id: 3, plan: "GOtv Smallie", price: 800 },
-    ],
-    StarTimes: [
-      { id: 1, plan: "StarTimes Classic", price: 1500 },
-      { id: 2, plan: "StarTimes Smart", price: 3000 },
-      { id: 3, plan: "StarTimes Super", price: 5000 },
-    ],
-  };
-
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setFormData({ ...formData, [name]: value });
-  };
+const CableSubscriptionForm = () => {
+  const [cableName, setCableName] = useState("DSTV");
+  const [smartCard, setSmartCard] = useState("");
+  const [cablePlan, setCablePlan] = useState("");
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setLoading(true);
-    setMessage("");
-    setError("");
 
-    // Validate phone number (Nigerian format)
-    const nigerianPhoneRegex = /^(?:\+234|0)(70|80|81|90|91|89)\d{8}$/;
-    if (!nigerianPhoneRegex.test(formData.phoneNumber)) {
-      setLoading(false);
-      setError("Please enter a valid Nigerian phone number.");
-      return;
-    }
-
-    // Validate plan selection
-    if (!formData.plan) {
-      setLoading(false);
-      setError("Please select a subscription plan.");
-      return;
-    }
-
-    const selectedPlan = cableTvPlans[formData.provider]?.find(
-      (plan) => plan.plan === formData.plan
-    );
-
-    if (!selectedPlan) {
-      setLoading(false);
-      setError("Invalid plan selection.");
-      return;
-    }
-
-    // Validate balance
-    if (selectedPlan.price > balance) {
-      setLoading(false);
-      setError("Insufficient balance. Please recharge your wallet.");
-      return;
-    }
+    const formData = { cableName, smartCard, cablePlan };
 
     try {
-      // Simulate API request for cable TV subscription
-      await new Promise((resolve) => setTimeout(resolve, 2000));
-
-      // Update balance and transactions
-      const newBalance = balance - selectedPlan.price;
-      setBalance(newBalance);
-      setTransactions([
-        ...transactions,
-        {
-          id: transactions.length + 1,
-          provider: formData.provider,
-          plan: formData.plan,
-          phoneNumber: formData.phoneNumber,
-          amount: selectedPlan.price,
-          date: new Date().toLocaleString(),
+      const response = await fetch("http://localhost:5000/api/subscribe", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
         },
-      ]);
+        body: JSON.stringify(formData),
+      });
 
-      setMessage(
-        `Subscription to ${formData.provider} ${formData.plan} successful.`
-      );
-      setFormData({ provider: "", phoneNumber: "", plan: "" });
-    } catch (err) {
-      setError("Failed to process your subscription. Please try again.");
-    } finally {
-      setLoading(false);
+      const data = await response.json();
+      alert(`Subscription Successful: ${data.message}`);
+    } catch (error) {
+      console.error("Error submitting subscription:", error);
+      alert("Failed to submit subscription.");
     }
   };
 
   return (
-    <div className="min-h-screen bg-gray-100 flex items-center justify-center p-4">
-      <div className="bg-white shadow-lg rounded-lg p-6 w-full max-w-md">
-        <h2 className="text-2xl font-bold text-center text-gray-800 mb-6">
-          Cable TV Subscription
-        </h2>
-        <p className="text-gray-600 text-sm text-center mb-4">
-          Available Balance: <span className="font-bold">₦{balance.toFixed(2)}</span>
-        </p>
-        <form onSubmit={handleSubmit}>
-          {/* Provider Selector */}
-          <div className="mb-4">
-            <label htmlFor="provider" className="block text-sm font-medium text-gray-600">
-              Select Provider
-            </label>
-            <select
-              id="provider"
-              name="provider"
-              className="mt-1 block w-full p-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500"
-              value={formData.provider}
-              onChange={handleChange}
-              required
-            >
-              <option value="" disabled>
-                Choose a provider
-              </option>
-              <option value="Dstv">DSTV</option>
-              <option value="Gotv">GOtv</option>
-              <option value="StarTimes">StarTimes</option>
-            </select>
-          </div>
-
-          {/* Phone Number */}
-          <div className="mb-4">
-            <label htmlFor="phoneNumber" className="block text-sm font-medium text-gray-600">
-              Phone Number
-            </label>
-            <input
-              id="phoneNumber"
-              name="phoneNumber"
-              type="text"
-              placeholder="Enter phone number"
-              className="mt-1 block w-full p-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500"
-              value={formData.phoneNumber}
-              onChange={handleChange}
-              required
-            />
-          </div>
-
-          {/* Subscription Plan */}
-          {formData.provider && (
-            <div className="mb-4">
-              <label htmlFor="plan" className="block text-sm font-medium text-gray-600">
-                Select Subscription Plan
-              </label>
+    <div className="h-screen ">
+      <div className=" max-w-3xl mt-20 mx-auto bg-white shadow-lg rounded-lg lg:p-6 p-3">
+          <h1 className="text-xl font-bold mb-4 text-center">Cablesub</h1>
+          <form onSubmit={handleSubmit} className="space-y-4">
+            <div>
+              <label className="block text-gray-700">Cable Name*</label>
               <select
-                id="plan"
-                name="plan"
-                className="mt-1 block w-full p-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500"
-                value={formData.plan}
-                onChange={handleChange}
-                required
+                className="w-full p-2 border rounded"
+                value={cableName}
+                onChange={(e) => setCableName(e.target.value)}
               >
-                <option value="" disabled>
-                  Choose a plan
-                </option>
-                {cableTvPlans[formData.provider]?.map((plan) => (
-                  <option key={plan.id} value={plan.plan}>
-                    {plan.plan} - ₦{plan.price}
+                {Object.keys(cablePlans).map((cable) => (
+                  <option key={cable} value={cable}>
+                    {cable}
                   </option>
                 ))}
               </select>
             </div>
-          )}
 
-          {/* Submit Button */}
-          <button
-            type="submit"
-            className={`w-full py-2 text-white rounded-md ${
-              loading ? "bg-gray-400 cursor-not-allowed" : "bg-blue-500 hover:bg-blue-600"
-            }`}
-            disabled={loading}
-          >
-            {loading ? (
-              <span className="flex items-center justify-center">
-                <span className="animate-spin h-5 w-5 border-2 border-t-transparent rounded-full mr-2"></span>
-                Processing...
-              </span>
-            ) : (
-              "Subscribe Now"
-            )}
-          </button>
-        </form>
+            <div>
+              <label className="block text-gray-700">Smart Card number / IUC number*</label>
+              <input
+                type="text"
+                className="w-full p-2 border rounded"
+                value={smartCard}
+                onChange={(e) => setSmartCard(e.target.value)}
+                required
+              />
+            </div>
 
-        {/* Success and Error Messages */}
-        {message && (
-          <div className="mt-4 p-2 bg-green-100 text-green-700 text-center rounded-md">
-            {message}
-          </div>
-        )}
-        {error && (
-          <div className="mt-4 p-2 bg-red-100 text-red-700 text-center rounded-md">
-            {error}
-          </div>
-        )}
+            <div>
+              <label className="block text-gray-700">Cable Plan*</label>
+              <select
+                className="w-full p-2 border rounded"
+                value={cablePlan}
+                onChange={(e) => setCablePlan(e.target.value)}
+                required
+              >
+                <option value="">---------</option>
+                {cablePlans[cableName].map((plan, index) => (
+                  <option key={index} value={plan}>
+                    {plan}
+                  </option>
+                ))}
+              </select>
+            </div>
 
-        {/* Transaction History */}
-        {transactions.length > 0 && (
-          <div className="mt-6">
-            <h3 className="text-lg font-bold text-gray-800 mb-2">Transaction History</h3>
-            <ul className="space-y-2">
-              {transactions.map((transaction) => (
-                <li
-                  key={transaction.id}
-                  className="p-3 border rounded-md text-gray-700 bg-gray-50"
-                >
-                  <p>
-                    <strong>Provider:</strong> {transaction.provider}
-                  </p>
-                  <p>
-                    <strong>Plan:</strong> {transaction.plan}
-                  </p>
-                  <p>
-                    <strong>Phone:</strong> {transaction.phoneNumber}
-                  </p>
-                  <p>
-                    <strong>Amount:</strong> ₦{transaction.amount}
-                  </p>
-                  <p>
-                    <strong>Date:</strong> {transaction.date}
-                  </p>
-                </li>
-              ))}
-            </ul>
-          </div>
-        )}
+            <button
+              type="submit"
+              className="w-full bg-blue-800 text-white p-2 rounded hover:bg-blue-700"
+            >
+              Validate
+            </button>
+          </form>
+
+          <p className="text-gray-600 mt-4">
+            You can contact DSTV/GOtv's customers care unit on 01-2703232/08039003788 or the toll
+            free lines: 08149860333, 07080630333, and 09090630333 for assistance,
+            STARTIMES's customers care unit on (094618888, 014618888)
+          </p>
+        </div>
       </div>
-    </div>
   );
 };
 
-export default CableTvSubscription;
+export default CableSubscriptionForm;

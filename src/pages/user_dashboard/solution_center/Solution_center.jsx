@@ -17,13 +17,12 @@ export default function Solution_center() {
     });
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
     setSuccessMessage("");
     setErrorMessage("");
 
-    // Validate the form
     if (!formData.issueType || formData.issueType === "Select Issue Type") {
       setLoading(false);
       setErrorMessage("Please select an issue type.");
@@ -36,56 +35,69 @@ export default function Solution_center() {
       return;
     }
 
-    // Simulate form submission
-    setTimeout(() => {
-      setLoading(false);
-      setSuccessMessage("Your request has been successfully submitted.");
-      setFormData({
-        issueType: "",
-        referenceNo: "",
+    try {
+      const response = await fetch("http://localhost:5000/api/solution-center", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(formData),
       });
-    }, 2000); // Simulate a network request
+
+      const data = await response.json();
+
+      if (response.ok) {
+        setSuccessMessage(data.message || "Your request has been successfully submitted.");
+        setFormData({ issueType: "", referenceNo: "" });
+      } else {
+        setErrorMessage(data.error || "Failed to submit your request.");
+      }
+    } catch (error) {
+      console.error("Error:", error);
+      setErrorMessage("Network error: Failed to submit your request.");
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
     <div className="p-3 min-h-screen">
       <div>
-        {/* Go back button */}
-        {/* <button className="font-medium mb-4 px-4 py-2 bg-white rounded-md">
-          Go Back
-        </button> */}
-
-        {/* Solution Center Form */}
         <form onSubmit={handleSubmit} className="lg:max-w-[50%] max-w-[97%] mt-5 mx-auto bg-white rounded-md lg:p-4 p-2 shadow-lg">
           <h2 className="font-medium text-xl text-center">Instant Account Funding</h2>
-          <p className="text-gray-400 text-sm italic text-center">
-            Payments are Processed Automatically
-          </p>
+          <p className="text-gray-400 text-sm italic text-center">Payments are Processed Automatically</p>
 
-          {/* Issue Type Selection */}
           <div className="my-5">
             <p className="pb-2">Select Issue Type:</p>
-            <select name="issueType" id="issueType" className="w-full rounded-md border py-2 px-3 outline-none" value={formData.issueType} onChange={handleChange} required>
+            <select
+              name="issueType"
+              id="issueType"
+              className="w-full rounded-md border py-2 px-3 outline-none"
+              value={formData.issueType}
+              onChange={handleChange}
+              required
+            >
               <option value="Select Issue Type">Select Issue Type</option>
-              <option value="Account Deposit / Funding Issue">
-                Account Deposit / Funding Issue
-              </option>
+              <option value="Account Deposit / Funding Issue">Account Deposit / Funding Issue</option>
               <option value="Data Purchase Issue">Data Purchase Issue</option>
               <option value="Airtime Purchase Issue">Airtime Purchase Issue</option>
             </select>
           </div>
 
-          {/* Reference No. Input */}
           <div>
             <p className="pb-2 text-gray-400">Reference No. / Order Id:</p>
-            <input type="text" name="referenceNo" placeholder="Enter Reference Number" className="w-full rounded-md border py-2 px-3 outline-none" value={formData.referenceNo} onChange={handleChange} required/>
+            <input
+              type="text"
+              name="referenceNo"
+              placeholder="Enter Reference Number"
+              className="w-full rounded-md border py-2 px-3 outline-none"
+              value={formData.referenceNo}
+              onChange={handleChange}
+              required
+            />
             <p className="pt-2 text-gray-400">
-              For{" "}
-              <span className="font-medium">Funding Issues,</span> check your email for the payment Reference No.
+              For <span className="font-medium">Funding Issues,</span> check your email for the payment Reference No.
             </p>
           </div>
 
-          {/* Instructions Based on Issue Type */}
           {formData.issueType === "Account Deposit / Funding Issue" && (
             <div className="my-4 text-sm text-gray-600">
               <p>
@@ -107,7 +119,6 @@ export default function Solution_center() {
             </div>
           )}
 
-          {/* Submit Button */}
           <div className="mt-5 flex justify-center items-center">
             <button
               type="submit"
@@ -123,19 +134,8 @@ export default function Solution_center() {
           </div>
         </form>
 
-        {/* Error Message Tooltip */}
-        {errorMessage && (
-          <div className="mt-4 p-2 bg-gray-900 text-white rounded-md text-center">
-            {errorMessage}
-          </div>
-        )}
-
-        {/* Success Message */}
-        {successMessage && (
-          <div className="mt-4 p-2 bg-green-500 text-white rounded-md text-center">
-            {successMessage}
-          </div>
-        )}
+        {errorMessage && <div className="mt-4 p-2 bg-gray-900 text-white rounded-md text-center">{errorMessage}</div>}
+        {successMessage && <div className="mt-4 p-2 bg-green-500 text-white rounded-md text-center">{successMessage}</div>}
       </div>
     </div>
   );

@@ -1,8 +1,4 @@
 import React from 'react'
-import AccordionGroup from '@mui/joy/AccordionGroup';
-import Accordion from '@mui/joy/Accordion';
-import AccordionDetails from '@mui/joy/AccordionDetails';
-import AccordionSummary from '@mui/joy/AccordionSummary';
 import { Link } from 'react-router-dom';
 import { FaCode, FaMoneyBill, FaUser } from 'react-icons/fa';
 import { IoMdSettings } from 'react-icons/io';
@@ -19,7 +15,7 @@ export default function Extra_links() {
             <Link to={'user-detail'} className='hover:text-black duration-150 flex items-center gap-3'><FaUser /> Account</Link>
         </div>
         <div className="pl-3 pt-2 font-">
-            <Link to={'/'} className='hover:text-black duration-150 flex items-center gap-3'><IoMdSettings /> Change Pin</Link>
+            <Link to={'account-pin'} className='hover:text-black duration-150 flex items-center gap-3'><IoMdSettings /> Change Pin</Link>
         </div>
         {/* <div className="pl-3 pt-2 font-">
             <Link to={'/'} className='hover:text-black duration-150'>Setting</Link>

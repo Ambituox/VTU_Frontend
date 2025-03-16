@@ -12,12 +12,16 @@ import Dashboard from '../pages/user_dashboard/dashboard/Dashboard';
 import Fund_wallet from '../pages/user_dashboard/Fund_wallet/Fund_wallet';
 import Solution_center from '../pages/user_dashboard/solution_center/Solution_center';
 import AirtimeTopUp from '../pages/user_dashboard/buy_airtime/AirtimeTopUp';
-import DataPlanForm from '../pages/user_dashboard/buy_data/Data_topup';
+import DataPlanForm from '../pages/user_dashboard/buy_data/BuyDataPlan';
 import ElectricityBillPayment from '../pages/user_dashboard/utility_payment/ElectricityPayment';
-import CableTvSubscription from '../pages/user_dashboard/utility_payment/CableTvSubscription';
 import PricingComponent from '../pages/user_dashboard/Pricing/Pricing';
 import UserProfile from '../pages/user_dashboard/profile/UserProfile';
 import ApiComponent from '../pages/user_dashboard/developer/DeveloperApis';
+import ForgotPassword from '../pages/auth/ForgotPassword';
+import ResetPassword from '../pages/auth/ResetPassword';
+import ChangePassword from '../pages/user_dashboard/profile/ChangePassword';
+import AccountPin from '../pages/user_dashboard/profile/AccountPin';
+import CableSubscription from '../pages/user_dashboard/utility_payment/CableTvSubscription';
 
 export default function AppRoutes() {
   return (
@@ -29,19 +33,25 @@ export default function AppRoutes() {
         <Route path="/aboutus" element={<AboutUs />} />
         <Route path="/services" element={<Services_page />} />
         <Route path="/contact" element={<ContactPage />} />
-        <Route path="/signup" element={<CreateAccountPage />} />
+        
+        {/* Authentication route */}
         <Route path="/login" element={<SignIn />} />
+        <Route path="/signup" element={<CreateAccountPage />} />
+        <Route path="/forgot-password" element={<ForgotPassword />} />
+        <Route path="/reset-password" element={<ResetPassword />} />
 
         {/* Protected/User Dashboard Routes */}
         <Route path="/profile" element={<Layout />}>
           <Route index element={<Dashboard />} />
+          <Route path="user-detail/change-password" element={<ChangePassword />} />
+          <Route path="account-pin" element={<AccountPin />} />
           <Route path="fund_wallet" element={<Fund_wallet />} />
           <Route path="solution-center" element={<Solution_center />} />
 
           <Route path='data-top-up' element={<DataPlanForm/>}/>
           <Route path='airtime-recharge-card' element={<AirtimeTopUp/>}/>
           <Route path='utility-payment' element={<ElectricityBillPayment/>}/>
-          <Route path='cable-tv-subscription' element={<CableTvSubscription/>}/>
+          <Route path='cable-tv-subscription' element={<CableSubscription/>}/>
           <Route path='pricing' element={<PricingComponent/>}/>
           <Route path='user-detail' element={<UserProfile/>}/>
           <Route path='documentation' element={<ApiComponent/>}/>

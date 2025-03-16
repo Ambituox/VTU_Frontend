@@ -2,7 +2,7 @@ import React from 'react';
 
 export default function Section2() {
   return (
-    <div className="py-20 bg-gradient-to-b from-lime-50 to-lime-600">
+    <div className="py-20 bg-gradient-to-b from-blue-100 to-green-500">
       {/* Section Container */}
       <div className="md:max-w-[90%] xl:max-w-[60%] sm:max-w-[95%] max-w-[97%] mx-auto flex flex-wrap md:gap-10 gap-5 flex-col sm:flex-row justify-around">
         {/* Vision Card */}
