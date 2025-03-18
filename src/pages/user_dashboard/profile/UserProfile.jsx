@@ -3,7 +3,8 @@ import { Link } from "react-router-dom";
 
 const UserProfile = () => {
   const [formData, setFormData] = useState({
-    username: "john_doe",
+    firstName: "John",
+    lastName: "Doe",
     phoneNumber: "+2347012345678",
     email: "johndoe@example.com",
     bankName: "First Bank",
@@ -91,7 +92,13 @@ const UserProfile = () => {
                   <label className="block text-sm font-medium text-gray-600">
                     {key.replace(/([A-Z])/g, " $1").replace(/^./, (str) => str.toUpperCase())}
                   </label>
-                  <input type="text" name={key} value={value} onChange={handleChange} disabled={!isEditing} className={`mt-2 block w-full p-3 bg-gray-50 border ${
+                  <input
+                    type="text"
+                    name={key}
+                    value={value}
+                    onChange={handleChange}
+                    disabled={!isEditing}
+                    className={`mt-2 block w-full p-3 bg-gray-50 border ${
                       isEditing ? "border-gray-300" : "border-transparent"
                     } rounded-lg focus:ring-blue-500 focus:border-blue-500 transition`}
                   />
@@ -122,15 +129,27 @@ const UserProfile = () => {
             </Link>
             {isEditing ? (
               <>
-                <button type="button" onClick={() => setIsEditing(false)} className="py-2 px-6 bg-gray-300 text-gray-700 rounded-lg shadow-md hover:bg-gray-400 transition">
+                <button
+                  type="button"
+                  onClick={() => setIsEditing(false)}
+                  className="py-2 px-6 bg-gray-300 text-gray-700 rounded-lg shadow-md hover:bg-gray-400 transition"
+                >
                   Cancel
                 </button>
-                <button type="submit" className="py-2 px-6 bg-blue-500 text-white rounded-lg shadow-md hover:bg-blue-600 transition disabled:bg-gray-400" disabled={loading}>
+                <button
+                  type="submit"
+                  className="py-2 px-6 bg-blue-500 text-white rounded-lg shadow-md hover:bg-blue-600 transition disabled:bg-gray-400"
+                  disabled={loading}
+                >
                   {loading ? "Saving..." : "Save Changes"}
                 </button>
               </>
             ) : (
-              <button type="button" onClick={() => setIsEditing(true)} className="py-2 px-6 bg-gray-800 text-white rounded-md shadow-md hover:bg-blue-600 transition">
+              <button
+                type="button"
+                onClick={() => setIsEditing(true)}
+                className="py-2 px-6 bg-gray-800 text-white rounded-md shadow-md hover:bg-blue-600 transition"
+              >
                 Edit Profile
               </button>
             )}

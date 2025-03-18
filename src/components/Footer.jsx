@@ -14,14 +14,14 @@ const Footer = () => {
     <footer className="bg-gray-800 text-white py-8">
       <div className="container mx-auto px-6">
         {/* Footer Content */}
-        <div className="flex flex-col md:flex-row md:justify-between justify-start items-start space-y-6 md:space-y-0">
+        <div className="flex flex-col lg:flex-row md:justify-between justify-start items-start space-y-6 lg:space-y-0">
           
           {/* Contact Info Section */}
           <div className="space-y-8">
             <h3 className="text-3xl font-bold text-blue-400">Contact Us</h3>
 
             {/* Phone Numbers and Emails Section */}
-            <div className="flex flex-col md:flex-row md:space-x-12 space-y-6 md:space-y-0">
+            <div className="flex flex-col lg:flex-row lg:space-x-12 space-y-6 lg:space-y-0">
               {/* Phone Numbers */}
               <div className="flex flex-col space-y-2">
                 <h4 className="text-xl font-semibold text-gray-300">Phone Numbers</h4>

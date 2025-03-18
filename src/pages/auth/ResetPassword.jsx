@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import Header from '../../components/Header';
 import Footer from '../../components/Footer';
 
@@ -11,6 +11,8 @@ export default function ResetPassword() {
 
     const handlePasswordChange = (e) => setPassword(e.target.value);
     const handleConfirmPasswordChange = (e) => setConfirmPassword(e.target.value);
+
+    let navigate = useNavigate();
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -30,9 +32,12 @@ export default function ResetPassword() {
             });
             const data = await response.json();
 
-            if (!response.ok) throw new Error(data.message || 'Failed to reset password');
+            if (!data.ok || data.success === false) {
+                throw new Error(data.message || 'Failed to reset password');
+            }
 
-            alert('Password reset successful!');
+            navigate('/');
+
         } catch (error) {
             console.error('Error:', error);
             setError(error.message);
@@ -42,7 +47,7 @@ export default function ResetPassword() {
     };
 
     return (
-        <div className="bg-gradient-to-r from-blue-500 to-purple-600 min-h-screen flex flex-col">
+        <div className="bg-gray-100 min-h-screen flex flex-col">
             <Header />
             <div className="flex my-20 flex-grow items-center justify-center px-4">
                 <div className="w-full max-w-md bg-white p-8 rounded-2xl shadow-2xl">

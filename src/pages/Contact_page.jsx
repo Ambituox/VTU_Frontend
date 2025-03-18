@@ -65,8 +65,8 @@ const ContactPage = () => {
           </div>
           <p className="text-sm text-gray-400">We strive to respond within 24 hours.</p>
         </div>
-        <Footer/>
       </div>
+      <Footer/>
     </>
   );
 };

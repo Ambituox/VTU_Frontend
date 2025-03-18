@@ -76,8 +76,8 @@ const About_page = () => {
             </button>
           </div>
         </div>
-        <Footer/>
       </div>
+      <Footer/>
     </>
   );
 };
