@@ -24,6 +24,7 @@ import AccountPin from '../pages/user_dashboard/profile/AccountPin';
 import CableSubscription from '../pages/user_dashboard/utility_payment/CableTvSubscription';
 import VerifyAccount from '../pages/auth/VerifyAccount';
 import VerifyEmailWithOTP from '../pages/auth/VerifyEmailWithOTP';
+import Private_Route from '../components/private/PrivateRoute';
 
 export default function AppRoutes() {
   return (
@@ -45,25 +46,28 @@ export default function AppRoutes() {
         <Route path="/verify-email" element={<VerifyEmailWithOTP />} />
 
         {/* Protected/User Dashboard Routes */}
-        <Route path="/profile" element={<Layout />}>
-          <Route index element={<Dashboard />} />
-          <Route path="user-detail/change-password" element={<ChangePassword />} />
-          <Route path="account-pin" element={<AccountPin />} />
-          <Route path="fund_wallet" element={<Fund_wallet />} />
-          <Route path="solution-center" element={<Solution_center />} />
 
-          <Route path='data-top-up' element={<DataPlanForm/>}/>
-          <Route path='airtime-recharge-card' element={<AirtimeTopUp/>}/>
-          <Route path='utility-payment' element={<ElectricityBillPayment/>}/>
-          <Route path='cable-tv-subscription' element={<CableSubscription/>}/>
-          <Route path='pricing' element={<PricingComponent/>}/>
-          <Route path='user-detail' element={<UserProfile/>}/>
-          <Route path='documentation' element={<ApiComponent/>}/>
-          {/* <Route path='data-transaction-history' element={<DataTransactionHistory/>}/> */}
-          {/* <Route path='utility-transaction-history' element={<UtilityTransactionHistory/>}/> */}
-          {/* <Route path='airtime-transaction-history' element={<AirtimeTransactionHistory/>}/> */}
-          {/* <Route path='funding-transaction-history' element={<FundingTransactionHistory/>}/> */}
-          {/* <Route path='user-profile' element={<UserProfile/>}/> */}
+        <Route path="/profile" element={<Private_Route />}>
+          <Route path="/profile" element={<Layout />}>
+            <Route index element={<Dashboard />} />
+            <Route path="user-detail/change-password" element={<ChangePassword />} />
+            <Route path="account-pin" element={<AccountPin />} />
+            <Route path="fund_wallet" element={<Fund_wallet />} />
+            <Route path="solution-center" element={<Solution_center />} />
+
+            <Route path='data-top-up' element={<DataPlanForm/>}/>
+            <Route path='airtime-recharge-card' element={<AirtimeTopUp/>}/>
+            <Route path='utility-payment' element={<ElectricityBillPayment/>}/>
+            <Route path='cable-tv-subscription' element={<CableSubscription/>}/>
+            <Route path='pricing' element={<PricingComponent/>}/>
+            <Route path='user-detail' element={<UserProfile/>}/>
+            <Route path='documentation' element={<ApiComponent/>}/>
+            {/* <Route path='data-transaction-history' element={<DataTransactionHistory/>}/> */}
+            {/* <Route path='utility-transaction-history' element={<UtilityTransactionHistory/>}/> */}
+            {/* <Route path='airtime-transaction-history' element={<AirtimeTransactionHistory/>}/> */}
+            {/* <Route path='funding-transaction-history' element={<FundingTransactionHistory/>}/> */}
+            {/* <Route path='user-profile' element={<UserProfile/>}/> */}
+          </Route>
         </Route>
       </Routes>
     </Router>

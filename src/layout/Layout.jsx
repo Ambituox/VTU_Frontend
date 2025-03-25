@@ -39,7 +39,9 @@ const Sidebar = ({ isOpen, toggleSidebar }) => {
         isOpen ? 'w-64' : 'w-0'
       } transition-all duration-300`}>
       <div className="px-5 py-6 flex items-center justify-between">
-        <h1 className="lg:text-4xl text-3xl font-bold text-white">Ambitioux</h1>
+        <Link to={'/'}>
+          <h1 className="lg:text-4xl text-3xl font-bold text-white">Ambitioux</h1>
+        </Link>
         <button onClick={toggleSidebar} className="text-white text-2xl lg:hidden focus:outline-none" aria-label="Close Sidebar">
           <IoClose />
         </button>
