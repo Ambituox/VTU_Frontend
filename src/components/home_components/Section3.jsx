@@ -18,7 +18,7 @@ export default function Section3() {
   ];
 
   return (
-    <div className="py-20 bg-gradient-to-b from-gray-50 to-gray-200 relative">
+    <div className="py-20 bg-gradient-to-b from-gray-50 to-green-100 relative">
       {/* Decorative Background */}
       <div className="absolute inset-0 bg-gradient-to-r from-blue-50 to-green-50 opacity-20 -z-10"></div>
 

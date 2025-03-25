@@ -58,22 +58,18 @@ const SignIn = () => {
 
       const data = await response.json();
 
-      if (data.status === 'error') {
-        // setError();
-        dispatch(signinFailure(data.message || 'Sign in failed'));
+      if (data.status === 'error' || !data.token) {
+        dispatch(signinFailure(data.message || 'Invalid response'));
         openModal();
         return;
-      } else {
-        dispatch(signinSuccess(data));
-        console.log(data);
-        
-        setSuccess('Logged in successfully!');
-        openModal();
-        setTimeout(() => navigate("/verify-account"), 1500);
       }
+
+      dispatch(signinSuccess(data));
+      console.log(data);
       
-      // setTimeout(() => {
-      // }, 1500)
+      setSuccess(data.status === 'error' ? data.message : 'Logged in successfully!');
+      openModal();
+      navigate("/");
       
     } catch (error) {
       dispatch(signinFailure('An error occurred. Please try again.'));

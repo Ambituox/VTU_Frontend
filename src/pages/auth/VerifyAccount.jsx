@@ -31,6 +31,7 @@ const VerifyAccount = () => {
       });
 
       const data = await response.json();
+      
       if (data.status === 'error') {
         setError(data.message);
         // console.log(data);
@@ -38,7 +39,7 @@ const VerifyAccount = () => {
       }
       
       setSuccess(data.message);
-      console.log(data);
+      // console.log(data);
       
       setTimeout(() => navigate('/login'), 1500);
 

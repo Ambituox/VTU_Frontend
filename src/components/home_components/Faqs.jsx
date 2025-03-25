@@ -73,7 +73,7 @@ const FAQ = () => {
   };
 
   return (
-    <div className="w-full bg-gray-100 px-3">
+    <div className="w-full bg-purple-100 px-3">
         <div className="max-w-4xl mx-auto md:px-0 px-3 py-20">
             <h2 className="text-3xl font-semibold text-center text-gray-800 mb-6">Frequently Asked Questions</h2>
             <div className="space-y-4">

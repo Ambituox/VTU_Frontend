@@ -42,7 +42,7 @@ const Testimonial = () => {
   ];
 
   return (
-    <div className="bg-gray-50 py-16 px-4 sm:px-6 lg:px-8">
+    <div className="bg-blue-100 py-16 px-4 sm:px-6 lg:px-8">
       <div className="max-w-7xl mx-auto text-center">
         {/* Customized h2 Tag with Custom Colors */}
         <h2 className="text-4xl sm:text-4xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-[#ADF802] via-[#4169E1] to-[#ADF802] leading-tight mt-4 mb-8">

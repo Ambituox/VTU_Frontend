@@ -1,12 +1,13 @@
 import React, { createContext, useEffect, useState } from 'react';
 import { MdOutlinePayment, MdSpaceDashboard } from 'react-icons/md';
-import { FaUsers, FaWhatsapp } from 'react-icons/fa';
+import { FaUserAlt, FaUsers, FaWhatsapp } from 'react-icons/fa';
 import { IoClose } from 'react-icons/io5';
 import { Link, Outlet } from 'react-router-dom';
 import Main_links from './sidebar/main/Main_links';
 import Services_links from './sidebar/services/Services_links';
 import Extra_links from './sidebar/extra/Extra_links';
 import UserLogoutButton from '../components/user_dashboard_component/UserLogout';
+import { useSelector } from 'react-redux';
 
 const mainlinks = [
   {
@@ -62,9 +63,11 @@ const Sidebar = ({ isOpen, toggleSidebar }) => {
 };
 
 const Header = ({ toggleSidebar }) => {
+  const { currentUser } = useSelector((state) => state.user);
+
   return (
     <header className="text-white z-10 top-0 sticky bg-blue-500">
-      <div className="flex items-center justify-between px-6 py-4">
+      <div className="flex items-center justify-between px-6 lg:py-4 py-2">
         {/* Logo */}
         <div className="flex items-center space-x-2">
           <button onClick={toggleSidebar} className="text-2xl p-2 text-slate-50 lg:hidden focus:outline-none" aria-label="Open Sidebar">
@@ -73,9 +76,15 @@ const Header = ({ toggleSidebar }) => {
         </div>
 
         {/* User Actions */}
-          <div className="">
-            <UserLogoutButton/>
-          </div>
+        {
+          currentUser && ( 
+            <div className="bg-white p-2 rounded-full">
+              <Link to={'/profile'} className={`text-black`}>
+                <FaUserAlt />
+              </Link>
+            </div>
+          )
+        }
       </div>
     </header>
   );
