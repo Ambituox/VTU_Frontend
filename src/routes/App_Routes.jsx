@@ -23,7 +23,7 @@ import ChangePassword from '../pages/user_dashboard/profile/ChangePassword';
 import AccountPin from '../pages/user_dashboard/profile/AccountPin';
 import CableSubscription from '../pages/user_dashboard/utility_payment/CableTvSubscription';
 import VerifyAccount from '../pages/auth/VerifyAccount';
-import VerifyEmail from '../pages/auth/VerifyEmailWithOTP';
+import VerifyEmailWithOTP from '../pages/auth/VerifyEmailWithOTP';
 
 export default function AppRoutes() {
   return (
@@ -42,7 +42,7 @@ export default function AppRoutes() {
         <Route path="/forgot-password" element={<ForgotPassword />} />
         <Route path="/reset-password" element={<ResetPassword />} />
         <Route path="/verify-account" element={<VerifyAccount />} />
-        <Route path="/verify-email" element={<VerifyEmail />} />
+        <Route path="/verify-email" element={<VerifyEmailWithOTP />} />
 
         {/* Protected/User Dashboard Routes */}
         <Route path="/profile" element={<Layout />}>

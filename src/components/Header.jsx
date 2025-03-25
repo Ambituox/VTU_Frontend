@@ -1,8 +1,5 @@
 import React, { useState } from 'react' 
 import { Link } from 'react-router-dom'
-import { Dialog, DialogPanel } from '@headlessui/react'
-import { RiMenu4Line } from 'react-icons/ri'
-import { FaRegWindowClose } from 'react-icons/fa'
 import Sidebar from './Sidebar'
 
 const navigation = [
@@ -25,7 +22,7 @@ export default function Header() {
           </Link>
         </div>
 
-        <div className="hidden lg:flex lg:gap-x-12">
+        <div className="hidden lg:flex lg:gap-x-6">
           {navigation.map((item) => (
             <Link key={item.name} to={item.path} className="text-lg font-semibold text-gray-900 hov transition duration-300 ease-in-out transform hover:scale-105">
               {item.name}

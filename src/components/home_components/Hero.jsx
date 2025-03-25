@@ -22,10 +22,10 @@ export default function Hero() {
                 Experience seamless and secure online top-ups with our fast and reliable service. Get started today and stay connected in just a few clicks.
               </p>
               <div className="mt-10 flex items-center justify-center lg:justify-start gap-x-6" data-aos="zoom-in">
-                <Link to="/" className="rounded-md cl2 w-[150px] py-2 text-[16] font-semibold text-white shadow-lg text-center transition-all hover:bg-blue-700">
+                <Link to="/login" className="rounded-md cl2 w-[150px] py-2 text-[16] font-semibold text-white shadow-lg text-center transition-all hover:bg-blue-700">
                   Log In
                 </Link>
-                <Link to="/" className="rounded-md cl3 w-[150px] py-2 text-[16] font-semibold text-white shadow-lg text-center transition-all hover:bg-lime-500">
+                <Link to="/signup" className="rounded-md cl3 w-[150px] py-2 text-[16] font-semibold text-white shadow-lg text-center transition-all hover:bg-lime-500">
                   Register
                 </Link>
               </div>

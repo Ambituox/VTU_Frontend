@@ -58,19 +58,23 @@ const SignIn = () => {
 
       const data = await response.json();
 
-      if (!data.ok || data.success === false) {
+      if (data.status === 'error') {
         // setError();
         dispatch(signinFailure(data.message || 'Sign in failed'));
-      } else {
-        dispatch(signinSuccess(data.message || 'Sign in successful!'));
-        setSuccess(true);
-      }
-
-      setTimeout(() => {
         openModal();
-        navigate('/verify-account')
-      }, 1500)
-
+        return;
+      } else {
+        dispatch(signinSuccess(data));
+        console.log(data);
+        
+        setSuccess('Logged in successfully!');
+        openModal();
+        setTimeout(() => navigate("/verify-account"), 1500);
+      }
+      
+      // setTimeout(() => {
+      // }, 1500)
+      
     } catch (error) {
       dispatch(signinFailure('An error occurred. Please try again.'));
       openModal();
@@ -80,7 +84,7 @@ const SignIn = () => {
   return (
     <>
       <Header />
-      <div className="flex min-h-screen bg-gradient-to-r from-blue-500 to-purple-600 items-center justify-center lg:p-6 p-3">
+      <div className="flex min-h-screen bg-gray-100 items-center justify-center lg:p-6 p-3">
         <div className="w-full max-w-md rounded-lg bg-white shadow-lg lg:p-8 p-6" data-aos="fade-up">
           <h2 className="text-3xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-[#ADF802] text-center mb-6">Sign In</h2>
           <form className="space-y-6" onSubmit={handleSubmit}>

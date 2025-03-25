@@ -31,14 +31,16 @@ const VerifyAccount = () => {
       });
 
       const data = await response.json();
-
-      if (!data.ok || data.success === false) {
-        throw new Error(data.message || 'Verification failed');
+      if (data.status === 'error') {
+        setError(data.message);
+        // console.log(data);
+        return;
       }
-
-      setSuccess('Account verified successfully!');
-
-      navigate('/');
+      
+      setSuccess(data.message);
+      console.log(data);
+      
+      setTimeout(() => navigate('/login'), 1500);
 
     } catch (err) {
       setError(err.message);
