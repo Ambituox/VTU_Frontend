@@ -17,7 +17,6 @@ import ElectricityBillPayment from '../pages/user_dashboard/utility_payment/Elec
 import PricingComponent from '../pages/user_dashboard/Pricing/Pricing';
 import UserProfile from '../pages/user_dashboard/profile/UserProfile';
 import ApiComponent from '../pages/user_dashboard/developer/DeveloperApis';
-import ForgotPassword from '../pages/auth/ForgotPassword';
 import ResetPassword from '../pages/auth/ResetPassword';
 import ChangePassword from '../pages/user_dashboard/profile/ChangePassword';
 import AccountPin from '../pages/user_dashboard/profile/AccountPin';
@@ -25,6 +24,8 @@ import CableSubscription from '../pages/user_dashboard/utility_payment/CableTvSu
 import VerifyAccount from '../pages/auth/VerifyAccount';
 import VerifyEmailWithOTP from '../pages/auth/VerifyEmailWithOTP';
 import Private_Route from '../components/private/PrivateRoute';
+import ForgotPasswordRequest from '../pages/auth/ForgotPasswordRequest';
+import ForgotPassword from '../pages/auth/ForgotPassword';
 
 export default function AppRoutes() {
   return (
@@ -40,6 +41,7 @@ export default function AppRoutes() {
         {/* Authentication route */}
         <Route path="/login" element={<SignIn />} />
         <Route path="/signup" element={<CreateAccountPage />} />
+        <Route path="/forgot-password-request" element={<ForgotPasswordRequest />} />
         <Route path="/forgot-password" element={<ForgotPassword />} />
         <Route path="/reset-password" element={<ResetPassword />} />
         <Route path="/verify-account" element={<VerifyAccount />} />
@@ -47,7 +49,7 @@ export default function AppRoutes() {
 
         {/* Protected/User Dashboard Routes */}
 
-        <Route path="/profile" element={<Private_Route />}>
+        <Route element={<Private_Route />}>
           <Route path="/profile" element={<Layout />}>
             <Route index element={<Dashboard />} />
             <Route path="user-detail/change-password" element={<ChangePassword />} />

@@ -76,11 +76,11 @@ const CreateAccountPage = () => {
       
       if (data.error) {
         setSuccess('');
-        dispatch(signinFailure(data.error))
+        dispatch(signinFailure(data.error));
         openModal();
         // return;
       } else{
-        dispatch(signinSuccess(data.message))
+        dispatch(signinSuccess(data.message));
         setSuccess(data.message);
         openModal();
         setTimeout(() => navigate("/verify-email"), 1500);

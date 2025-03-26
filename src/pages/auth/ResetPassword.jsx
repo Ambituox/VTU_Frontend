@@ -1,5 +1,7 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
+import { Dialog, Transition } from '@headlessui/react';
+import { Fragment } from 'react';
 import Header from '../../components/Header';
 import Footer from '../../components/Footer';
 
@@ -7,41 +9,45 @@ export default function ResetPassword() {
     const [password, setPassword] = useState('');
     const [confirmPassword, setConfirmPassword] = useState('');
     const [loading, setLoading] = useState(false);
-    const [error, setError] = useState('');
+    const [isDialogOpen, setIsDialogOpen] = useState(false);
+    const [dialogMessage, setDialogMessage] = useState('');
+    const [isSuccess, setIsSuccess] = useState(false);
 
-    const handlePasswordChange = (e) => setPassword(e.target.value);
-    const handleConfirmPasswordChange = (e) => setConfirmPassword(e.target.value);
-
-    let navigate = useNavigate();
+    const navigate = useNavigate();
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        setError('');
+        setDialogMessage('');
 
         if (password !== confirmPassword) {
-            setError("Passwords do not match");
+            setIsSuccess(false);
+            setDialogMessage('Passwords do not match');
+            setIsDialogOpen(true);
             return;
         }
 
-        setLoading(true);
         try {
-            const response = await fetch('/api/reset-password', {
+            setLoading(true);
+            const response = await fetch('/api/v1/reset-password', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ password }),
             });
             const data = await response.json();
 
-            if (!data.ok || data.success === false) {
-                throw new Error(data.message || 'Failed to reset password');
+            if (!response.ok || data.status === 'error') {
+                setIsSuccess(false);
+                setDialogMessage(data.message || 'Failed to reset password.');
+            } else {
+                setIsSuccess(true);
+                setDialogMessage('Password reset successfully! Redirecting to login...');
+                setTimeout(() => navigate('/login'), 2000);
             }
-
-            navigate('/');
-
         } catch (error) {
-            console.error('Error:', error);
-            setError(error.message);
+            setIsSuccess(false);
+            setDialogMessage(`Error resetting password: ${error.message}`);
         } finally {
+            setIsDialogOpen(true);
             setLoading(false);
         }
     };
@@ -52,12 +58,11 @@ export default function ResetPassword() {
             <div className="flex my-20 flex-grow items-center justify-center px-4">
                 <div className="w-full max-w-md bg-white p-8 rounded-2xl shadow-2xl">
                     <h1 className="text-3xl font-bold text-center text-gray-700 mb-4">Reset Password</h1>
-                    {error && <div className="text-red-500 text-center mt-2 font-semibold">{error}</div>}
                     <form onSubmit={handleSubmit} className="space-y-4">
                         <div>
                             <label className='text-gray-700 font-semibold block mb-1'>New Password</label>
                             <input 
-                                onChange={handlePasswordChange} 
+                                onChange={(e) => setPassword(e.target.value)} 
                                 value={password} 
                                 type="password" 
                                 className='w-full p-3 rounded-lg border border-gray-300 focus:border-blue-500 focus:ring focus:ring-blue-200 transition' 
@@ -68,7 +73,7 @@ export default function ResetPassword() {
                         <div>
                             <label className='text-gray-700 font-semibold block mb-1'>Confirm Password</label>
                             <input 
-                                onChange={handleConfirmPasswordChange} 
+                                onChange={(e) => setConfirmPassword(e.target.value)} 
                                 value={confirmPassword} 
                                 type="password" 
                                 className='w-full p-3 rounded-lg border border-gray-300 focus:border-blue-500 focus:ring focus:ring-blue-200 transition' 
@@ -90,6 +95,21 @@ export default function ResetPassword() {
                 </div>
             </div>
             <Footer />
+
+            {/* Headless UI Dialog for success/error feedback */}
+            <Transition appear show={isDialogOpen} as={Fragment}>
+                <Dialog as="div" className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black bg-opacity-30" onClose={() => setIsDialogOpen(false)}>
+                    <Dialog.Panel className="bg-white p-6 rounded-lg shadow-md w-full max-w-md">
+                        <Dialog.Title className={`text-lg font-bold ${isSuccess ? 'text-green-600' : 'text-red-600'}`}>
+                            {isSuccess ? 'Success' : 'Error'}
+                        </Dialog.Title>
+                        <p className="mt-2 text-gray-700">{dialogMessage}</p>
+                        <button className="mt-4 w-full bg-blue-600 text-white py-2 rounded hover:bg-blue-500 transition" onClick={() => setIsDialogOpen(false)}>
+                            Close
+                        </button>
+                    </Dialog.Panel>
+                </Dialog>
+            </Transition>
         </div>
     );
 }

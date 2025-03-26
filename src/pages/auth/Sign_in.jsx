@@ -65,7 +65,6 @@ const SignIn = () => {
       }
 
       dispatch(signinSuccess(data));
-      console.log(data);
       
       setSuccess(data.status === 'error' ? data.message : 'Logged in successfully!');
       openModal();
@@ -95,7 +94,7 @@ const SignIn = () => {
             </div>
 
             <div className="flex items-end justify-end">
-              <Link to="/forgot-password" className="text-sm text-blue-600 hover:underline">Forgot password?</Link>
+              <Link to="/forgot-password-request" className="text-sm text-blue-600 hover:underline">Forgot password?</Link>
             </div>
 
             <p className="text-center text-sm text-gray-600">
