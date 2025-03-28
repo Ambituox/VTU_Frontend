@@ -38,46 +38,47 @@ const SignIn = () => {
     e.preventDefault();
 
     if (!email || !password) {
-      setError('Please fill in all fields');
-      setSuccess('');
-      openModal();
-      return;
+        dispatch(signinFailure('Please fill in all fields'));
+        openModal();
+        return;
     }
-
-    // setError('');
-    setSuccess('');
 
     dispatch(signinStart());
 
     try {
-      const response = await fetch('/api/v1/login', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email, password }),
-      });
+        const response = await fetch('/api/v1/login', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ email, password }),
+        });
 
-      const data = await response.json();
-
-      if (data.status === 'error' || !data.token) {
-        dispatch(signinFailure(data.message || 'Invalid response'));
-        if(data.message === 'Please verify your email address first'){
-          setTimeout(() => navigate('/verify-email'), 1000);
+        // Check if response is OK before proceeding
+        if (!response.ok) {
+            throw new Error(`HTTP error! Status: ${response.status}`);
         }
-        openModal();
-        return;
-      }
 
-      dispatch(signinSuccess(data));
-      
-      setSuccess(data.status === 'error' ? data.message : 'Logged in successfully!');
-      openModal();
-      navigate("/");
-      
+        // Read response text first
+        const text = await response.text();
+        const data = text ? JSON.parse(text) : {}; // Safely parse JSON
+
+        // Validate expected response fields
+        if (data.status === 'error' || !data.token) {
+            dispatch(signinFailure(data.message || 'Invalid response'));
+            if (data.message === 'Please verify your email address first') {
+                setTimeout(() => navigate('/verify-email'), 1000);
+            }
+            openModal();
+            return;
+        }
+
+        dispatch(signinSuccess(data));
+        openModal();
+        navigate("/");
+
     } catch (error) {
-      // dispatch(signinFailure(error));
-      console.log(error)
-      dispatch(signinFailure('An error occurred. Please try again.'));
-      openModal();
+        console.error("Error in sign-in:", error.message);
+        dispatch(signinFailure('An error occurred. Please try again.'));
+        openModal();
     }
   };
 
