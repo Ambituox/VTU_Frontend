@@ -9,7 +9,7 @@ export default defineConfig({
       '/api': {
         target: 'https://vtu-xpwk.onrender.com',
         changeOrigin: true,
-        secure: false
+        secure: true
       }
     }
   }
