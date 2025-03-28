@@ -34,7 +34,7 @@ export default function ForgotPassword() {
     try {
       setLoading(true);
 
-      const response = await fetch('/api/v1/forgot-password', {
+      const response = await fetch('https://vtu-xpwk.onrender.com/api/v1/forgot-password', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(payload),

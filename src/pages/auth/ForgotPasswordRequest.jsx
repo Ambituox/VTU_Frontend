@@ -26,7 +26,7 @@ export default function ForgotPasswordRequest() {
         setError('');
 
         try {
-            const response = await fetch('/api/v1/send-verification-email', {
+            const response = await fetch('https://vtu-xpwk.onrender.com/api/v1/send-verification-email', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ email }),

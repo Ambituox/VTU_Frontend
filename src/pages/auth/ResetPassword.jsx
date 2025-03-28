@@ -29,7 +29,7 @@ export default function ResetPassword() {
 
         try {
             setLoading(true);
-            const response = await fetch('/api/v1/reset-password', {
+            const response = await fetch('https://vtu-xpwk.onrender.com/api/v1/reset-password', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ password }),
