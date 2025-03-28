@@ -75,6 +75,7 @@ const SignIn = () => {
       
     } catch (error) {
       // dispatch(signinFailure(error));
+      console.log(error)
       dispatch(signinFailure('An error occurred. Please try again.'));
       openModal();
     }
