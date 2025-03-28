@@ -48,28 +48,29 @@ const SignIn = () => {
     dispatch(signinStart());
 
     try {
-        const response = await fetch(`https://vtu-xpwk.onrender.com/api/v1/login`, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ email, password }),
-        });
+      const response = await fetch(`https://vtu-xpwk.onrender.com/api/v1/login`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        credentials: 'include', // Needed if backend uses session/cookie authentication
+        body: JSON.stringify({ email, password }),
+      });
 
-        // Read response text first
-        const data = await response.json();
+      // Read response text first
+      const data = await response.json();
 
-        // Validate expected response fields
-        if (data.status === 'error' || !data.token || !response.ok) {
-            dispatch(signinFailure(data.message || 'Invalid response'));
-            if (data.message === 'Please verify your email address first') {
-                setTimeout(() => navigate('/verify-email'), 1000);
-            }
-            openModal();
-            return;
-        }
+      // Validate expected response fields
+      if (data.status === 'error' || !data.token || !response.ok) {
+          dispatch(signinFailure(data.message || 'Invalid response'));
+          if (data.message === 'Please verify your email address first') {
+              setTimeout(() => navigate('/verify-email'), 1000);
+          }
+          openModal();
+          return;
+      }
 
-        dispatch(signinSuccess(data));
-        openModal();
-        navigate("/");
+      dispatch(signinSuccess(data));
+      openModal();
+      navigate("/");
 
     } catch (error) {
         console.error("Error in sign-in:", error.message);
