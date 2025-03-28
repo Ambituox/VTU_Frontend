@@ -8,6 +8,8 @@ import { Dialog, Transition } from '@headlessui/react';
 import { useDispatch, useSelector } from 'react-redux';
 import { signinFailure, signinStart, signinSuccess } from '../../store/userReducers';
 
+const API_BASE_URL = import.meta.env.API_BASE_URL || 'https://vtu-xpwk.onrender.com';
+
 const SignIn = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -46,7 +48,7 @@ const SignIn = () => {
     dispatch(signinStart());
 
     try {
-        const response = await fetch('https://vtu-xpwk.onrender.com/api/v1/login', {
+        const response = await fetch(`${API_BASE_URL}/api/v1/login`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ email, password }),

@@ -5,6 +5,8 @@ import { Fragment } from 'react';
 import Header from '../../components/Header';
 import Footer from '../../components/Footer';
 
+const API_BASE_URL = import.meta.env.API_BASE_URL || 'https://vtu-xpwk.onrender.com';
+
 export default function ForgotPasswordRequest() {
     const [email, setEmail] = useState('');
     const [loading, setLoading] = useState(false);
@@ -26,7 +28,7 @@ export default function ForgotPasswordRequest() {
         setError('');
 
         try {
-            const response = await fetch('https://vtu-xpwk.onrender.com/api/v1/send-verification-email', {
+            const response = await fetch(`${API_BASE_URL}/api/v1/send-verification-email`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ email }),

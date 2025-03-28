@@ -8,6 +8,8 @@ import { Dialog, Transition } from '@headlessui/react';
 import { useDispatch, useSelector } from 'react-redux';
 import { signinFailure, signinStart, signinSuccess } from '../../store/userReducers';
 
+const API_BASE_URL = import.meta.env.API_BASE_URL || 'https://vtu-xpwk.onrender.com';
+
 const CreateAccountPage = () => {
   const [formData, setFormData] = useState({
     firstName: '',
@@ -64,7 +66,7 @@ const CreateAccountPage = () => {
     dispatch(signinStart());
 
     try {
-      const response = await fetch('https://vtu-xpwk.onrender.com/api/v1/register', {
+      const response = await fetch(`${API_BASE_URL}/api/v1/register`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ firstName, lastName, email, phone, password })

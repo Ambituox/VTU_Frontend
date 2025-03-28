@@ -5,6 +5,8 @@ import { useNavigate } from 'react-router-dom';
 import Header from '../../components/Header';
 import Footer from '../../components/Footer';
 
+const API_BASE_URL = import.meta.env.API_BASE_URL || 'https://vtu-xpwk.onrender.com';
+
 export default function ForgotPassword() {
   const [email, setEmail] = useState(localStorage.getItem('userEmail') || '');
   const [resetCode, setResetCode] = useState('');
@@ -34,7 +36,7 @@ export default function ForgotPassword() {
     try {
       setLoading(true);
 
-      const response = await fetch('https://vtu-xpwk.onrender.com/api/v1/forgot-password', {
+      const response = await fetch(`${API_BASE_URL}/api/v1/forgot-password`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(payload),
