@@ -74,8 +74,8 @@ const SignIn = () => {
       navigate("/");
       
     } catch (error) {
-      dispatch(signinFailure(error));
-      // dispatch(signinFailure('An error occurred. Please try again.'));
+      // dispatch(signinFailure(error));
+      dispatch(signinFailure('An error occurred. Please try again.'));
       openModal();
     }
   };
