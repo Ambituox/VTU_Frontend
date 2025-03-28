@@ -15,6 +15,8 @@ export default function ForgotPassword() {
   const [loading, setLoading] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
 
+  console.log({resetCode, newPass, confirmPass, email})
+
   const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
@@ -27,6 +29,7 @@ export default function ForgotPassword() {
     }
 
     const payload = { resetCode, newPass, confirmPass, email };
+
 
     try {
       setLoading(true);
@@ -50,7 +53,8 @@ export default function ForgotPassword() {
       } else {
         setIsSuccess(true);
         setDialogMessage(data.message);
-        navigate('/reset-password');
+        localStorage.removeItem('userEmail');
+        navigate('/login');
       }
     } catch (error) {
       setIsSuccess(false);
@@ -67,38 +71,10 @@ export default function ForgotPassword() {
       <div className="w-96 mx-auto my-20 p-5 shadow-lg rounded-lg bg-white">
         <h2 className="text-xl font-bold mb-4 text-center">Forgot Password</h2>
         <form onSubmit={handleSubmit} className="space-y-4">
-          <input
-            type="email"
-            placeholder="Email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            className="w-full p-2 border rounded"
-            required
-          />
-          <input
-            type="number"
-            placeholder="Reset Code"
-            value={resetCode}
-            onChange={(e) => setResetCode(e.target.value)}
-            className="w-full p-2 border rounded"
-            required
-          />
-          <input
-            type="password"
-            placeholder="New Password"
-            value={newPass}
-            onChange={(e) => setNewPass(e.target.value)}
-            className="w-full p-2 border rounded"
-            required
-          />
-          <input
-            type="password"
-            placeholder="Confirm New Password"
-            value={confirmPass}
-            onChange={(e) => setConfirmPass(e.target.value)}
-            className="w-full p-2 border rounded"
-            required
-          />
+          <input type="email" placeholder="Email" value={email} onChange={(e) => setEmail(e.target.value)} className="w-full p-2 border rounded" required/>
+          <input type="number" placeholder="Reset Code" value={resetCode} onChange={(e) => setResetCode(e.target.value)} className="w-full p-2 border rounded" required/>
+          <input type="password" placeholder="New Password" value={newPass} onChange={(e) => setNewPass(e.target.value)} className="w-full p-2 border rounded" required/>
+          <input type="password" placeholder="Confirm New Password" value={confirmPass} onChange={(e) => setConfirmPass(e.target.value)} className="w-full p-2 border rounded" required/>
           <button
             type="submit"
             className="w-full bg-blue-600 text-white py-2 rounded hover:bg-blue-500 transition"
@@ -123,8 +99,7 @@ export default function ForgotPassword() {
                 {isSuccess ? 'Success' : 'Error'}
               </Dialog.Title>
               <p className="mt-2 text-gray-700">{dialogMessage}</p>
-              <button
-                className="mt-4 w-full bg-blue-600 text-white py-2 rounded hover:bg-blue-500 transition"
+              <button className="mt-4 w-full bg-blue-600 text-white py-2 rounded hover:bg-blue-500 transition"
                 onClick={() => setIsDialogOpen(false)}
               >
                 Close

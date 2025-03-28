@@ -13,7 +13,7 @@ export default function Hero() {
   const { currentUser } = useSelector((state) => state.user);
 
   return (
-    <div className="bg-gradient-to-b from-gray-50 to-blue-300">
+    <div className="bg-gradient-to-b from-gray-50 to-blue-400">
       <div className="relative isolate px-6 lg:px-8">
         <div className="mx-auto md:max-w-[90%] max-w-full py-20 sm:py-24 lg:py-28">
           <div className="flex flex-col lg:flex-row justify-between items-center w-full space-y-8 lg:space-y-0" data-aos="fade-up">
@@ -47,7 +47,7 @@ export default function Hero() {
               <img
                 src="/bg.png"
                 alt="Virtual Top Up"
-                className="transition-transform duration-300 hover:scale-105"
+                className="transition-transform shadow-md rounded-xl duration-300 hover:scale-105"
               />
             </div>
           </div>

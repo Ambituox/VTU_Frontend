@@ -60,6 +60,9 @@ const SignIn = () => {
 
       if (data.status === 'error' || !data.token) {
         dispatch(signinFailure(data.message || 'Invalid response'));
+        if(data.message === 'Please verify your email address first'){
+          setTimeout(() => navigate('/verify-email'), 1000);
+        }
         openModal();
         return;
       }

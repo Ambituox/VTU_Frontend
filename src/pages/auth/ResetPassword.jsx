@@ -15,6 +15,7 @@ export default function ResetPassword() {
 
     const navigate = useNavigate();
 
+    
     const handleSubmit = async (e) => {
         e.preventDefault();
         setDialogMessage('');
@@ -86,7 +87,7 @@ export default function ResetPassword() {
                         </div>
                         <button 
                             type="submit" 
-                            className='w-full bg-gradient-to-r from-blue-500 to-blue-700 text-white font-bold py-3 rounded-lg hover:opacity-90 transition disabled:bg-gray-400' 
+                           npm run dev className='w-full bg-gradient-to-r from-blue-500 to-blue-700 text-white font-bold py-3 rounded-lg hover:opacity-90 transition disabled:bg-gray-400' 
                             disabled={loading}
                         >
                             {loading ? 'Resetting...' : 'Reset Password'}
