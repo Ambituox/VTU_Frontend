@@ -54,17 +54,11 @@ const SignIn = () => {
             body: JSON.stringify({ email, password }),
         });
 
-        // Check if response is OK before proceeding
-        if (!response.ok) {
-            throw new Error(`HTTP error! Status: ${response.status}`);
-        }
-
         // Read response text first
-        const text = await response.text();
-        const data = text ? JSON.parse(text) : {}; // Safely parse JSON
+        const data = await response.json();
 
         // Validate expected response fields
-        if (data.status === 'error' || !data.token) {
+        if (data.status === 'error' || !data.token || !response.ok) {
             dispatch(signinFailure(data.message || 'Invalid response'));
             if (data.message === 'Please verify your email address first') {
                 setTimeout(() => navigate('/verify-email'), 1000);
