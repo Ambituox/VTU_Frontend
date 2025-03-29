@@ -51,7 +51,8 @@ const SignIn = () => {
       const response = await fetch(`https://vtu-xpwk.onrender.com/api/v1/login`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        credentials: 'include', // Needed if backend uses session/cookie authentication
+        // credentials: 'include', 
+        // Needed if backend uses session/cookie authentication
         body: JSON.stringify({ email, password }),
       });
 
