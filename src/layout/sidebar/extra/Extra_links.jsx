@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import { FaCode, FaMoneyBill, FaUser } from 'react-icons/fa';
 import { IoMdSettings } from 'react-icons/io';
 import { TbLogout } from 'react-icons/tb';
+import UserLogoutButton from '../../../components/user_dashboard_component/UserLogout';
 
 export default function Extra_links() {
   return (
@@ -23,7 +24,7 @@ export default function Extra_links() {
         <div className="pl-3 pt-2 font-">
             <Link to={'documentation'} className='hover:text-black duration-150 flex items-center gap-3'><FaCode />Developer's API</Link>
         </div>
-        <button className='pl-3 pt-2 flex items-center gap-3'><TbLogout /> Logout</button>
+        <UserLogoutButton/>
     </div>
   )
 }

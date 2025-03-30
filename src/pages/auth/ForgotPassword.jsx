@@ -32,7 +32,6 @@ export default function ForgotPassword() {
 
     const payload = { resetCode, newPass, confirmPass, email };
 
-
     try {
       setLoading(true);
 
