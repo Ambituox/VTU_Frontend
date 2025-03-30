@@ -5,8 +5,6 @@ import Header from '../../components/Header';
 import { Link, useNavigate } from 'react-router-dom';
 import Footer from '../../components/Footer';
 import { Dialog, Transition } from '@headlessui/react';
-import { useDispatch, useSelector } from 'react-redux';
-import { signinFailure, signinStart, signinSuccess } from '../../store/userReducers';
 
 const API_BASE_URL = import.meta.env.API_BASE_URL || 'https://vtu-xpwk.onrender.com';
 
@@ -19,14 +17,13 @@ const CreateAccountPage = () => {
     password: '',
     confirmPassword: ''
   });
-  // const [loading, setLoading] = useState(false);
-  // const [error, setError] = useState('');
+  
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
   const [isOpen, setIsOpen] = useState(false);
 
-  let navigate = useNavigate()
-  const dispatch = useDispatch();
-  const {loading, error} = useSelector((state) => state.user);
+  let navigate = useNavigate();
 
   useEffect(() => {
     Aos.init({ duration: 1000 }); // Initialize AOS with a default animation duration
@@ -42,28 +39,32 @@ const CreateAccountPage = () => {
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setFormData({ ...formData, [name]: value });
+    setFormData(
+      { ...formData,
+        [name]: value
+      });
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
     setSuccess('');
+    setError('');
+    setLoading(true);
 
     const { firstName, lastName, email, phone, password, confirmPassword } = formData;
 
     if (!firstName || !lastName || !email || !phone || !password || !confirmPassword) {
-      dispatch(signinFailure('Please fill in all fields'))
+      setError('Please fill in all fields');
+      setLoading(false);
       openModal();
       return;
     }
     if (password !== confirmPassword) {
-      dispatch(signinFailure('Passwords do not match'));
+      setError('Passwords do not match');
+      setLoading(false);
       openModal();
       return;
     }
-
-    dispatch(signinStart());
 
     try {
       const response = await fetch(`${API_BASE_URL}/api/v1/register`, {
@@ -73,28 +74,23 @@ const CreateAccountPage = () => {
       });
 
       const data = await response.json();
+      console.log(data);
 
-      console.log(data.error || data.message);
-      
-      if (data.error) {
-        setSuccess('');
-        dispatch(signinFailure(data.error));
-        openModal();
-        // return;
-      } else{
-        dispatch(signinSuccess(data.message));
-        setSuccess(data.message);
-        openModal();
-        setTimeout(() => navigate("/verify-email"), 1500);
+      if (!response.ok) {
+        throw new Error(data.error || 'Something went wrong');
       }
-      
+
+      setSuccess(data.message);
+      setLoading(false);
+      openModal();
+      setTimeout(() => navigate("/verify-email"), 1500);
 
     } catch (error) {
-      dispatch(signinFailure(data.error))
-      setSuccess('');
+      setError(error.message);
+      setLoading(false);
+      openModal();
     }
   };
-
 
   return (
     <>
