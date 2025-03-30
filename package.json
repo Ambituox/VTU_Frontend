@@ -1,8 +1,21 @@
 {
   "name": "vtu_app",
-  "private": true,
   "version": "0.0.0",
+  "private": true,
+  "description": "This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.",
+  "keywords": [],
+  "homepage": "https://github.com/Abdulquadri-Mahmud/VTU_Frontend#readme",
+  "bugs": {
+    "url": "https://github.com/Abdulquadri-Mahmud/VTU_Frontend/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Abdulquadri-Mahmud/VTU_Frontend.git"
+  },
+  "license": "ISC",
+  "author": "",
   "type": "module",
+  "main": "eslint.config.js",
   "scripts": {
     "dev": "vite",
     "build": "vite build",
@@ -38,18 +51,5 @@
     "postcss": "^8.4.49",
     "tailwindcss": "^3.4.14",
     "vite": "^5.4.10"
-  },
-  "description": "This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.",
-  "main": "eslint.config.js",
-  "author": "",
-  "license": "ISC",
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/Abdulquadri-Mahmud/VTU_Frontend.git"
-  },
-  "keywords": [],
-  "bugs": {
-    "url": "https://github.com/Abdulquadri-Mahmud/VTU_Frontend/issues"
-  },
-  "homepage": "https://github.com/Abdulquadri-Mahmud/VTU_Frontend#readme"
+  }
 }
