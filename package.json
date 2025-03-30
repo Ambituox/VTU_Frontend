@@ -17,7 +17,7 @@
   "type": "module",
   "main": "eslint.config.js",
   "scripts": {
-    "dev": "node --max-old-space-size=4096 vite",
+    "dev": "vite",
     "build": "vite build",
     "lint": "eslint .",
     "preview": "vite preview"
