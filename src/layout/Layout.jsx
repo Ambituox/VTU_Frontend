@@ -7,25 +7,20 @@ import Main_links from './sidebar/main/Main_links';
 import Services_links from './sidebar/services/Services_links';
 import Extra_links from './sidebar/extra/Extra_links';
 import { useSelector } from 'react-redux';
+import { GrTransaction } from 'react-icons/gr';
 
 const mainlinks = [
   {
     title: 'Dashboard',
     path: '/profile',
-    class: 'px-3 py-1 font-normal hover:text-blue-500 duration-200 rounded-md flex items-center gap-2',
+    class: 'px-3 py-1 font-normal hover:text-green-500 duration-200 rounded-md flex items-center gap-2',
     icon: <MdSpaceDashboard className="text-xl" />,
   },
   {
-    title: 'Fund Wallet',
-    path: 'fund_wallet',
-    class: 'px-3 py-1 font-normal hover:text-blue-500 duration-200 rounded-md flex items-center gap-2',
-    icon: <FaUsers className="text-xl" />,
-  },
-  {
-    title: 'Solution Center',
-    path: 'solution-center',
-    class: 'px-3 py-1 font-normal hover:text-blue-500 duration-200 rounded-md flex items-center gap-2',
-    icon: <MdOutlinePayment className="text-xl" />,
+    title: 'Transaction History',
+    path: 'transaction-history',
+    class: 'px-3 py-1 font-normal hover:text-green-500 duration-200 rounded-md flex items-center gap-2',
+    icon: <GrTransaction className="text-xl" />,
   },
 ];
 
@@ -34,7 +29,7 @@ export const SidebarLinkContext = createContext();
 const Sidebar = ({ isOpen, toggleSidebar }) => {
   return (
     <div
-      className={`h-screen overflow-y-auto pb-5 z-20 bg-gray-900 text-gray-400 fixed lg:static ${
+      className={`h-screen overflow-y-auto pb-5 z-20 bg-slate-900 text-gray-400 fixed lg:static ${
         isOpen ? 'w-64' : 'w-0'
       } transition-all duration-300`}>
       <div className="px-5 py-6 flex items-center justify-between">
@@ -48,7 +43,7 @@ const Sidebar = ({ isOpen, toggleSidebar }) => {
 
       <nav className="flex flex-col gap-1 mx-2 mt-5">
         <div>
-          <p className="text-[12px] text-blue-500 pl-3 font-medium">MAIN</p>
+          <p className="text-[12px] text-green-500 pl-3 font-medium">MAIN</p>
         </div>
         {mainlinks.length > 0 &&
           mainlinks.map((link, index) => (
@@ -67,7 +62,7 @@ const Header = ({ toggleSidebar }) => {
   const { currentUser } = useSelector((state) => state.user);
 
   return (
-    <header className="text-white z-10 top-0 sticky bg-blue-500">
+    <header className="text-white z-10 top-0 sticky bg-green-500">
       <div className="flex items-center justify-between px-6 lg:py-4 py-2">
         {/* Logo */}
         <div className="flex items-center space-x-2">
