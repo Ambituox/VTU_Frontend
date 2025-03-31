@@ -74,15 +74,21 @@ const CreateAccountPage = () => {
       });
 
       const data = await response.json();
-      console.log(data);
 
-      if (!response.ok) {
-        throw new Error(data.error || 'Something went wrong');
+      if (!response.ok || data.error) {
+        setError(data.error || 'Something went wrong');
+        
+        openModal();
+        setLoading(false)
+        return;
       }
 
       setSuccess(data.message);
+      setError(false);
       setLoading(false);
       openModal();
+      // Save email to localStorage
+      localStorage.setItem('userEmail', email);
       setTimeout(() => navigate("/verify-email"), 1500);
 
     } catch (error) {
