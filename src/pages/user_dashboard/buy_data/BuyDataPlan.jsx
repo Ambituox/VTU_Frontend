@@ -3,6 +3,7 @@ import { createContext, useEffect, useState } from 'react';
 import { FaArrowsRotate } from 'react-icons/fa6';
 import { useSelector } from 'react-redux';
 import BuyDataNow from '../../../components/BuyData/BuyDataNow';
+import { useNavigate } from 'react-router-dom';
 
 // Define the base API URL for the application
 const API_BASE_URL = import.meta.env.API_BASE_URL || 'https://vtu-xpwk.onrender.com';
@@ -39,6 +40,7 @@ const BuyDataPlan = () => {
     duration: '',
     mobileNumber: '',
     price: '',
+    sku: '',
   });
 
   // State for storing data plans
@@ -60,22 +62,47 @@ const BuyDataPlan = () => {
   const { currentUser } = useSelector((state) => state.user);
 
   // Fetch data plans from the server
+  // Fetch data plans from the server
   useEffect(() => {
     const fetchData = async () => {
       try {
         const response = await fetch(`${API_BASE_URL}/api/v1/admin/get-all-data`, {
           headers: { 'Authorization': `Bearer ${currentUser.token}` }
         });
+
         const data = await response.json();
-        if (response.ok) setPlans(data);
-        else throw new Error('Failed to load data plans');
+
+        if (response.ok) {
+          setPlans(data); // Set the fetched data plans to the state
+        } else {
+          throw new Error('Failed to load data plans');
+        }
       } catch (err) {
         setError(err.message);
         setDialogOpen(true);
       }
     };
+
     fetchData(); // Fetch data when the component is mounted
   }, [currentUser.token]); // The effect runs only once when the current user token is available
+
+  console.log(plans);
+  
+  // Update SKU whenever plans or formData.plan changes
+  useEffect(() => {
+    if (plans.length > 0 && formData.plan) {
+      const selectedPlan = plans.find((plan) => plan.plan === formData.plan);
+
+      if (selectedPlan) {
+        setFormData((prev) => {
+          const updatedForm = { ...prev, sku: selectedPlan.sku }; // Update SKU
+          // console.log("Updated FormData:", updatedForm); // Log the updated formData
+          return updatedForm;
+        });
+      }
+    }
+  }, [plans, formData.plan]); // Re-run when plans or formData.plan changes
+
 
   // Handle form data changes
   const handleChange = (e) => {
@@ -85,6 +112,8 @@ const BuyDataPlan = () => {
       ...(e.target.name === 'plan' ? { duration: '' } : {}), // Clear duration if plan is changed
     }));
   };
+
+  const navigate = useNavigate() //initialize the navigate function
 
   // Handle search for data plans
   const handleSearch = async () => {
@@ -110,17 +139,17 @@ const BuyDataPlan = () => {
       network: `${formData.network}`, // Append '_PLAN' to the network provider
       plan: formData.plan,
       duration: updatedDuration, // Use the updated duration
-      price: formData.price
+      price: formData.price,
+      sku: formData.sku
     };
-
+    
     // console.log(databaseData);
-    console.log(formData);
-
+    
     try {
       // console.log(payload); // Log the payload for debugging
-
+      
       setLoading(true); // Set loading state to true
-
+      
       // Send the request to find data plans
       const response = await fetch(`${API_BASE_URL}/api/v1/find-data`, {
         method: 'POST',
@@ -130,18 +159,20 @@ const BuyDataPlan = () => {
         },
         body: JSON.stringify(payload), // Send the payload as request body
       });
-
+      
       const data = await response.json(); // Parse the response data
-
+      
       // Handle success response
       if (data.success && data.data) {
         setLoading(false); // Set loading state to false
     
-      // Check if the response `month_validate` matches `formData.duration`
-      if (String(data.data.month_validate) === String(formData.duration)) {
-          setDatas(databaseData);
+        // Check if the response `month_validate` matches `formData.duration`
+        if (String(data.data.month_validate) === String(formData.duration)) {
+          // console.log(databaseData);
+          // setDatas(databaseData);
+          navigate("buy-now", { state: databaseData });  // Nagigate to the BUyDataNow page with the databaseData as state
           setConfirmDialog(true); // Show the confirmation dialog
-          console.log("Validated data:", datas); // Log the validated data
+          // console.log("Validated data:", data.data); // Log the validated data
         } else {
           setError("Invalid duration selected.");
           setDialogOpen(true);

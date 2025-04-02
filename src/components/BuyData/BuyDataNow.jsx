@@ -1,6 +1,5 @@
-import React, { useContext } from "react";
-import { dataContext } from "../../pages/user_dashboard/buy_data/BuyDataPlan";
-import { Link } from "react-router-dom";
+import React from "react";
+import { useLocation, Link } from "react-router-dom";
 
 // Network logos mapping
 const networkLogos = {
@@ -11,12 +10,16 @@ const networkLogos = {
 };
 
 export default function BuyDataNow() {
-  const data = useContext(dataContext);
+  const location = useLocation();
+  const data = location.state; // Retrieve data from navigation
+
+  // Log the data to ensure it's available
+  // console.log("Data in BuyDataNow:", data);
 
   if (!data) return <p className="text-center text-gray-500">Loading...</p>;
 
   return (
-    <div className="flex justify-center my-10">
+    <div className="flex justify-center my-14">
       <div className="w-96 border border-gray-200 shadow-xl rounded-xl bg-white transition transform hover:scale-105 duration-300">
         {/* Network Banner */}
         <div className="relative p-4">
@@ -40,10 +43,10 @@ export default function BuyDataNow() {
             <p><strong>Price:</strong> ₦{data.price}</p>
           </div>
 
-          {/* Buy Now Button */}
-          <button className="mt-6 w-full bg-blue-600 hover:bg-blue-700 text-white py-3 rounded-lg shadow-md transition duration-300">
-            <Link to={'make payment'}>Buy Now</Link>
-          </button>
+          {/* Buy Now Button (Navigate with Data) */}
+          <Link to="make-payment"  state={data} className="mt-6 block text-center bg-blue-600 hover:bg-blue-700 text-white py-3 rounded-lg shadow-md transition duration-300">
+            Buy Now
+          </Link>
         </div>
       </div>
     </div>

@@ -27,6 +27,8 @@ import Private_Route from '../components/private/PrivateRoute';
 import ForgotPasswordRequest from '../pages/auth/ForgotPasswordRequest';
 import ForgotPassword from '../pages/auth/ForgotPassword';
 import UpdateData from '../pages/admin/UpdatePricing';
+import MakePayment from '../components/BuyData/MakePayment';
+import BuyDataNow from '../components/BuyData/BuyDataNow';
 
 export default function AppRoutes() {
   return (
@@ -66,7 +68,8 @@ export default function AppRoutes() {
             <Route path='user-detail' element={<UserProfile/>}/>
             <Route path='documentation' element={<ApiComponent/>}/>
 
-            <Route path='data-top-up/make-payment' element={<ApiComponent/>}/>
+            <Route path='data-top-up/buy-now/make-payment' element={<MakePayment/>}/>
+            <Route path='data-top-up/buy-now' element={<BuyDataNow/>}/>
 
             <Route path='pricing/update-data/:id' element={<UpdateData/>}/>
 
