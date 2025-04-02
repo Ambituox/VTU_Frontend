@@ -1,212 +1,234 @@
-import { useState } from 'react';
+import { duration } from '@mui/material';
+import { createContext, useEffect, useState } from 'react';
+import { FaArrowsRotate } from 'react-icons/fa6';
+import { useSelector } from 'react-redux';
+import BuyDataNow from '../../../components/BuyData/BuyDataNow';
 
-const API_BASE_URL = import.meta.env.API_BASE_URL || 'https://vtu-xpwk.onrender.com'
+// Define the base API URL for the application
+const API_BASE_URL = import.meta.env.API_BASE_URL || 'https://vtu-xpwk.onrender.com';
+
+// Dialog component to display error messages
+const Dialog = ({ message, onClose }) => (
+  <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
+    <div className="bg-white p-6 rounded-lg shadow-lg max-w-sm w-full">
+      <p className="text-gray-800">{message}</p>
+      <button className="mt-4 w-full bg-red-500 text-white py-2 rounded" onClick={onClose}>Close</button>
+    </div>
+  </div>
+);
+
+// ConfirmDialog component that asks for user confirmation
+const ConfirmDialog = ({ onProceed, onClose }) => (
+  <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
+    <div className="bg-white p-6 rounded-lg shadow-lg max-w-sm w-full">
+      <p className="text-gray-800">Data plan available. Proceed to payment</p>
+      <button className="mt-4 w-full bg-green-500 text-white py-2 rounded" onClick={onProceed}>Proceed</button>
+      <button className="mt-2 w-full bg-gray-300 text-gray-800 py-2 rounded" onClick={onClose}>Cancel</button>
+    </div>
+  </div>
+);
+
+export const dataContext = createContext();
+
+// Main BuyDataPlan component
 const BuyDataPlan = () => {
+  // State to store form data (network, plan, duration, etc.)
   const [formData, setFormData] = useState({
     network: 'MTN',
     plan: '',
     duration: '',
     mobileNumber: '',
-    amount: '',
+    price: '',
   });
 
-  // const [formData, setFormData] = useState({
-  //   network: 'MTN',
-  //   plan: '',
-  //   duration: '',
-  //   mobileNumber: '',
-  //   amount: '',
-  // });
-
-  const [searchResults, setSearchResults] = useState([]);
+  // State for storing data plans
+  const [plans, setPlans] = useState([]);
+  // State for loading state during API calls
   const [loading, setLoading] = useState(false);
+  // State for storing error messages
   const [error, setError] = useState('');
+  // State for controlling dialog visibility
   const [dialogOpen, setDialogOpen] = useState(false);
+  // State for controlling confirm dialog visibility
   const [confirmDialog, setConfirmDialog] = useState(false);
+  // State for controlling whether to show the purchase form
+  const [showPurchaseForm, setShowPurchaseForm] = useState(false);
 
-  // Available plans and durations
-  const planOptions = {
-    '500MB': ['1 days', '2 days'],
-    '1.0GB': ['1 days', '2 days',],
-    '1.5GB': ['2 days', '7 days'],
-    '2.0GB': ['7 days', '14 days',],
-    '5.0GB': ['14 days', '30 days'],
-    '10.0GB': ['7 days','14 days','30 days'],
+  const [datas, setDatas] = useState([]);
+
+  // Get current user from Redux store
+  const { currentUser } = useSelector((state) => state.user);
+
+  // Fetch data plans from the server
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await fetch(`${API_BASE_URL}/api/v1/admin/get-all-data`, {
+          headers: { 'Authorization': `Bearer ${currentUser.token}` }
+        });
+        const data = await response.json();
+        if (response.ok) setPlans(data);
+        else throw new Error('Failed to load data plans');
+      } catch (err) {
+        setError(err.message);
+        setDialogOpen(true);
+      }
+    };
+    fetchData(); // Fetch data when the component is mounted
+  }, [currentUser.token]); // The effect runs only once when the current user token is available
+
+  // Handle form data changes
+  const handleChange = (e) => {
+    setFormData((prev) => ({
+      ...prev,
+      [e.target.name]: e.target.value,
+      ...(e.target.name === 'plan' ? { duration: '' } : {}), // Clear duration if plan is changed
+    }));
   };
 
+  // Handle search for data plans
   const handleSearch = async () => {
     if (!formData.plan || !formData.duration) {
-      setError('Please select a plan and duration before searching.');
+      setError('Please select a plan and duration.');
       setDialogOpen(true);
       return;
     }
 
-    setLoading(true);
+    // Check and update the duration if it contains 'day' but not 'days'
+    let updatedDuration = formData.duration.includes('day') && !formData.duration.includes('days')
+        ? formData.duration.replace('day', 'days') // Replace 'day' with 'days'
+        : formData.duration;
+
+    // Construct the payload for the API call
+    const payload = {
+      network: `${formData.network}_PLAN`, // Append '_PLAN' to the network provider
+      plan: formData.plan,
+      duration: updatedDuration // Use the updated duration
+    };
+
+    const databaseData = {
+      network: `${formData.network}`, // Append '_PLAN' to the network provider
+      plan: formData.plan,
+      duration: updatedDuration, // Use the updated duration
+      price: formData.price
+    };
+
+    // console.log(databaseData);
+    console.log(formData);
+
     try {
+      // console.log(payload); // Log the payload for debugging
+
+      setLoading(true); // Set loading state to true
+
+      // Send the request to find data plans
       const response = await fetch(`${API_BASE_URL}/api/v1/find-data`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          network: `${formData.network}_PLAN`,
-          plan: formData.plan,
-          duration: formData.duration,
-        }),
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${currentUser.token}`, // Pass the current user's token in headers
+        },
+        body: JSON.stringify(payload), // Send the payload as request body
       });
 
-      const data = await response.json();
-      console.log(data);
-      
+      const data = await response.json(); // Parse the response data
 
-      if (data.plans && data.plans.length > 0) {
-        setSearchResults(data.plans);
-        setConfirmDialog(true); // Open confirmation modal after search
-      } else {
-        setError('No data plans found for your selection.');
-        setDialogOpen(true);
+      // Handle success response
+      if (data.success && data.data) {
+        setLoading(false); // Set loading state to false
+    
+      // Check if the response `month_validate` matches `formData.duration`
+      if (String(data.data.month_validate) === String(formData.duration)) {
+          setDatas(databaseData);
+          setConfirmDialog(true); // Show the confirmation dialog
+          console.log("Validated data:", datas); // Log the validated data
+        } else {
+          setError("Invalid duration selected.");
+          setDialogOpen(true);
       }
-    } catch (error) {
-      setError('Failed to fetch data plans.');
-      setDialogOpen(true);
-    }
-    setLoading(false);
-  };
+    
+        return;
+      }
 
-  const handlePurchase = async (e) => {
-    e.preventDefault();
-    try {
-      const response = await fetch('http://localhost:5000/api/subscribe', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(formData),
-      });
+      // Handle failure response
+      setError(data.error); // Set the error message
+      setDialogOpen(true); // Open the dialog
+      setLoading(false); // Set loading state to false
 
-      const data = await response.json();
-      setError(data.message || 'Data plan purchased successfully!');
-      setDialogOpen(true);
-    } catch (error) {
-      setError('Failed to purchase data plan.');
-      setDialogOpen(true);
+    } catch (err) {
+      setError(err.message); // Set error message
+      setDialogOpen(true); // Open the error dialog
+      setLoading(false); // Set loading state to false
     }
   };
 
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setFormData((prev) => ({
-      ...prev,
-      [name]: value,
-      ...(name === 'plan' ? { duration: '' } : {}), // Reset duration when changing plan
-    }));
-  };
-
+  // Find the selected plan's price
+  const selectedPlan = plans.find((plan) => plan.plan === formData.plan);
+  const price = selectedPlan ? selectedPlan.price : ''; // Get the price of the selected plan
+  
+  // console.log(datas);
+  
   return (
-    <div className="bg-green-100 lg:py-20 py-6 lg:px6 p-3 rounded-lg">
-      <div className="max-w-4xl mx-auto bg-green-200 p-3 rounded-lg shadow-md">
-        <h2 className="text-2xl text-slate-800 font-semibold mb-4 text-center">Buy Data Plan</h2>
+    <div className="bg-white py-6 px-3 rounded-lg">
+      <div className="max-w-4xl mx-auto p-3 rounded-lg shadow-md">
+        <h2 className="text-2xl font-semibold text-center">Buy Data Plan</h2>
+        {!showPurchaseForm ? ( // If purchase form is not shown, display the search form
+          <>
+            <div className="p-4 bg-white rounded-lg">
+              <label className="block my-5">
+                <span className="text-gray-700">Network</span>
+                <select name="network" value={formData.network} onChange={handleChange} className="mt-1 block w-full p-3 border rounded">
+                  {['MTN', 'AIRTEL', 'GLO', '9MOBILE'].map((network, index) => ( // Map networks to options
+                    <option key={index} value={network}>{network}</option>
+                  ))}
+                </select>
+              </label>
 
-        {/* Search Section */}
-        <div className="mb-4 p-4 bg-white rounded-lg shadow">
-          <h3 className="text-lg font-semibold py-2 px-3 max-w-56 rounded-md bg-green-50 text-slate-800">Search for a Data Plan</h3>
+              <label className="block my-5">
+                <span className="text-gray-500">Plan</span>
+                <select name="plan" value={formData.plan} onChange={handleChange} className="mt-1 block w-full p-3 border rounded">
+                  <option value="" className='text-gray-400'>Select Plan</option>
+                  {plans.map((p, index) => (
+                    p.networkProvider === formData.network && <option key={index} value={p.plan}>{p.plan}</option>
+                  ))}
+                </select>
+              </label>
 
-          <label className="block my-5">
-            <span className="text-gray-700">Network</span>
-            <select name="network" value={formData.network} onChange={handleChange} className="mt-1 block w-full p-3 border border-gray-300 rounded">
-              {['MTN', 'AIRTEL', 'GLO', '9MOBILE'].map((net) => (
-                <option key={net} value={net}>{net}</option>
-              ))}
-            </select>
-          </label>
+              <label className="block my-5">
+                <span className="text-gray-500">Duration</span>
+                <select name="duration" disabled={!formData.plan} value={formData.duration} onChange={handleChange} className="mt-1 block w-full p-3 border border-gray-300 rounded">
+                  <option value="" className='text-gray-400'>Select Duration</option>
+                  {plans
+                    .filter((network) => network.networkProvider === formData.network)
+                    .map((network, index) => (
+                      <option key={index} value={network.duration}>
+                        {network.duration}
+                      </option>
+                    ))}
+                </select>
+              </label>
 
-          <label className="block mb-2">
-            <span className="text-gray-700">Plan</span>
-            <select name="plan" value={formData.plan} onChange={handleChange} className="mt-1 block w-full p-3 border border-gray-300 rounded">
-              <option value="">Select Plan</option>
-              {Object.keys(planOptions).map((plan) => (
-                <option key={plan} value={plan}>{plan}</option>
-              ))}
-            </select>
-          </label>
+              {/* Price field */}
+              <label className='block my-5'>
+                <span className="text-gray-700">Price</span><br />
+                <input type="text" name='price' onChange={handleChange}  value={price ? formData.price = price : 'No Price'} className='text-gray-500  font-semibold mt-1 block w-full p-3 border border-gray-300 rounded'/>
+              </label>
 
-          <label className="block mb-2">
-            <span className="text-gray-700">Duration</span>
-            <select name="duration" value={formData.duration} onChange={handleChange} className="mt-1 block w-full p-3 border border-gray-300 rounded" disabled={!formData.plan}>
-              <option value="">Select Duration</option>
-              {formData.plan && planOptions[formData.plan].map((duration) => (
-                <option key={duration} value={duration}>{duration}</option>
-              ))}
-            </select>
-          </label>
-
-          <button type="button" onClick={handleSearch} className="w-full bg-blue-600 text-white py-3 mt-5 rounded font-semibold hover:bg-blue-700">
-            {loading ? 'Searching...' : 'Search Data Plan'}
-          </button>
-        </div>
-
-        {/* Purchase Section (Shown only after confirmation) */}
-        {searchResults.length > 0 && (
-          <form onSubmit={handlePurchase} className="space-y-4">
-            <label className="block">
-              <span className="text-gray-700">Mobile number*</span>
-              <input
-                type="tel"
-                name="mobileNumber"
-                value={formData.mobileNumber}
-                onChange={handleChange}
-                className="mt-1 block w-full p-3 border border-gray-300 rounded"
-                required
-              />
-            </label>
-
-            <label className="block">
-              <span className="text-gray-700">Amount</span>
-              <input
-                type="number"
-                name="amount"
-                value={formData.amount}
-                onChange={handleChange}
-                className="mt-1 block w-full p-3 border border-gray-300 rounded"
-              />
-            </label>
-
-            <button
-              type="submit"
-              className="w-full bg-green-600 text-white py-2 rounded hover:bg-green-700"
-            >
-              Buy Now
-            </button>
-          </form>
-        )}
-
-        {/* Error Dialog */}
-        {dialogOpen && (
-          <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
-            <div className="bg-white p-4 rounded-lg shadow-lg max-w-sm w-full">
-              <h3 className="text-lg font-semibold text-red-600">Error</h3>
-              <p className="mt-2 text-gray-800">{error}</p>
-              <button
-                className="mt-4 w-full bg-red-500 text-white py-2 rounded hover:bg-red-600"
-                onClick={() => setDialogOpen(false)}
-              >
-                Close
+              <button onClick={handleSearch} className='bg-blue-500 w-full font-semibold p-3 text-white rounded-md'>
+                {loading ? 
+                (
+                  <span className="flex justify-center items-center gap-2"><FaArrowsRotate className='animate-spin' />Searching Data...</span>
+                ) : 'Search Data'}
               </button>
             </div>
-          </div>
+          </>
+        ) : (
+          <dataContext.Provider value={datas}>
+            <BuyDataNow datas={datas}/>
+          </dataContext.Provider>
         )}
-
-        {/* Confirmation Dialog */}
-        {confirmDialog && (
-          <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
-            <div className="bg-white p-4 rounded-lg shadow-lg max-w-sm w-full">
-              <h3 className="text-lg font-semibold text-green-600">Proceed to Purchase</h3>
-              <p className="mt-2 text-gray-800">Data found! Do you want to proceed?</p>
-              <button
-                className="mt-4 w-full bg-green-500 text-white py-2 rounded hover:bg-green-600"
-                onClick={() => setConfirmDialog(false)}
-              >
-                Proceed
-              </button>
-            </div>
-          </div>
-        )}
+        {dialogOpen && <Dialog message={error} onClose={() => setDialogOpen(false)} />}
+        {confirmDialog && <ConfirmDialog onProceed={() => { setShowPurchaseForm(true); setConfirmDialog(false); }} onClose={() => setConfirmDialog(false)} />}
       </div>
     </div>
   );

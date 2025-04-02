@@ -13,13 +13,13 @@ const mainlinks = [
   {
     title: 'Dashboard',
     path: '/profile',
-    class: 'px-3 py-1 font-normal hover:text-green-500 duration-200 rounded-md flex items-center gap-2',
+    class: 'px-3 py-1 font-normal hover:text-blue-500 duration-200 rounded-md flex items-center gap-2',
     icon: <MdSpaceDashboard className="text-xl" />,
   },
   {
     title: 'Transaction History',
     path: 'transaction-history',
-    class: 'px-3 py-1 font-normal hover:text-green-500 duration-200 rounded-md flex items-center gap-2',
+    class: 'px-3 py-1 font-normal hover:text-blue-500 duration-200 rounded-md flex items-center gap-2',
     icon: <GrTransaction className="text-xl" />,
   },
 ];
@@ -43,7 +43,7 @@ const Sidebar = ({ isOpen, toggleSidebar }) => {
 
       <nav className="flex flex-col gap-1 mx-2 mt-5">
         <div>
-          <p className="text-[12px] text-green-500 pl-3 font-medium">MAIN</p>
+          <p className="text-[12px] text-blue-500 pl-3 font-medium">MAIN</p>
         </div>
         {mainlinks.length > 0 &&
           mainlinks.map((link, index) => (
@@ -62,7 +62,7 @@ const Header = ({ toggleSidebar }) => {
   const { currentUser } = useSelector((state) => state.user);
 
   return (
-    <header className="text-white z-10 top-0 sticky bg-green-500">
+    <header className="text-white z-10 top-0 sticky bg-blue-500">
       <div className="flex items-center justify-between px-6 lg:py-4 py-2">
         {/* Logo */}
         <div className="flex items-center space-x-2">

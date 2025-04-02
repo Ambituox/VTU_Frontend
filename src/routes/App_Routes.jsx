@@ -26,6 +26,7 @@ import VerifyEmailWithOTP from '../pages/auth/VerifyEmailWithOTP';
 import Private_Route from '../components/private/PrivateRoute';
 import ForgotPasswordRequest from '../pages/auth/ForgotPasswordRequest';
 import ForgotPassword from '../pages/auth/ForgotPassword';
+import UpdateData from '../pages/admin/UpdatePricing';
 
 export default function AppRoutes() {
   return (
@@ -64,6 +65,12 @@ export default function AppRoutes() {
             <Route path='pricing' element={<PricingComponent/>}/>
             <Route path='user-detail' element={<UserProfile/>}/>
             <Route path='documentation' element={<ApiComponent/>}/>
+
+            <Route path='data-top-up/make-payment' element={<ApiComponent/>}/>
+
+            <Route path='pricing/update-data/:id' element={<UpdateData/>}/>
+
+
             {/* <Route path='data-transaction-history' element={<DataTransactionHistory/>}/> */}
             {/* <Route path='utility-transaction-history' element={<UtilityTransactionHistory/>}/> */}
             {/* <Route path='airtime-transaction-history' element={<AirtimeTransactionHistory/>}/> */}
@@ -71,6 +78,10 @@ export default function AppRoutes() {
             {/* <Route path='user-profile' element={<UserProfile/>}/> */}
           </Route>
         </Route>
+
+        {/* <Route element={<Private_Route />}>
+          <Route path="/profile" element={<Layout />}>
+        </Route> */}
       </Routes>
     </Router>
   );
