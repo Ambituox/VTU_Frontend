@@ -1,5 +1,5 @@
 import React from "react";
-import { useLocation, Link } from "react-router-dom";
+import { useLocation, Link, useNavigate } from "react-router-dom";
 
 // Network logos mapping
 const networkLogos = {
@@ -13,14 +13,21 @@ export default function BuyDataNow() {
   const location = useLocation();
   const data = location.state; // Retrieve data from navigation
 
+  let navigate = useNavigate(); // Initialize useNavigate hook
   // Log the data to ensure it's available
   // console.log("Data in BuyDataNow:", data);
 
   if (!data) return <p className="text-center text-gray-500">Loading...</p>;
 
+  const handleBack = () => {
+    navigate(-1) // Go back to the previous page
+  }
   return (
     <div className="flex justify-center my-14">
       <div className="w-96 border border-gray-200 shadow-xl rounded-xl bg-white transition transform hover:scale-105 duration-300">
+        <div className="absolute top-2 left-2 z-10">
+          <button className="bg-yellow-400 py-2 px-4 rounded-lg font-semibold text-white" onClick={handleBack}>Back</button>
+        </div>
         {/* Network Banner */}
         <div className="relative p-4">
           <img

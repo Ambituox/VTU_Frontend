@@ -86,7 +86,7 @@ const BuyDataPlan = () => {
     fetchData(); // Fetch data when the component is mounted
   }, [currentUser.token]); // The effect runs only once when the current user token is available
 
-  console.log(plans);
+  // console.log(plans);
   
   // Update SKU whenever plans or formData.plan changes
   useEffect(() => {
@@ -198,10 +198,16 @@ const BuyDataPlan = () => {
   const price = selectedPlan ? selectedPlan.price : ''; // Get the price of the selected plan
   
   // console.log(datas);
-  
+  const handleBack = () => {
+    navigate(-1) // Go back to the previous page
+  }
+
   return (
     <div className="bg-white py-6 px-3 rounded-lg">
-      <div className="max-w-4xl mx-auto p-3 rounded-lg shadow-md">
+      <div className="relaive max-w-4xl mx-auto p-3 rounded-lg shadow-md">
+        <div className="absolute top-2 left-2">
+          <button className="bg-green-500 py-2 px-4 rounded-lg font-semibold text-white" onClick={handleBack}>Back</button>
+        </div>
         <h2 className="text-2xl font-semibold text-center">Buy Data Plan</h2>
         {!showPurchaseForm ? ( // If purchase form is not shown, display the search form
           <>

@@ -29,6 +29,8 @@ import ForgotPassword from '../pages/auth/ForgotPassword';
 import UpdateData from '../pages/admin/UpdatePricing';
 import MakePayment from '../components/BuyData/MakePayment';
 import BuyDataNow from '../components/BuyData/BuyDataNow';
+import VerifyPayment from '../pages/user_dashboard/buy_airtime/VerifyPayment';
+import CreateData from '../pages/user_dashboard/buy_data/CreateData';
 
 export default function AppRoutes() {
   return (
@@ -68,9 +70,14 @@ export default function AppRoutes() {
             <Route path='user-detail' element={<UserProfile/>}/>
             <Route path='documentation' element={<ApiComponent/>}/>
 
+            <Route path='funding-transaction-history' element={<Fund_wallet/>}/>
+            
+            <Route path='data-transaction-history' element={<DataPlanForm/>}/>  
             <Route path='data-top-up/buy-now/make-payment' element={<MakePayment/>}/>
+            <Route path='data-top-up/buy-now/make-payment/verify-payment' element={<VerifyPayment/>}/>
             <Route path='data-top-up/buy-now' element={<BuyDataNow/>}/>
 
+            <Route path='create-data' element={<CreateData/>}/>
             <Route path='pricing/update-data/:id' element={<UpdateData/>}/>
 
 

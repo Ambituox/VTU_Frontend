@@ -11,8 +11,8 @@ export default function MakePayment() {
 
   // Initialize form data state
   const [formData, setFormData] = useState({
-    sku: paymentData?.sku || "SKU_101",
-    amount: paymentData?.price || 500.00,
+    sku: paymentData?.sku,
+    amount: paymentData?.price,
     paymentDescription: "",
   });
 
@@ -51,25 +51,41 @@ export default function MakePayment() {
 
       const result = await response.json();
 
-      if (!response.ok) throw new Error(result.error || "Payment failed");
+      if (!response.ok || result.error) {
+        setError(result.error || "Payment failed");
+        setIsDialogOpen(true); // Show error dialog
+        // console.log(result);
+        setLoading(false);
+        return;
+      }
 
       setSuccess(true);
-      setTimeout(() => navigate("/dashboard"), 2000); // Redirect after 2 sec
+      console.log(result);
+      setLoading(false);
+      
+      setTimeout(() => navigate("verify-payment"), 2000); // Redirect after 2 sec
     } catch (err) {
       setError(err.message);
       setIsDialogOpen(true); // Show error dialog
+      setLoading(false);
     }
-    setLoading(false);
   };
 
   // Redirect if no payment data
   if (!paymentData) {
-    navigate("/buy-data");
+    navigate("verify-payment");
     return null;
   }
 
+  const handleBack = () => {
+    navigate(-1) // Go back to the previous page
+  }
+
   return (
-    <div className="max-w-md mx-auto my-20 p-6 bg-white shadow-lg rounded-lg">
+    <div className="relative max-w-md mx-auto my-20 p-6 bg-white shadow-lg rounded-lg">
+      <div className="absolute top-2 left-2">
+        <button className="bg-blue-500 py-2 px-4 rounded-lg font-semibold text-white" onClick={handleBack}>Back</button>
+      </div>
       <h2 className="text-2xl font-bold text-center">Make Payment</h2>
 
       <div className="mt-4 p-4 border rounded space-y-3">
