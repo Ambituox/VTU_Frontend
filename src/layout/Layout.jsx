@@ -17,6 +17,12 @@ const mainlinks = [
     icon: <MdSpaceDashboard className="text-xl" />,
   },
   {
+    title: 'Fund Wallet',
+    path: 'fund_wallet',
+    class: 'px-3 py-1 font-normal hover:text-blue-500 duration-200 rounded-md flex items-center gap-2',
+    icon: <GrTransaction className="text-xl" />,
+  },
+  {
     title: 'Transaction History',
     path: 'transaction-history',
     class: 'px-3 py-1 font-normal hover:text-blue-500 duration-200 rounded-md flex items-center gap-2',
