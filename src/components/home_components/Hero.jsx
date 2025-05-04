@@ -47,7 +47,7 @@ export default function Hero() {
               <img
                 src="/bg.png"
                 alt="Virtual Top Up"
-                className="transition-transform shadow-md rounded-xl duration-300 hover:scale-105"
+                className="transition-transform rounded-xl duration-300 hover:scale-105"
               />
             </div>
           </div>

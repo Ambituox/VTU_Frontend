@@ -35,8 +35,19 @@ export default function TabsComponent() {
       .catch((error) => console.error("Error fetching data plans:", error));
   }, []);
 
+  const [isAdmin, setIsAdmin] = useState(false);
+
+  useEffect(() => {
+    // Ensure currentUser and currentUser.data are defined
+    if (currentUser && currentUser.data && currentUser.data.role) {
+      setIsAdmin(true);
+    } else {
+      console.log("No current user or user data available.");
+    }
+  }, [currentUser]);
+
   return (
-    <div className="w-full max-w-3xl mx-auto bg-white px-2 p-4 rounded-lg my-10">
+    <div className="w-full max-w-3xl mx-auto bg-white px-2 md:p-4 rounded-lg my-10">
       <Tab.Group selectedIndex={selectedIndex} onChange={setSelectedIndex}>
         <Tab.List className="relative flex space-x-1 rounded-xl bg-blue-300 p-2">
           {Object.keys(dataPlans).map((network) => (
@@ -57,7 +68,7 @@ export default function TabsComponent() {
         </Tab.List>
         <Tab.Panels className="mt-4 max-w-full">
           {Object.keys(dataPlans).map((network, idx) => (
-            <Tab.Panel key={idx} className="rounded-xl grid lg:grid-cols-4 grid-cols-3 gap-4 p-3 shadow-md">
+            <Tab.Panel key={idx} className="rounded-xl grid lg:grid-cols-4 grid-cols-3 gap-4 md:p-3 shadow-md">
               {dataPlans[network].length > 0 ? (
                 dataPlans[network].map((plan) => (
                   <div key={plan._id} className={`${
@@ -69,7 +80,11 @@ export default function TabsComponent() {
                       ? "bg-gray-900"
                       : "bg-gray-900"
                   } relative flex justify-center items-center flex-col p-4 border rounded-lg shadow-sm`}>
-                    <Link to={`update-data/${plan._id}`} className="absolute bottom-2 right-2 text-slate-300"><BiEditAlt /></Link>
+                    {
+                      isAdmin && (
+                        <Link to={`admin/update-data/${plan._id}`} className="absolute bottom-2 right-2 text-slate-300"><BiEditAlt /></Link>
+                      )
+                    }
                     <p className="mt-2 text-sm text-gray-400 text-center">{plan.plan} Plan Size</p>
                     <p className="mt-2 flex items-center text-blue-500 font-semibold text-lg"><TbCurrencyNaira />{plan.price}</p>
                     <p className="mt-2 text-sm text-gray-400">{plan.duration}</p>

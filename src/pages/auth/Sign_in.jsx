@@ -71,7 +71,7 @@ const SignIn = () => {
 
       dispatch(signinSuccess(data));
       openModal();
-      navigate("/");
+      navigate("/profile");
 
     } catch (error) {
         console.error("Error in sign-in:", error.message);

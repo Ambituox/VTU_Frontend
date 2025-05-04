@@ -130,9 +130,9 @@ const UserProfile = () => {
             {isEditing ? (
               <>
                 <button
-                  type="button"
-                  onClick={() => setIsEditing(false)}
-                  className="py-2 px-6 bg-gray-300 text-gray-700 rounded-lg shadow-md hover:bg-gray-400 transition"
+                 type="button"
+                 onClick={() => setIsEditing(false)}
+                 className="py-2 px-6 bg-gray-300 text-gray-700 rounded-lg shadow-md hover:bg-gray-400 transition"
                 >
                   Cancel
                 </button>

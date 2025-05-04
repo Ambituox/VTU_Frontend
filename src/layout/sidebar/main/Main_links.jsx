@@ -11,10 +11,10 @@ const Fundwith = () => {
     <AccordionGroup disableDivider sx={{ maxWidth: 400 }}>
       <Accordion>
           <AccordionSummary color='white'>
-              <p className="text-gray-400 font-normal hover:text-green-500 hover:translate-x-2 duration-150 flex items-center gap-3"><GiNetworkBars /> Buy Data</p>
+              <p className="text-slate-300 font-normal hover:text-green-500 hover:translate-x-2 duration-150 flex items-center gap-3"><GiNetworkBars /> Buy Data</p>
           </AccordionSummary>
           <AccordionDetails>
-              <ul className="text-gray-400 flex flex-col gap-1 list-disc pl-10">
+              <ul className="text-slate-300 flex flex-col gap-1 list-disc pl-10">
                   <li className='hover:text-green-500 hover:translate-x-2 duration-150'>
                     <Link to={'data-top-up'} className=''>Fund with payment gateway (ATM)</Link>
                   </li>

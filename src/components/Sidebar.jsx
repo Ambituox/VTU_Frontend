@@ -47,7 +47,7 @@ const Sidebar = () => {
             </Link>
           ))}
 
-{
+          {
             !currentUser ? (
               <div className="hidden lg:flex">
                 <Link to="/login" className="block hover:bg-gray-200 px-4 py-3 hover:text-blue-500 text-lg font-medium rounded-md duration-150 ease-in-out">

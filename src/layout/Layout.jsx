@@ -8,6 +8,7 @@ import Services_links from './sidebar/services/Services_links';
 import Extra_links from './sidebar/extra/Extra_links';
 import { useSelector } from 'react-redux';
 import { GrTransaction } from 'react-icons/gr';
+import AdminNav from '../pages/admin/AdminNav';
 
 const mainlinks = [
   {
@@ -33,6 +34,18 @@ const mainlinks = [
 export const SidebarLinkContext = createContext();
 
 const Sidebar = ({ isOpen, toggleSidebar }) => {
+  const { currentUser } = useSelector((state) => state.user);
+  const [isAdmin, setIsAdmin] = useState(false);
+
+  useEffect(() => {
+    // Ensure currentUser and currentUser.data are defined
+    if (currentUser && currentUser.data && currentUser.data.role) {
+      setIsAdmin(true);
+    } else {
+      console.log("No current user or user data available.");
+    }
+  }, [currentUser]);
+
   return (
     <div
       className={`h-screen overflow-y-auto pb-5 z-20 bg-slate-900 text-gray-400 fixed lg:static ${
@@ -48,6 +61,14 @@ const Sidebar = ({ isOpen, toggleSidebar }) => {
       </div>
 
       <nav className="flex flex-col gap-1 mx-2 mt-5">
+        {
+          isAdmin && (
+            <div className="bg-gray-900 pt-2 pb-4">
+              <p className="text-[12px] text-gray-500 pl-3 font-semibold uppercase">Admin</p>
+              <AdminNav/>
+            </div>
+          )
+        }
         <div>
           <p className="text-[12px] text-blue-500 pl-3 font-medium">MAIN</p>
         </div>
@@ -92,6 +113,9 @@ const Header = ({ toggleSidebar }) => {
   );
 };
 
+// Admin Layout Component
+
+
 export default function Layout() {
   const [isSidebarOpen, setSidebarOpen] = useState(false);
 
@@ -118,17 +142,17 @@ export default function Layout() {
       <div className="flex flex-1">
         <Sidebar isOpen={isSidebarOpen} toggleSidebar={toggleSidebar} />
         <div className="overflow-x-hidden h-[100vh] flex-1 overflow-y-auto bg-gray-50 text-black">
-        <Header toggleSidebar={toggleSidebar} />
-          <div className="p-2">
-            <Outlet />
-          </div>
-          <div className="w-full bg-white p-3 flex justify-between items-center lg:flex-row flex-col">
-            <p className="text-gray-400 text-sm">Copyright &copy; 2023 - 2024 VPC</p>
-            <p className="text-gray-400 text-sm">Made with Love from Nigeria</p>
-          </div>
-          <div className="text-white flex justify-center items-center absolute bottom-8 right-5 h-[40px] w-[40px] bg-green-500 animate-bounce rounded-full">
-            <FaWhatsapp />
-          </div>
+          <Header toggleSidebar={toggleSidebar} />
+            <div className="p-2">
+              <Outlet />
+            </div>
+            <div className="w-full bg-white p-3 flex justify-between items-center lg:flex-row flex-col">
+              <p className="text-gray-400 text-sm">Copyright &copy; 2023 - 2024 VPC</p>
+              <p className="text-gray-400 text-sm">Made with Love from Nigeria</p>
+            </div>
+            <div className="text-white flex justify-center items-center absolute bottom-8 right-5 h-[40px] w-[40px] bg-green-500 animate-bounce rounded-full">
+              <FaWhatsapp />
+            </div>
         </div>
       </div>
     </div>

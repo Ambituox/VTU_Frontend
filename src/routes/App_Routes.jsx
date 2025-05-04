@@ -26,11 +26,12 @@ import VerifyEmailWithOTP from '../pages/auth/VerifyEmailWithOTP';
 import Private_Route from '../components/private/PrivateRoute';
 import ForgotPasswordRequest from '../pages/auth/ForgotPasswordRequest';
 import ForgotPassword from '../pages/auth/ForgotPassword';
-import UpdateData from '../pages/admin/UpdatePricing';
+import UpdateData from '../pages/admin/UpdateData';
 import MakePayment from '../components/BuyData/MakePayment';
 import BuyDataNow from '../components/BuyData/BuyDataNow';
 import VerifyPayment from '../pages/user_dashboard/buy_airtime/VerifyPayment';
 import CreateData from '../pages/user_dashboard/buy_data/CreateData';
+import AdminLogin from '../pages/admin/auth/Login';
 
 export default function AppRoutes() {
   return (
@@ -51,6 +52,14 @@ export default function AppRoutes() {
         <Route path="/reset-password" element={<ResetPassword />} />
         <Route path="/verify-account" element={<VerifyAccount />} />
         <Route path="/verify-email" element={<VerifyEmailWithOTP />} />
+
+        {/* Admin Routes */}
+        <Route>
+          <Route path="/" element={<Layout />}>
+            <Route path='admin/create-data' element={<CreateData/>}/>
+            <Route path='admin/update-data/:id' element={<UpdateData/>}/>
+          </Route>
+        </Route>
 
         {/* Protected/User Dashboard Routes */}
 
@@ -77,8 +86,6 @@ export default function AppRoutes() {
             <Route path='data-top-up/buy-now/make-payment/verify-payment' element={<VerifyPayment/>}/>
             <Route path='data-top-up/buy-now' element={<BuyDataNow/>}/>
 
-            <Route path='create-data' element={<CreateData/>}/>
-            <Route path='pricing/update-data/:id' element={<UpdateData/>}/>
 
 
             {/* <Route path='data-transaction-history' element={<DataTransactionHistory/>}/> */}
@@ -89,9 +96,6 @@ export default function AppRoutes() {
           </Route>
         </Route>
 
-        {/* <Route element={<Private_Route />}>
-          <Route path="/profile" element={<Layout />}>
-        </Route> */}
       </Routes>
     </Router>
   );

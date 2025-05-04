@@ -17,7 +17,7 @@ const DashboardHeader = () => {
 
   return (
     <div className="bg-white lg:py-18 py-6 text-slate-700 md:px-6 px-3 rounded-lg shadow-md transition-all duration-500">
-      <h1 className="text-2xl font-bold">Welcome to Ambitioux, <span className="capitalize">{firstName}</span></h1>
+      <h1 className="text-2xl font-bold">Welcome to Ambitioux, <span className="capitalize text-blue-500">{firstName}</span></h1>
       <p className="mt-2 text-sm">
         Welcome to Ambitioux VTU, your one-stop platform for seamless and affordable data, airtime, and bill payments. 
         Enjoy exclusive benefits such as discounted data prices, cashback rewards, and commissions on every successful referral. 
@@ -60,7 +60,7 @@ const BankDetailsCard = () => {
       bankName: "9Payment Service Bank",
       charge: "₦20",
       icon: '/9payment.png',
-      bgColor: "bg-gradient-to-r from-green-500 to-green-900",
+      bgColor: "bg-gradient-to-r from-blue-500 to-blue-900",
     },
     "Wema Bank": {
       accountNumber: "9876543210",
@@ -76,7 +76,7 @@ const BankDetailsCard = () => {
       bankName: "Moniepoint Microfinance Bank",
       charge: "₦15",
       icon: '/Moniepoint_logo.png',
-      bgColor: "bg-gradient-to-r from-green-700 to-green-800",
+      bgColor: "bg-gradient-to-r from-blue-700 to-blue-800",
     },
   };
 
@@ -105,8 +105,8 @@ const BankDetailsCard = () => {
             onClick={() => setActiveTab(bank)}
             className={`md:px-4 px-2 py-2 text-sm transition-all duration-300 ${
               activeTab === bank
-                ? "text-green-500 border-b-2 border-green-500 font-semibold"
-                : "text-gray-500 hover:text-green-500"
+                ? "text-blue-500 border-b-2 border-blue-500 font-semibold"
+                : "text-gray-500 hover:text-blue-500"
             }`}
           >
             {bank}
@@ -142,7 +142,7 @@ const BankDetailsCard = () => {
       </div>
       <div className="my-8 px-4">
         {/* Marquee Section */}
-        <div className="bg-gradient-to-r from-green-400 to-red-600 text-white rounded-full py-2 shadow-md">
+        <div className="bg-gradient-to-r from-blue-400 to-red-600 text-white rounded-full py-2 shadow-md">
           <marquee behavior="" direction="" className="text-lg font-semibold">
             🚀 Welcome to Ambitioux VTU! Enjoy fast, affordable data, airtime, and bill payments. 
             Need help? Chat with us at 08162269770 or 08082792885 (WhatsApp only). 
@@ -151,9 +151,9 @@ const BankDetailsCard = () => {
         </div>
 
         {/* Feature Cards Section */}
-        <div className="flex justify-center items-center gap-6 lg:max-w-2xl mx-auto mt-10 bg-green-100 lg:p-4 p-3 rounded-xl shadow-lg">
+        <div className="flex justify-center items-center gap-6 lg:max-w-2xl mx-auto mt-10 bg-blue-100 lg:p-4 p-3 rounded-xl shadow-lg">
           {data1.map((data, index) => (
-            <div  key={index}  className="w-[100%] lg:w-[300px] shadow-lg p-4 bg-green-200 rounded-xl flex items-center gap-3 transition-all duration-300 hover:scale-105 hover:shadow-xl">
+            <div  key={index}  className="w-[100%] lg:w-[300px] shadow-lg p-4 bg-blue-200 rounded-xl flex items-center gap-3 transition-all duration-300 hover:scale-105 hover:shadow-xl">
               <div className={`p-3 rounded-full ${data.style}`}>
                 {data.icon}
               </div>
@@ -175,7 +175,7 @@ const DashboardMain = ({ data }) => {
     <div className="bg-white md:p-6 p-3 rounded-lg shadow-md mt-6">
       <div className="">
         <p className="text-xl border-b pb-3">
-          Good day, <span className="font-semibold text-green-500 capitalize">{currentUser && firstName}</span>
+          Good day, <span className="font-semibold text-blue-500 capitalize">{currentUser && firstName}</span>
         </p>
       </div>
       <BankDetailsCard />
@@ -192,14 +192,14 @@ const DashWallet = () => {
   ];
 
   return (
-    <div className="grid md:grid-cols-3 grid-cols-2 gap-4 my-12 max-w-7xl bg-green-200 p-3 rounded-lg">
+    <div className="grid md:grid-cols-3 grid-cols-2 gap-4 my-12 max-w-7xl bg-blue-200 p-3 rounded-lg">
       {walletData.map((item, index) => (
         <div key={index} className="bg-white shadow-md p-4 rounded-lg flex justify-between items-center">
           <div className="">
             <h3 className="font-semibold text-sm text-gray-500">{item.title}</h3>
             <p className="text-xl font-bold mt-2 text-gray-600">{item.amount}</p>
           </div>
-          <div className="bg-green-500 text-white p-2 rounded-md text-4xl mb-2">
+          <div className="bg-blue-500 text-white p-2 rounded-md text-4xl mb-2">
             {item.icon}
           </div>
         </div>
@@ -211,29 +211,29 @@ const DashWallet = () => {
 
 const NotificationsFAQsSupport = () => {
   return (
-    <div className="grid md:grid-cols-3 grid-cols-1 bg-green-100 p-3 rounded-lg gap-4 mt-6 max-w-7xl">
-      <div className="lg:h-[100px] bg-green-100 text-green-700 p-4 rounded-lg shadow-md">
+    <div className="grid md:grid-cols-3 grid-cols-1 bg-blue-100 p-3 rounded-lg gap-4 mt-6 max-w-7xl">
+      <div className="lg:h-[100px] bg-blue-100 text-blue-700 p-4 rounded-lg shadow-md">
         <h4 className="font-semibold text-lg mb-2">Notifications</h4>
         <p>No new notifications at the moment.</p>
       </div>
-      <div className="lg:h-[170px] bg-green-100 text-green-700 p-4 rounded-lg shadow-md">
+      <div className="lg:h-[170px] bg-blue-100 text-blue-700 p-4 rounded-lg shadow-md">
         <h4 className="font-semibold text-lg mb-2">FAQs</h4>
         <p>Please go through them to have a better knowledge of this platform.</p>
-        <button className="bg-green-500 text-white mt-4 px-4 py-2 rounded-lg">
+        <button className="bg-blue-500 text-white mt-4 px-4 py-2 rounded-lg">
           FAQs
         </button>
       </div>
-      <div className="bg-green-100 text-green-700 p-4 rounded-lg shadow-md">
+      <div className="bg-blue-100 text-blue-700 p-4 rounded-lg shadow-md">
         <h4 className="font-semibold text-lg mb-2">Support Team</h4>
         <p>
           Have anything to say to us? Please contact our Support Team on
           WhatsApp.
         </p>
         <div className="mt-4 space-y-4">
-          <button className="bg-green-500 flex items-center gap-2 text-white px-4 py-2 rounded-lg">
+          <button className="bg-blue-500 flex items-center gap-2 text-white px-4 py-2 rounded-lg">
             <FaWhatsapp/> WhatsApp Us
           </button>
-          <button className="bg-green-700 text-white px-4 py-2 rounded-lg flex items-center gap-2">
+          <button className="bg-blue-700 text-white px-4 py-2 rounded-lg flex items-center gap-2">
             <FaWhatsapp/> Join Our WhatsApp Group
           </button>
         </div>
@@ -255,7 +255,7 @@ const Services = () => {
   ];
 
   return (
-    <div className="max-w-7xl mx-auto px-4 py-6 bg-green-100 mt-6 rounded-lg">
+    <div className="max-w-7xl mx-auto px-4 py-6 bg-blue-100 mt-6 rounded-lg">
       {/* Services Grid */}
       <div  className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
         {services.map((service, index) => (
@@ -277,7 +277,7 @@ const Services = () => {
 
 const Dashboard = () => {
   return (
-    <div className="max-w-7xl bg-green-200 p-3 rounded-lg">
+    <div className="max-w-7xl md:p-3 rounded-lg">
       <DashboardHeader />
       <DashboardMain />
       <DashWallet />
