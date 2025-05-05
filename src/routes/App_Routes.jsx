@@ -56,8 +56,9 @@ export default function AppRoutes() {
         {/* Admin Routes */}
         <Route>
           <Route path="/" element={<Layout />}>
-            <Route path='admin/create-data' element={<CreateData/>}/>
-            <Route path='admin/update-data/:id' element={<UpdateData/>}/>
+            <Route path='/admin/create-data' element={<CreateData/>}/>
+            {/* <Route path='admin/update-data/:id' element={<UpdateData/>}/> */}
+            <Route path='/admin/update-data/' element={<UpdateData/>}/>
           </Route>
         </Route>
 

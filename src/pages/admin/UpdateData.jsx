@@ -1,65 +1,36 @@
-import { useState, useEffect } from 'react';
-import { useParams } from 'react-router-dom';
+import { useState, useEffect } from 'react'; 
+import { useLocation, useParams, useNavigate, Link } from 'react-router-dom';
 import { useSelector } from 'react-redux';
+import axios from 'axios';
+import { motion, AnimatePresence } from "framer-motion";
 
 const API_BASE_URL = import.meta.env.API_BASE_URL || 'https://vtu-xpwk.onrender.com';
 
-const Dialog = ({ message, onClose }) => (
-  <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
-    <div className="bg-white p-6 rounded-lg shadow-lg max-w-sm w-full">
-      <p className="text-gray-800">{message}</p>
-      <button className="mt-4 w-full bg-red-500 text-white py-2 rounded" onClick={onClose}>Close</button>
-    </div>
-  </div>
-);
-
 const UpdateData = () => {
-  const { id } = useParams();
+  const { networkProvider } = useParams();
   const { currentUser } = useSelector((state) => state.user);
+  const location = useLocation();
+  const navigate = useNavigate();
 
-  const [formData, setFormData] = useState({
-    networkProvider: '',
-    plan: '',
-    duration: '',
-    amount: '',
-  });
-
+  const { plan } = location.state || {};
+  const [showModal, setShowModal] = useState(false);
+  const [alertType, setAlertType] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
-  const [dialogOpen, setDialogOpen] = useState(false);
 
-  // 🔹 Fetch existing data by ID when component loads
+  const [formData, setFormData] = useState({
+    networkProvider: plan?.networkProvider || '',
+    plan: plan?.plan || '',
+    duration: plan?.duration || '',
+    amount: plan?.price || '',
+  });
+
   useEffect(() => {
-    const fetchData = async () => {
-      try {
-        setLoading(true);
-        const response = await fetch(`${API_BASE_URL}/api/v1/admin/get-data/${id}`, {
-          headers: { 'Authorization': `Bearer ${currentUser.token}` },
-        });
+    if (!plan) {
+      setShowModal(true);
+    }
+  }, [plan]);
 
-        const data = await response.json();
-        if (!response.ok) throw new Error(data.error || 'Failed to fetch data');
-
-        // ✅ Set fetched data as default form values
-        setFormData({
-          networkProvider: data.plan_network || '',
-          plan: data.plan || '',
-          duration: data.month_validate || '',
-          amount: data.plan_amount || '',
-        });
-
-      } catch (err) {
-        setError(err.message);
-        setDialogOpen(true);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchData();
-  }, [id, currentUser.token]);
-
-  // 🔹 Handle form input changes
   const handleChange = (e) => {
     setFormData((prev) => ({
       ...prev,
@@ -67,27 +38,44 @@ const UpdateData = () => {
     }));
   };
 
-  // 🔹 Handle form submission
   const handleUpdate = async () => {
     setLoading(true);
     try {
-      const response = await fetch(`${API_BASE_URL}/api/v1/admin/update-data/${id}`, {
-        method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${currentUser.token}`,
+      const { data } = await axios.put(
+        `${API_BASE_URL}/api/v1/admin/update-data`,
+        {
+          networkProvider: formData.networkProvider,
+          plan: formData.plan,
+          duration: formData.duration,
+          price: formData.amount,
         },
-        body: JSON.stringify(formData),
-      });
+        {
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${currentUser.token}`,
+          },
+        }
+      );
+    
+      if (data.error) {
+        setError(data.error || 'Failed to update data plan');
+        setAlertType("error");
+      } else {
+        setError(data.message || 'Data plan updated successfully!');
+        setAlertType("success");
+      }
 
-      const result = await response.json();
-      if (!response.ok) throw new Error(result.error || 'Failed to update data');
-
-      setDialogOpen(true);
-      setError('Data updated successfully!');
+      setTimeout(() => {
+        setError('');
+      }, 3000);
+      
     } catch (err) {
-      setError(err.message);
-      setDialogOpen(true);
+      setError(err.response?.data?.error || err.message || 'Failed to update data plan');
+      setAlertType("error");
+
+      setTimeout(() => {
+        setError('');
+      }, 3000);
     } finally {
       setLoading(false);
     }
@@ -95,7 +83,7 @@ const UpdateData = () => {
 
   return (
     <div className="bg-white py-6 px-3 rounded-lg">
-      <div className="max-w-4xl mx-auto p-3 rounded-lg shadow-md">
+      <div className="max-w-4xl mx-auto p-3 rounded-lg shadow-md relative">
         <h2 className="text-2xl font-semibold text-center">Update Data Plan</h2>
         <div className="p-4 bg-white rounded-lg">
           <label className="block my-5">
@@ -126,8 +114,43 @@ const UpdateData = () => {
             {loading ? 'Updating...' : 'Update Data'}
           </button>
         </div>
-        {dialogOpen && <Dialog message={error} onClose={() => setDialogOpen(false)} />}
+
+        <AnimatePresence>
+          {error && (
+            <motion.div
+              initial={{ opacity: 0, y: -10 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -10 }}
+              className={`absolute top-2 right-2 px-4 py-2 rounded-lg shadow-lg text-white ${alertType === "success" ? "bg-green-500" : "bg-red-500"}`}
+            >
+              {error}
+            </motion.div>
+          )}
+        </AnimatePresence>
       </div>
+
+      {/* Modal for missing plan */}
+      {showModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
+          <div className="bg-white p-6 rounded-lg shadow-lg max-w-sm w-full">
+            <h2 className="text-xl font-semibold mb-4 text-red-600">Plan Not Found</h2>
+            <p className="mb-6 text-gray-700">
+              The data plan you're trying to update wasn't found. Please go to the pricing page to select a valid plan.
+            </p>
+            <div className="flex justify-end space-x-3">
+              {/* <button
+                onClick={() => setShowModal(false)}
+                className="px-4 py-2 bg-gray-200 rounded hover:bg-gray-300"
+              >
+                Cancel
+              </button> */}
+              <button className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600">
+                <Link to={'/profile/pricing'}>Go to Pricing</Link>
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
