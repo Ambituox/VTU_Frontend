@@ -81,9 +81,16 @@ const UpdateData = () => {
     }
   };
 
+  const handleBack = () => {
+    navigate(-1);
+  };
+
   return (
-    <div className="bg-white py-6 px-3 rounded-lg">
-      <div className="max-w-4xl mx-auto p-3 rounded-lg shadow-md relative">
+    <div className=" py-6 px-3 rounded-lg">
+      <div className="max-w-md mx-auto bg-white p-3 rounded-lg shadow-md relative">
+        <div className="absolute top-2 left-2">
+          <button className="bg-blue-500 py-2 px-4 rounded-lg font-semibold text-white" onClick={handleBack}>Back</button>
+        </div>
         <h2 className="text-2xl font-semibold text-center">Update Data Plan</h2>
         <div className="p-4 bg-white rounded-lg">
           <label className="block my-5">

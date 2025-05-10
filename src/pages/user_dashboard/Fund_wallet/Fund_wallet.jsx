@@ -1,195 +1,128 @@
 import React, { useState } from "react";
+import { useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
+
+const API_BASE_URL = import.meta.env.API_BASE_URL || 'https://vtu-xpwk.onrender.com';
 
 export default function Fund_wallet() {
+  const navigate = useNavigate();
+
   const [formData, setFormData] = useState({
-    amount: "",
-    paymentType: "",
-    paymentChannel: "",
+    amount: '',
+    paymentDescription: "",
   });
+
   const [loading, setLoading] = useState(false);
-  const [showModal, setShowModal] = useState(false);
-  const [showSuccessModal, setShowSuccessModal] = useState(false);
-  const [serviceFee, setServiceFee] = useState(0);
   const [error, setError] = useState("");
+  const [success, setSuccess] = useState(false);
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
+
+  const { currentUser } = useSelector((state) => state.user);
 
   const handleChange = (e) => {
-    const { name, value } = e.target;
-    setFormData({ ...formData, [name]: value });
-
-    // Calculate service fee dynamically based on payment channel
-    if (name === "paymentChannel") {
-      const fees = {
-        "Channel 1 - (1.65% Service Charge)": (formData.amount * 1.65) / 100,
-        "Channel 2 - (1.4% Service Charge) + VAT":
-          (formData.amount * 1.4) / 100 + 0.075 * formData.amount,
-        "Channel 3 - (50# Service Charge)": 50,
-      };
-      setServiceFee(fees[value] || 0);
-    }
+    setFormData((prev) => ({
+      ...prev,
+      [e.target.name]: e.target.value,
+    }));
   };
 
-  const validateForm = () => {
-    if (!formData.amount || formData.amount <= 0) {
-      setError("Please enter a valid amount.");
-      return false;
-    }
-    if (!formData.paymentType) {
-      setError("Please select a payment type.");
-      return false;
-    }
-    if (!formData.paymentChannel) {
-      setError("Please select a payment channel.");
-      return false;
-    }
-    setError(""); // Clear error if all validations pass
-    return true;
-  };
-
-  const handleSubmit = (e) => {
-    e.preventDefault();
-
-    if (!validateForm()) {
+  const handlePayment = async () => {
+    if (!formData.paymentDescription || !formData.amount) {
+      setError("Both amount and payment description are required.");
+      setIsDialogOpen(true);
       return;
     }
 
-    setShowModal(true);
+    setLoading(true);
+    setError("");
+
+    try {
+      const response = await fetch(`${API_BASE_URL}/api/v1/make-payment`, {
+        method: "POST",
+        headers: {
+          'Authorization': `Bearer ${currentUser.token}`,
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          ...formData,
+          amount: Number(formData.amount), // 👈 ensure amount is a number
+        }),
+      });
+
+      const result = await response.json();
+
+      if (!response.ok || result.error) {
+        setError(result.error || "Payment failed");
+        setIsDialogOpen(true);
+        setLoading(false);
+        return;
+      }
+
+      setSuccess(true);
+      setLoading(false);
+      setTimeout(() => navigate("verify-payment"), 2000);
+    } catch (err) {
+      setError(err.message);
+      setIsDialogOpen(true);
+      setLoading(false);
+    }
   };
 
-  const processPayment = () => {
-    setLoading(true);
-    setShowModal(false);
-
-    setTimeout(() => {
-      setLoading(false);
-      setShowSuccessModal(true); // Show success modal after processing
-    }, 2000); // Simulate payment processing time
+  const handleBack = () => {
+    navigate(-1);
   };
 
   return (
-    <div className="p-3 relative min-h-screen">
-      <div className="mt-10">
-        <form
-          onSubmit={handleSubmit}
-          className="lg:max-w-[50%] max-w-[100%] mt-3 mx-auto bg-white rounded-md lg:p-4 p-2 shadow-lg"
-        >
-          <h2 className="font-medium text-xl text-center">Instant Account Funding</h2>
-          <p className="text-gray-400 text-sm italic text-center">
-            Payments are Processed Automatically
-          </p>
+    <div className="relative max-w-md mx-auto my-20 p-6 bg-white shadow-lg rounded-lg">
+      <div className="absolute top-2 left-2">
+        <button className="bg-blue-500 py-2 px-4 rounded-lg font-semibold text-white" onClick={handleBack}>Back</button>
+      </div>
+      <h2 className="text-2xl font-bold text-center">Fund Wallet</h2>
 
-          {/* Amount Input */}
-          <div className="mt-8">
-            <p className="pb-2 italic">Enter Amount</p>
-            <input
-              type="number"
-              name="amount"
-              placeholder="Enter Amount"
-              className="w-full rounded-md border py-2 px-3 outline-none"
-              value={formData.amount}
-              onChange={handleChange}
-              required
-            />
-          </div>
+      <div className="mt-4 p-4 border rounded space-y-3">
+        <label className="block">
+          <span className="text-gray-700">Amount</span>
+          <input
+            type="number"
+            name="amount"
+            value={formData.amount}
+            onChange={handleChange}
+            className="mt-1 block w-full p-2 border rounded"
+            placeholder="Enter amount"
+          />
+        </label>
 
-          {/* Payment Type */}
-          <div className="my-5">
-            <p className="pb-2">Payment Type:</p>
-            <select name="paymentType" className="w-full rounded-md border py-2 px-3 outline-none" value={formData.paymentType} onChange={handleChange} required>
-              <option value="">- Select Payment Type -</option>
-              <option value="Pay with Bank Transfer">Pay with Bank Transfer</option>
-              <option value="Pay with ATM Card, USSD">Pay with ATM Card, USSD</option>
-            </select>
-          </div>
-
-          {/* Payment Channel */}
-          <div className="">
-            <p className="pb-2">Payment Channel:</p>
-            <select name="paymentChannel" className="w-full rounded-md border py-2 px-3 outline-none" value={formData.paymentChannel} onChange={handleChange} required>
-              <option value="">- Select Payment Channel -</option>
-              <option value="Channel 1 - (1.65% Service Charge)">
-                Channel 1 - (1.65% Service Charge)
-              </option>
-              <option value="Channel 2 - (1.4% Service Charge) + VAT">
-                Channel 2 - (1.4% Service Charge) + VAT
-              </option>
-              <option value="Channel 3 - (50# Service Charge)">
-                Channel 3 - (50# Service Charge)
-              </option>
-            </select>
-          </div>
-
-          {/* Display Service Fee */}
-          {serviceFee > 0 && (
-            <div className="mt-4 text-sm text-gray-600">
-              <p>
-                <strong>Service Fee:</strong> ₦{serviceFee.toFixed(2)}
-              </p>
-              <p>
-                <strong>Total:</strong> ₦{(Number(formData.amount) + serviceFee).toFixed(2)}
-              </p>
-            </div>
-          )}
-
-          {/* Submit Button */}
-          <div className="mt-5">
-            <button type="submit" className="py-2 rounded-md w-full bg-gray-900 text-white font-medium hover:bg-gray-600 transition" disabled={loading}>
-              {loading ? "Processing..." : "Pay Now"}
-            </button>
-          </div>
-        </form>
+        <label className="block">
+          <span className="text-gray-700">Payment Description</span>
+          <input
+            type="text"
+            name="paymentDescription"
+            value={formData.paymentDescription}
+            onChange={handleChange}
+            className="mt-1 block w-full p-2 border rounded"
+            placeholder="Enter payment description..."
+          />
+        </label>
       </div>
 
-      {/* Error Tooltip */}
-      {error && (
-        <div className="absolute top-16 left-1/2 transform -translate-x-1/2 bg-gray-500 text-white text-sm rounded-md px-4 py-2 shadow-lg">
-          {error}
-        </div>
-      )}
+      {success && <p className="text-green-500 mt-2">Payment Successful! Redirecting...</p>}
 
-      {/* Confirmation Modal */}
-      {showModal && (
-        <div className="fixed inset-0 bg-gray-900 bg-opacity-50 flex items-center justify-center z-50">
-          <div className="bg-white rounded-md p-6 w-full max-w-md shadow-lg">
-            <h3 className="text-lg font-medium text-gray-800 mb-4">
-              Confirm Payment
-            </h3>
-            <p className="text-sm text-gray-600 mb-6">
-              You are about to pay ₦
-              {(Number(formData.amount) + serviceFee).toFixed(2)}. Please confirm
-              to proceed.
-            </p>
-            <div className="flex justify-end space-x-4">
-              <button
-                onClick={() => setShowModal(false)}
-                className="py-2 px-4 bg-gray-300 text-gray-700 rounded-md hover:bg-gray-400 transition"
-              >
-                Cancel
-              </button>
-              <button
-                onClick={processPayment}
-                className="py-2 px-4 bg-gray-900 text-white rounded-md hover:bg-gray-600 transition"
-              >
-                Confirm
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
+      <button
+        onClick={handlePayment}
+        disabled={loading}
+        className="mt-4 w-full bg-blue-600 text-white py-3 rounded-lg shadow-md hover:bg-blue-700 transition"
+      >
+        {loading ? "Processing..." : "Pay Now"}
+      </button>
 
-      {/* Success Modal */}
-      {showSuccessModal && (
-        <div className="fixed inset-0 bg-gray-900 bg-opacity-50 flex items-center justify-center z-50">
-          <div className="bg-white rounded-md p-6 w-full max-w-md shadow-lg">
-            <h3 className="text-lg font-bold text-green-600 mb-4 text-center">
-              Transaction Successful!
-            </h3>
-            <p className="text-sm text-gray-600 text-center mb-6">
-              Your payment of ₦
-              {(Number(formData.amount) + serviceFee).toFixed(2)} has been successfully processed.
-            </p>
+      {isDialogOpen && (
+        <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
+          <div className="bg-white p-6 rounded-lg shadow-lg max-w-sm">
+            <h3 className="text-lg font-bold text-red-600">Payment Error</h3>
+            <p className="text-gray-700 mt-2">{error}</p>
             <button
-              onClick={() => setShowSuccessModal(false)}
-              className="py-2 px-4 bg-green-500 text-white rounded-md hover:bg-green-600 transition w-full"
+              onClick={() => setIsDialogOpen(false)}
+              className="mt-4 w-full bg-red-500 hover:bg-red-600 text-white py-2 rounded-lg transition"
             >
               Close
             </button>

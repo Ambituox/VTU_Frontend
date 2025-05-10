@@ -9,7 +9,7 @@ import { MdOutlinePayment } from 'react-icons/md';
 export default function Extra_links() {
   return (
     <div className="text-slate-300 mt-5">
-        <p className="text-[13px] pl-3 text-slate-100 font-normal">EXTRA</p>
+        <p className="text-[13px] pl-3 text-blue-500 font-normal">EXTRA</p>
         <div className="pl-3 pt-2 font-">
             <Link to={'pricing'} className='hover:text-green-500 duration-150 flex items-center gap-3'><FaMoneyBill /> Pricing</Link>
         </div>
@@ -28,7 +28,7 @@ export default function Extra_links() {
         <div className="pl-3 pt-2 font-">
             <Link to={'solution-center'} className='hover:text-green-500 duration-150 flex items-center gap-3'><MdOutlinePayment />Solution Center</Link>
         </div>
-        <UserLogoutButton/>
+        
     </div>
   )
 }

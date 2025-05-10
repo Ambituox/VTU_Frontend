@@ -1,14 +1,11 @@
-import { duration } from '@mui/material';
 import { createContext, useEffect, useState } from 'react';
 import { FaArrowsRotate } from 'react-icons/fa6';
 import { useSelector } from 'react-redux';
 import BuyDataNow from '../../../components/BuyData/BuyDataNow';
 import { useNavigate } from 'react-router-dom';
 
-// Define the base API URL for the application
-const API_BASE_URL = import.meta.env.API_BASE_URL || 'https://vtu-xpwk.onrender.com';
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'https://vtu-xpwk.onrender.com';
 
-// Dialog component to display error messages
 const Dialog = ({ message, onClose }) => (
   <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
     <div className="bg-white p-6 rounded-lg shadow-lg max-w-sm w-full">
@@ -18,7 +15,6 @@ const Dialog = ({ message, onClose }) => (
   </div>
 );
 
-// ConfirmDialog component that asks for user confirmation
 const ConfirmDialog = ({ onProceed, onClose }) => (
   <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
     <div className="bg-white p-6 rounded-lg shadow-lg max-w-sm w-full">
@@ -31,11 +27,9 @@ const ConfirmDialog = ({ onProceed, onClose }) => (
 
 export const dataContext = createContext();
 
-// Main BuyDataPlan component
 const BuyDataPlan = () => {
-  // State to store form data (network, plan, duration, etc.)
   const [formData, setFormData] = useState({
-    network: 'MTN',
+    network: 'MTN', // Fixed: 'MTN' -> 'MTN_PLAN'
     plan: '',
     duration: '',
     mobileNumber: '',
@@ -43,26 +37,17 @@ const BuyDataPlan = () => {
     sku: '',
   });
 
-  // State for storing data plans
   const [plans, setPlans] = useState([]);
-  // State for loading state during API calls
   const [loading, setLoading] = useState(false);
-  // State for storing error messages
   const [error, setError] = useState('');
-  // State for controlling dialog visibility
   const [dialogOpen, setDialogOpen] = useState(false);
-  // State for controlling confirm dialog visibility
   const [confirmDialog, setConfirmDialog] = useState(false);
-  // State for controlling whether to show the purchase form
   const [showPurchaseForm, setShowPurchaseForm] = useState(false);
-
   const [datas, setDatas] = useState([]);
 
-  // Get current user from Redux store
   const { currentUser } = useSelector((state) => state.user);
+  const navigate = useNavigate();
 
-  // Fetch data plans from the server
-  // Fetch data plans from the server
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -71,9 +56,8 @@ const BuyDataPlan = () => {
         });
 
         const data = await response.json();
-
         if (response.ok) {
-          setPlans(data); // Set the fetched data plans to the state
+          setPlans(data);
         } else {
           throw new Error('Failed to load data plans');
         }
@@ -83,39 +67,40 @@ const BuyDataPlan = () => {
       }
     };
 
-    fetchData(); // Fetch data when the component is mounted
-  }, [currentUser.token]); // The effect runs only once when the current user token is available
+    fetchData();
+  }, [currentUser.token]);
 
-  // console.log(plans);
-  
-  // Update SKU whenever plans or formData.plan changes
   useEffect(() => {
     if (plans.length > 0 && formData.plan) {
       const selectedPlan = plans.find((plan) => plan.plan === formData.plan);
-
       if (selectedPlan) {
-        setFormData((prev) => {
-          const updatedForm = { ...prev, sku: selectedPlan.sku }; // Update SKU
-          // console.log("Updated FormData:", updatedForm); // Log the updated formData
-          return updatedForm;
-        });
+        setFormData((prev) => ({
+          ...prev,
+          sku: selectedPlan.sku,
+          price: selectedPlan.price,
+        }));
       }
     }
-  }, [plans, formData.plan]); // Re-run when plans or formData.plan changes
+  }, [plans, formData.plan]);
 
-
-  // Handle form data changes
   const handleChange = (e) => {
     setFormData((prev) => ({
       ...prev,
       [e.target.name]: e.target.value,
-      ...(e.target.name === 'plan' ? { duration: '' } : {}), // Clear duration if plan is changed
+      ...(e.target.name === 'plan' ? { duration: '' } : {}),
     }));
   };
 
-  const navigate = useNavigate() //initialize the navigate function
+  let updatedDuration = formData.duration.includes('day') && !formData.duration.includes('days')
+    ? formData.duration.replace('day', 'days')
+    : formData.duration;
 
-  // Handle search for data plans
+  const payload = {
+    network: `${formData.network}_PLAN`,
+    plan: formData.plan,
+    duration: updatedDuration
+  };
+
   const handleSearch = async () => {
     if (!formData.plan || !formData.duration) {
       setError('Please select a plan and duration.');
@@ -123,149 +108,140 @@ const BuyDataPlan = () => {
       return;
     }
 
-    // Check and update the duration if it contains 'day' but not 'days'
-    let updatedDuration = formData.duration.includes('day') && !formData.duration.includes('days')
-        ? formData.duration.replace('day', 'days') // Replace 'day' with 'days'
-        : formData.duration;
-
-    // Construct the payload for the API call
-    const payload = {
-      network: `${formData.network}_PLAN`, // Append '_PLAN' to the network provider
-      plan: formData.plan,
-      duration: updatedDuration // Use the updated duration
-    };
-
     const databaseData = {
-      network: `${formData.network}`, // Append '_PLAN' to the network provider
+      network: `${formData.network}`,
       plan: formData.plan,
-      duration: updatedDuration, // Use the updated duration
+      duration: updatedDuration,
       price: formData.price,
       sku: formData.sku
     };
-    
-    // console.log(databaseData);
-    
+
     try {
-      // console.log(payload); // Log the payload for debugging
-      
-      setLoading(true); // Set loading state to true
-      
-      // Send the request to find data plans
+      setLoading(true);
       const response = await fetch(`${API_BASE_URL}/api/v1/find-data`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': `Bearer ${currentUser.token}`, // Pass the current user's token in headers
+          'Authorization': `Bearer ${currentUser.token}`,
         },
-        body: JSON.stringify(payload), // Send the payload as request body
+        body: JSON.stringify(payload),
       });
-      
-      const data = await response.json(); // Parse the response data
-      
-      // Handle success response
+
+      const data = await response.json();
+
       if (data.success && data.data) {
-        setLoading(false); // Set loading state to false
-    
-        // Check if the response `month_validate` matches `formData.duration`
-        if (String(data.data.month_validate) === String(formData.duration)) {
-          // console.log(databaseData);
-          // setDatas(databaseData);
-          navigate("buy-now", { state: databaseData });  // Nagigate to the BUyDataNow page with the databaseData as state
-          setConfirmDialog(true); // Show the confirmation dialog
-          // console.log("Validated data:", data.data); // Log the validated data
-        } else {
-          setError("Invalid duration selected.");
-          setDialogOpen(true);
-      }
-    
+        setLoading(false);
+        console.log(data);
+        
+        
+        navigate("buy-now", { state: databaseData });
+        setConfirmDialog(true);
         return;
       }
 
-      // Handle failure response
-      setError(data.error); // Set the error message
-      setDialogOpen(true); // Open the dialog
-      setLoading(false); // Set loading state to false
+      setError(data.error);
+      setDialogOpen(true);
+      setLoading(false);
 
     } catch (err) {
-      setError(err.message); // Set error message
-      setDialogOpen(true); // Open the error dialog
-      setLoading(false); // Set loading state to false
+      setError(err.message);
+      setDialogOpen(true);
+      setLoading(false);
     }
   };
 
-  // Find the selected plan's price
-  const selectedPlan = plans.find((plan) => plan.plan === formData.plan);
-  const price = selectedPlan ? selectedPlan.price : ''; // Get the price of the selected plan
-  
-  // console.log(datas);
+  const selectedPlan = plans.find((plan) =>
+    plan.plan === formData.plan && plan.networkProvider === formData.network
+  );
+
   const handleBack = () => {
-    navigate(-1) // Go back to the previous page
-  }
+    navigate(-1);
+  };
 
   return (
-    <div className="bg-white py-6 px-3 rounded-lg">
-      <div className="relaive max-w-4xl mx-auto p-3 rounded-lg shadow-md">
+    <div className="bg-whie py-6 px-3 rounded-lg">
+      <div className="relative bg-white max-w-md mx-auto p-3 rounded-lg shadow-md">
         <div className="absolute top-2 left-2">
-          <button className="bg-green-500 py-2 px-4 rounded-lg font-semibold text-white" onClick={handleBack}>Back</button>
+          <button className="bg-blue-500 py-2 px-4 rounded-lg font-semibold text-white" onClick={handleBack}>Back</button>
         </div>
         <h2 className="text-2xl font-semibold text-center">Buy Data Plan</h2>
-        {!showPurchaseForm ? ( // If purchase form is not shown, display the search form
-          <>
-            <div className="p-4 bg-white rounded-lg">
-              <label className="block my-5">
-                <span className="text-gray-700">Network</span>
-                <select name="network" value={formData.network} onChange={handleChange} className="mt-1 block w-full p-3 border rounded">
-                  {['MTN', 'AIRTEL', 'GLO', '9MOBILE'].map((network, index) => ( // Map networks to options
-                    <option key={index} value={network}>{network}</option>
+        {!showPurchaseForm ? (
+          <div className="p-4 bg-white rounded-lg">
+            <label className="block my-5">
+              <span className="text-gray-700">Network</span>
+              <select name="network" value={formData.network} onChange={handleChange} className="mt-1 block w-full p-3 border rounded">
+                {['MTN', 'AIRTEL', 'GLO', '9MOBILE'].map((network, index) => (
+                  <option key={index} value={network}>{network}</option>
+                ))}
+              </select>
+            </label>
+
+            <label className="block my-5">
+              <span className="text-gray-500">Plan</span>
+              <select name="plan" value={formData.plan} onChange={handleChange} className="mt-1 block w-full p-3 border rounded">
+                <option value="" className='text-gray-400'>Select Plan</option>
+                {plans.map((p, index) =>
+                  p.networkProvider === formData.network && (
+                    <option key={index} value={p.plan}>{p.plan}</option>
+                  )
+                )}
+              </select>
+            </label>
+
+            <label className="block my-5">
+              <span className="text-gray-500">Duration</span>
+              <select
+                name="duration"
+                disabled={!formData.plan}
+                value={formData.duration}
+                onChange={handleChange}
+                className="mt-1 block w-full p-3 border border-gray-300 rounded"
+              >
+                <option value="" className='text-gray-400'>Select Duration</option>
+                {plans
+                  .filter((p) =>
+                    p.networkProvider === formData.network &&
+                    p.plan === formData.plan
+                  )
+                  .map((p, index) => (
+                    <option key={index} value={p.duration}>{p.duration}</option>
                   ))}
-                </select>
-              </label>
+              </select>
+            </label>
 
-              <label className="block my-5">
-                <span className="text-gray-500">Plan</span>
-                <select name="plan" value={formData.plan} onChange={handleChange} className="mt-1 block w-full p-3 border rounded">
-                  <option value="" className='text-gray-400'>Select Plan</option>
-                  {plans.map((p, index) => (
-                    p.networkProvider === formData.network && <option key={index} value={p.plan}>{p.plan}</option>
-                  ))}
-                </select>
-              </label>
+            <label className='block my-5'>
+              <span className="text-gray-700">Price</span><br />
+              <input
+                type="text"
+                name="price"
+                value={selectedPlan ? selectedPlan.price : ''}
+                readOnly
+                className="text-gray-500 font-semibold mt-1 block w-full p-3 border border-gray-300 rounded"
+              />
+            </label>
 
-              <label className="block my-5">
-                <span className="text-gray-500">Duration</span>
-                <select name="duration" disabled={!formData.plan} value={formData.duration} onChange={handleChange} className="mt-1 block w-full p-3 border border-gray-300 rounded">
-                  <option value="" className='text-gray-400'>Select Duration</option>
-                  {plans
-                    .filter((network) => network.networkProvider === formData.network)
-                    .map((network, index) => (
-                      <option key={index} value={network.duration}>
-                        {network.duration}
-                      </option>
-                    ))}
-                </select>
-              </label>
-
-              {/* Price field */}
-              <label className='block my-5'>
-                <span className="text-gray-700">Price</span><br />
-                <input type="text" name='price' onChange={handleChange}  value={price ? formData.price = price : 'No Price'} className='text-gray-500  font-semibold mt-1 block w-full p-3 border border-gray-300 rounded'/>
-              </label>
-
-              <button onClick={handleSearch} className='bg-blue-500 w-full font-semibold p-3 text-white rounded-md'>
-                {loading ? 
-                (
-                  <span className="flex justify-center items-center gap-2"><FaArrowsRotate className='animate-spin' />Searching Data...</span>
-                ) : 'Search Data'}
-              </button>
-            </div>
-          </>
+            <button onClick={handleSearch} className='bg-blue-500 w-full font-semibold p-3 text-white rounded-md'>
+              {loading ? (
+                <span className="flex justify-center items-center gap-2">
+                  <FaArrowsRotate className='animate-spin' />Searching Data...
+                </span>
+              ) : 'Search Data'}
+            </button>
+          </div>
         ) : (
-          <dataContext.Provider value={datas}>
-            <BuyDataNow datas={datas}/>
-          </dataContext.Provider>
+          <BuyDataNow datas={datas} />
         )}
+
         {dialogOpen && <Dialog message={error} onClose={() => setDialogOpen(false)} />}
-        {confirmDialog && <ConfirmDialog onProceed={() => { setShowPurchaseForm(true); setConfirmDialog(false); }} onClose={() => setConfirmDialog(false)} />}
+        {confirmDialog && (
+          <ConfirmDialog
+            onProceed={() => {
+              setShowPurchaseForm(true);
+              setConfirmDialog(false);
+            }}
+            onClose={() => setConfirmDialog(false)}
+          />
+        )}
       </div>
     </div>
   );

@@ -14,7 +14,7 @@ export default function Services_links() {
         <div className="">
 
         </div>
-        <p className="text-[12px] text-slate-200 pl-3 font-semibold">SERVICES</p>
+        <p className="text-[12px] text-blue-500 pl-3 font-semibold">SERVICES</p>
         <AccordionGroup disableDivider sx={{ maxWidth: 400 }}>
             <Accordion>
                 <AccordionSummary color='white'>

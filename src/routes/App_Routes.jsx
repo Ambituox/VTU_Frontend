@@ -62,8 +62,32 @@ export default function AppRoutes() {
           </Route>
         </Route>
 
-        {/* Protected/User Dashboard Routes */}
+        {/* Alternate routes */}
+        <Route>
+          <Route path="/" element={<Layout />}>
+            <Route path="/user-detail/change-password" element={<ChangePassword />} />
+            <Route path="/account-pin" element={<AccountPin />} />
+            <Route path="/fund_wallet" element={<Fund_wallet />} />
+            <Route path="/solution-center" element={<Solution_center />} />
 
+            <Route path="/data-top-up" element={<DataPlanForm />} />
+            <Route path="/airtime-recharge-card" element={<AirtimeTopUp />} />
+            <Route path="/utility-payment" element={<ElectricityBillPayment />} />
+            <Route path="/cable-tv-subscription" element={<CableSubscription />} />
+            <Route path="/pricing" element={<PricingComponent />} />
+            <Route path="/user-detail" element={<UserProfile />} />
+            <Route path="/documentation" element={<ApiComponent />} />
+
+            <Route path="/funding-transaction-history" element={<Fund_wallet />} />
+            <Route path="/data-transaction-history" element={<DataPlanForm />} />
+
+            <Route path="/data-top-up/buy-now" element={<BuyDataNow />} />
+            <Route path="/data-top-up/buy-now/make-payment" element={<MakePayment />} />
+            <Route path="/data-top-up/buy-now/make-payment/verify-payment" element={<VerifyPayment />} />
+          </Route>
+        </Route>
+
+        {/* Protected/User Dashboard Routes */}
         <Route element={<Private_Route />}>
           <Route path="/profile" element={<Layout />}>
             <Route index element={<Dashboard />} />
@@ -86,14 +110,6 @@ export default function AppRoutes() {
             <Route path='data-top-up/buy-now/make-payment' element={<MakePayment/>}/>
             <Route path='data-top-up/buy-now/make-payment/verify-payment' element={<VerifyPayment/>}/>
             <Route path='data-top-up/buy-now' element={<BuyDataNow/>}/>
-
-
-
-            {/* <Route path='data-transaction-history' element={<DataTransactionHistory/>}/> */}
-            {/* <Route path='utility-transaction-history' element={<UtilityTransactionHistory/>}/> */}
-            {/* <Route path='airtime-transaction-history' element={<AirtimeTransactionHistory/>}/> */}
-            {/* <Route path='funding-transaction-history' element={<FundingTransactionHistory/>}/> */}
-            {/* <Route path='user-profile' element={<UserProfile/>}/> */}
           </Route>
         </Route>
 

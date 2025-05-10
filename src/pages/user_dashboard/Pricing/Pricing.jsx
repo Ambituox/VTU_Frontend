@@ -82,12 +82,12 @@ export default function TabsComponent() {
         </Tab.List>
         <Tab.Panels className="mt-4 max-w-full">
           {Object.keys(dataPlans).map((network, idx) => (
-            <Tab.Panel key={idx} className="rounded-xl grid lg:grid-cols-4 grid-cols-3 gap-4 md:p-3 shadow-md">
+            <Tab.Panel key={idx} className="rounded-xl grid lg:grid-cols-4 grid-cols-3 md:gap-4 md:p-3 shadow-md">
               {dataPlans[network].length > 0 ? (
                 dataPlans[network].map((plan) => (
                   <div key={plan._id} className="bg-gray-900 relative flex justify-center items-center flex-col p-4 border rounded-lg shadow-sm">
                     {isAdmin && (
-                      <Link to={`/admin/update-data/`} state={{ plan }} className="absolute bottom-2 right-2 text-slate-300">
+                      <Link to={`/admin/update-data/`} state={{ plan }} className="absolute bg-blue-500 p-1 rounded-full bottom-1 right-1 text-slate-300">
                         <BiEditAlt />
                       </Link>
                     )}

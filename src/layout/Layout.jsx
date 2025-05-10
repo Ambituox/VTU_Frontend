@@ -9,6 +9,7 @@ import Extra_links from './sidebar/extra/Extra_links';
 import { useSelector } from 'react-redux';
 import { GrTransaction } from 'react-icons/gr';
 import AdminNav from '../pages/admin/AdminNav';
+import UserLogoutButton from '../components/user_dashboard_component/UserLogout';
 
 const mainlinks = [
   {
@@ -48,27 +49,34 @@ const Sidebar = ({ isOpen, toggleSidebar }) => {
 
   return (
     <div
-      className={`h-screen overflow-y-auto pb-5 z-20 bg-slate-900 text-gray-400 fixed lg:static ${
-        isOpen ? 'w-64' : 'w-0'
+      className={`h-screen overflow-y-auto pb-5 z-20 bg-slate-900 text-gray-400 fixed lg:static ${ isOpen ? '64' : 'w-0'
       } transition-all duration-300`}>
-      <div className="px-5 py-6 flex items-center justify-between">
+      <div className="px-5 py-6 flex items-center justify-between border-b border-slate-700">
         <Link to={'/'}>
-          <h1 className="lg:text-4xl text-3xl font-bold text-white">Ambitioux</h1>
+        <div className="flex items-center justify-center gap-2">
+          <div className="text-slate-100 text-3xl font-bold flex items-center text-white/60 border-2 border-blue-500 rounded-full p-2">
+            <FaUserAlt />
+          </div>
+          <div>
+            <h1 className="text-sm font-semibold text-white/60 capitalize">
+             Hi, {currentUser.data.firstName || "User"}
+            </h1>
+            <p className="text-sm text-white/40">
+              balance: ₦ 5,300.00
+            </p>
+          </div>
+        </div>
         </Link>
-        <button onClick={toggleSidebar} className="text-white text-2xl lg:hidden focus:outline-none" aria-label="Close Sidebar">
+        <button
+          onClick={toggleSidebar}
+          className="text-white text-2xl lg:hidden focus:outline-none"
+          aria-label="Close Sidebar"
+        >
           <IoClose />
         </button>
       </div>
 
       <nav className="flex flex-col gap-1 mx-2 mt-5">
-        {
-          isAdmin && (
-            <div className="bg-gray-900 pt-2 pb-4">
-              <p className="text-[12px] text-gray-500 pl-3 font-semibold uppercase">Admin</p>
-              <AdminNav/>
-            </div>
-          )
-        }
         <div>
           <p className="text-[12px] text-blue-500 pl-3 font-medium">MAIN</p>
         </div>
@@ -80,6 +88,14 @@ const Sidebar = ({ isOpen, toggleSidebar }) => {
           ))}
         <Services_links />
         <Extra_links />
+        {
+          isAdmin && (
+            <div className="bg-gray-900 pt-2 pb-4">
+              <p className="text-[12px] text-blue-500 pl-3 font-semibold uppercase">Admin</p>
+              <AdminNav/>
+            </div>
+          )
+        }
       </nav>
     </div>
   );
@@ -101,10 +117,11 @@ const Header = ({ toggleSidebar }) => {
         {/* User Actions */}
         {
           currentUser && ( 
-            <div className="bg-white p-2 rounded-full">
-              <Link to={'/profile'} className={`text-black`}>
+            <div className="">
+              <UserLogoutButton/>
+              {/* <Link to={'/profile'} className={`text-black`}>
                 <FaUserAlt />
-              </Link>
+              </Link> */}
             </div>
           )
         }
