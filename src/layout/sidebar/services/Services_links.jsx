@@ -18,14 +18,14 @@ export default function Services_links() {
         <AccordionGroup disableDivider sx={{ maxWidth: 400 }}>
             <Accordion>
                 <AccordionSummary color='white'>
-                    <p className="text-slate-300 font-normal hover:text-green-500 hover:translate-x-2 duration-150 flex items-center gap-3"><GiNetworkBars /> Buy Data</p>
+                    <p className="text-slate-300 font-normal hover:text-blue-500 hover:translate-x-2 duration-150 flex items-center gap-3"><GiNetworkBars /> Buy Data</p>
                 </AccordionSummary>
                 <AccordionDetails>
                     <ul className="text-slate-300 flex flex-col gap-1 list-disc pl-10">
-                        <li className='hover:text-green-500 hover:translate-x-2 duration-150'>
+                        <li className='hover:text-blue-500 hover:translate-x-2 duration-150'>
                             <Link to={'data-top-up'} className=''>Instant TopUp</Link>
                         </li>
-                        {/* <li className='hover:text-green-500 hover:translate-x-2 duration-150'>
+                        {/* <li className='hover:text-blue-500 hover:translate-x-2 duration-150'>
                             <Link to={'data-recharge-card'} className=''>Data Recharge Card</Link>
                         </li> */}
                     </ul>
@@ -33,30 +33,30 @@ export default function Services_links() {
             </Accordion>
             <Accordion>
                 <AccordionSummary color='white'>
-                    <p className="text-slate-300 font-normal hover:text-green-500 hover:translate-x-2 duration-150 flex items-center gap-3"><MdCall /> Buy Airtime</p>
+                    <p className="text-slate-300 font-normal hover:text-blue-500 hover:translate-x-2 duration-150 flex items-center gap-3"><MdCall /> Buy Airtime</p>
                 </AccordionSummary>
                 <AccordionDetails>
                     <ul className="text-slate-300 flex flex-col gap-1 list-disc pl-10">
-                        {/* <li className='hover:text-green-500 hover:translate-x-2 duration-150'>
-                            <Link to={'airtime-top-up'} className='hover:text-green-500 hover:translate-x-2 duration-150'>Instant TopUp</Link>
+                        {/* <li className='hover:text-blue-500 hover:translate-x-2 duration-150'>
+                            <Link to={'airtime-top-up'} className='hover:text-blue-500 hover:translate-x-2 duration-150'>Instant TopUp</Link>
                         </li> */}
-                        <li className='hover:text-green-500 hover:translate-x-2 duration-150'>
-                            <Link to={'airtime-recharge-card'} className='hover:text-green-500 hover:translate-x-2 duration-150'>Airtime Recharge Card</Link>
+                        <li className='hover:text-blue-500 hover:translate-x-2 duration-150'>
+                            <Link to={'airtime-recharge-card'} className='hover:text-blue-500 hover:translate-x-2 duration-150'>Airtime Recharge Card</Link>
                         </li>
                     </ul>
                 </AccordionDetails>
             </Accordion>
             <Accordion>
                 <AccordionSummary color='white'>
-                    <p className="text-slate-300 font-normal hover:text-green-500 hover:translate-x-2 duration-150 flex items-center gap-3"><FaLightbulb />Utility Payment</p>
+                    <p className="text-slate-300 font-normal hover:text-blue-500 hover:translate-x-2 duration-150 flex items-center gap-3"><FaLightbulb />Utility Payment</p>
                 </AccordionSummary>
                 <AccordionDetails>
                     <ul className="text-slate-300 flex flex-col gap-1 list-disc pl-10">
-                        <li className='hover:text-green-500 hover:translate-x-2 duration-150'>
-                            <Link to={'utility-payment'} className='hover:text-green-500 hover:translate-x-2 duration-150'>Electricity Payment</Link>
+                        <li className='hover:text-blue-500 hover:translate-x-2 duration-150'>
+                            <Link to={'utility-payment'} className='hover:text-blue-500 hover:translate-x-2 duration-150'>Electricity Payment</Link>
                         </li>
-                        <li className='hover:text-green-500 hover:translate-x-2 duration-150'>
-                            <Link to={'cable-tv-subscription'} className='hover:text-green-500 hover:translate-x-2 duration-150'>Cable Subscription</Link>
+                        <li className='hover:text-blue-500 hover:translate-x-2 duration-150'>
+                            <Link to={'cable-tv-subscription'} className='hover:text-blue-500 hover:translate-x-2 duration-150'>Cable Subscription</Link>
                         </li>
                     </ul>
                 </AccordionDetails>

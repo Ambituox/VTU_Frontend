@@ -82,7 +82,6 @@ const handlePayment = async () => {
 
     if (isExpired) {
       dispatch(signOutUserSuccess());
-      console.log('Expired');
       return;
     }
 

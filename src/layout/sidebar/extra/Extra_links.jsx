@@ -11,23 +11,23 @@ export default function Extra_links() {
     <div className="text-slate-300 mt-5">
         <p className="text-[13px] pl-3 text-blue-500 font-normal">EXTRA</p>
         <div className="pl-3 pt-2 font-">
-            <Link to={'pricing'} className='hover:text-green-500 duration-150 flex items-center gap-3'><FaMoneyBill /> Pricing</Link>
+            <Link to={'pricing'} className='hover:text-blue-500 duration-150 flex items-center gap-3'><FaMoneyBill /> Pricing</Link>
         </div>
         <div className="pl-3 pt-2 font-">
-            <Link to={'user-detail'} className='hover:text-green-500 duration-150 flex items-center gap-3'><FaUser /> Account</Link>
+            <Link to={'user-detail'} className='hover:text-blue-500 duration-150 flex items-center gap-3'><FaUser /> Account</Link>
         </div>
         <div className="pl-3 pt-2 font-">
-            <Link to={'account-pin'} className='hover:text-green-500 duration-150 flex items-center gap-3'><IoMdSettings /> Change Pin</Link>
+            <Link to={'account-pin'} className='hover:text-blue-500 duration-150 flex items-center gap-3'><IoMdSettings /> Change Pin</Link>
         </div>
         {/* <div className="pl-3 pt-2 font-">
-            <Link to={'/'} className='hover:text-green-500 duration-150'>Setting</Link>
+            <Link to={'/'} className='hover:text-blue-500 duration-150'>Setting</Link>
         </div> */}
         <div className="pl-3 pt-2 font-">
-            <Link to={'documentation'} className='hover:text-green-500 duration-150 flex items-center gap-3'><FaCode />Developer's API</Link>
+            <Link to={'documentation'} className='hover:text-blue-500 duration-150 flex items-center gap-3'><FaCode />Developer's API</Link>
         </div>
-        <div className="pl-3 pt-2 font-">
-            <Link to={'solution-center'} className='hover:text-green-500 duration-150 flex items-center gap-3'><MdOutlinePayment />Solution Center</Link>
-        </div>
+        {/* <div className="pl-3 pt-2 font-">
+            <Link to={'solution-center'} className='hover:text-blue-500 duration-150 flex items-center gap-3'><MdOutlinePayment />Solution Center</Link>
+        </div> */}
         
     </div>
   )

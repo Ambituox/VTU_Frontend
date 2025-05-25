@@ -39,6 +39,11 @@ const Sidebar = ({ isOpen, toggleSidebar }) => {
   const { currentUser } = useSelector((state) => state.user);
   const [isAdmin, setIsAdmin] = useState(false);
 
+  // Local state to store the fetched user profile data
+  const [user, setUser] = useState([]);
+
+  console.log(user)
+
   useEffect(() => {
     // Ensure currentUser and currentUser.data are defined
     if (user && user.role) {
@@ -48,49 +53,43 @@ const Sidebar = ({ isOpen, toggleSidebar }) => {
     }
   }, [currentUser]);
 
-  
-    // Local state to store the fetched user profile data
-    const [user, setUser] = useState([]);
-  
-    // useEffect runs when the component mounts or when currentUser changes
-    useEffect(() => {
-      // Define an async function to fetch the user profile
-      const fetchUserProfile = async () => {
-        try {
-          // Send GET request to the profile API endpoint
-          const response = await fetch("https://vtu-xpwk.onrender.com/api/v1/get-profile", {
-            method: "GET",
-            headers: {
-              // Send the token in the Authorization header
-              'Authorization': `Bearer ${currentUser?.token}`,
-              'Content-Type': 'application/json',
-            },
-          });
-  
-          // Parse the JSON response
-          const data = await response.json();
-  
-          // Check for errors in the response
-          if (!response.ok || data.error) {
-            console.error("Failed to fetch user profile:", data.error || response.statusText);
-            return;
-          }
-  
-          // Update the user state with fetched profile data
-          setUser(data.data);
-        } catch (error) {
-          // Handle any network or unexpected errors
-          console.error("Error fetching user profile:", error.message);
+  // useEffect runs when the component mounts or when currentUser changes
+  useEffect(() => {
+    // Define an async function to fetch the user profile
+    const fetchUserProfile = async () => {
+      try {
+        // Send GET request to the profile API endpoint
+        const response = await fetch("https://vtu-xpwk.onrender.com/api/v1/get-profile", {
+          method: "GET",
+          headers: {
+            // Send the token in the Authorization header
+            'Authorization': `Bearer ${currentUser?.token}`,
+            'Content-Type': 'application/json',
+          },
+        });
+
+        // Parse the JSON response
+        const data = await response.json();
+
+        // Check for errors in the response
+        if (!response.ok || data.error) {
+          console.error("Failed to fetch user profile:", data.error || response.statusText);
+          return;
         }
-      };
-  
-      // Call the fetch function if the token exists
-      if (currentUser?.token) {
-        fetchUserProfile();
+
+        // Update the user state with fetched profile data
+        setUser(data.data);
+      } catch (error) {
+        // Handle any network or unexpected errors
+        console.error("Error fetching user profile:", error.message);
       }
-    }, [currentUser]); // Only re-run the effect if currentUser changes
-  
-    console.log("Current User:", user);
+    };
+
+    // Call the fetch function if the token exists
+    if (currentUser?.token) {
+      fetchUserProfile();
+    }
+  }, [currentUser]); // Only re-run the effect if currentUser changes
 
   return (
     <div
@@ -104,7 +103,7 @@ const Sidebar = ({ isOpen, toggleSidebar }) => {
           </div>
           <div>
             <h1 className="text-sm font-semibold text-white/60 capitalize">
-             Hi, {user.firstName || "User"}
+             Hi, {currentUser?.data?.firstName || "User"}
             </h1>
             <p className="text-sm text-white/40">
               balance: ₦ 5,300.00
