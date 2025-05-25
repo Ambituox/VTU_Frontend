@@ -1,191 +1,133 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from "react";
+import { useSelector } from "react-redux";
 
-const transactions = [
-  // Add as many items as you want for testing
-  {
-    id: 1,
-    date: '2025-05-11',
-    type: 'Airtime Purchase',
-    amount: 1000,
-    status: 'Success',
-    phone: '08012345678',
-    provider: 'MTN',
-  },
-  {
-    id: 2,
-    date: '2025-05-10',
-    type: 'Data Purchase',
-    amount: 2000,
-    status: 'Failed',
-    phone: '08098765432',
-    provider: 'Glo',
-  },
-  {
-    id: 3,
-    date: '2025-05-09',
-    type: 'Cable TV',
-    amount: 3500,
-    status: 'Success',
-    phone: '08033334444',
-    provider: 'DSTV',
-  },
-  {
-    id: 1,
-    date: '2025-05-11',
-    type: 'Airtime Purchase',
-    amount: 1000,
-    status: 'Success',
-    phone: '08012345678',
-    provider: 'MTN',
-  },
-  {
-    id: 2,
-    date: '2025-05-10',
-    type: 'Data Purchase',
-    amount: 2000,
-    status: 'Failed',
-    phone: '08098765432',
-    provider: 'Glo',
-  },
-  {
-    id: 3,
-    date: '2025-05-09',
-    type: 'Cable TV',
-    amount: 3500,
-    status: 'Success',
-    phone: '08033334444',
-    provider: 'DSTV',
-  },
-  {
-    id: 1,
-    date: '2025-05-11',
-    type: 'Airtime Purchase',
-    amount: 1000,
-    status: 'Success',
-    phone: '08012345678',
-    provider: 'MTN',
-  },
-  {
-    id: 2,
-    date: '2025-05-10',
-    type: 'Data Purchase',
-    amount: 2000,
-    status: 'Failed',
-    phone: '08098765432',
-    provider: 'Glo',
-  },
-  {
-    id: 3,
-    date: '2025-05-09',
-    type: 'Cable TV',
-    amount: 3500,
-    status: 'Success',
-    phone: '08033334444',
-    provider: 'DSTV',
-  },
-  // ... add more mock transactions for pagination
-];
-
-const itemsPerPage = 5;
-
-const TransactionHistory = () => {
-  const [filters, setFilters] = useState({ status: '', type: '', phone: '' });
+function TransactionsHistory() {
+  const { currentUser } = useSelector((state) => state.user);
+  const [transactions, setTransactions] = useState([]);
+  const [filteredTransactions, setFilteredTransactions] = useState([]);
+  const [filter, setFilter] = useState("all");
+  const [searchQuery, setSearchQuery] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
+  const transactionsPerPage = 10;
 
-  const handleFilterChange = (field, value) => {
-    setFilters({ ...filters, [field]: value });
-    setCurrentPage(1); // reset to page 1 when filtering
+  // Fetch profile and extract transactions
+  useEffect(() => {
+    const fetchTransactions = async () => {
+      try {
+        const response = await fetch("https://vtu-xpwk.onrender.com/api/v1/get-profile", {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${currentUser?.token}`,
+          },
+        });
+
+        const result = await response.json();
+
+        if (result?.data?.transactions) {
+          setTransactions(result.data.transactions);
+          setFilteredTransactions(result.data.transactions);
+        }
+      } catch (error) {
+        console.error("Failed to fetch transactions:", error);
+      }
+    };
+
+    if (currentUser?.token) {
+      fetchTransactions();
+    }
+  }, [currentUser]);
+
+  // Handle transaction filtering
+  const handleFilterChange = (type) => {
+    setFilter(type);
+    setCurrentPage(1);
+    applyFilters(type, searchQuery);
   };
 
-  const filteredTransactions = transactions.filter((tx) => {
-    const matchesStatus =
-      filters.status === '' || tx.status.toLowerCase() === filters.status.toLowerCase();
-    const matchesType =
-      filters.type === '' || tx.type.toLowerCase() === filters.type.toLowerCase();
-    const matchesPhone =
-      filters.phone === '' || tx.phone.toLowerCase().includes(filters.phone.trim().toLowerCase());
-  
-    return matchesStatus && matchesType && matchesPhone;
-  });  
+  // Apply filters and search
+  const applyFilters = (type, query) => {
+    let filtered = [...transactions];
 
-  const totalPages = Math.ceil(filteredTransactions.length / itemsPerPage);
-  const paginatedTransactions = filteredTransactions.slice(
-    (currentPage - 1) * itemsPerPage,
-    currentPage * itemsPerPage
-  );
+    if (type !== "all") {
+      filtered = filtered.filter((tx) => tx.type === type);
+    }
+
+    if (query.trim() !== "") {
+      filtered = filtered.filter((tx) =>
+        tx.metadata?.paymentDescription?.toLowerCase().includes(query.toLowerCase())
+      );
+    }
+
+    setFilteredTransactions(filtered);
+  };
+
+  const handleSearchChange = (e) => {
+    const value = e.target.value;
+    setSearchQuery(value);
+    setCurrentPage(1);
+    applyFilters(filter, value);
+  };
+
+  // Pagination logic
+  const indexOfLastTx = currentPage * transactionsPerPage;
+  const indexOfFirstTx = indexOfLastTx - transactionsPerPage;
+  const currentTransactions = filteredTransactions.slice(indexOfFirstTx, indexOfLastTx);
+  const totalPages = Math.ceil(filteredTransactions.length / transactionsPerPage);
+
+  const paginate = (pageNumber) => setCurrentPage(pageNumber);
 
   return (
-    <div className="bg-white p-4 shadow-md rounded-lg mt-6">
-      <h2 className="text-lg font-semibold mb-4 text-gray-700">Transaction History</h2>
-
-      {/* Filters */}
-      <div className="flex flex-wrap gap-4 mb-4">
+    <div className="p-4 max-w-6xl mx-auto">
+      <div className="mb-4 flex gap-2 items-center flex-wrap">
+        <button onClick={() => handleFilterChange("all")} className="px-4 py-2 bg-blue-500 text-gray-50 rounded">
+          All
+        </button>
+        <button onClick={() => handleFilterChange("fund_wallet")} className="px-4 py-2 bg-green-200 rounded">
+          Fund Wallet
+        </button>
+        <button onClick={() => handleFilterChange("data_plan")} className="px-4 py-2 bg-blue-200 rounded">
+          Data Plan
+        </button>
+        <button onClick={() => handleFilterChange("airtime")} className="px-4 py-2 bg-blue-200 rounded">
+          Airtime
+        </button>
         <input
           type="text"
-          placeholder="Search by phone"
-          value={filters.phone}
-          onChange={(e) => handleFilterChange('phone', e.target.value)}
-          className="px-3 py-2 border border-gray-300 rounded-md text-sm w-full sm:w-[200px]"
+          value={searchQuery}
+          onChange={handleSearchChange}
+          placeholder="Search description..."
+          className="border px-4 py-2 rounded w-full max-w-xs focus:outline-blue-400"
         />
-        <select
-          value={filters.status}
-          onChange={(e) => handleFilterChange('status', e.target.value)}
-          className="px-3 py-2 border border-gray-300 rounded-md text-sm w-full sm:w-[150px]"
-        >
-          <option value="">All Status</option>
-          <option value="Success">Success</option>
-          <option value="Failed">Failed</option>
-        </select>
-        <select
-          value={filters.type}
-          onChange={(e) => handleFilterChange('type', e.target.value)}
-          className="px-3 py-2 border border-gray-300 rounded-md text-sm w-full sm:w-[180px]"
-        >
-          <option value="">All Types</option>
-          <option value="Airtime Purchase">Airtime Purchase</option>
-          <option value="Data Purchase">Data Purchase</option>
-          <option value="Cable TV">Cable TV</option>
-        </select>
       </div>
 
-      {/* Table */}
-      <div className="overflow-x-auto">
-        <table className="min-w-full text-sm text-left text-gray-600">
-          <thead className="bg-gray-100 text-xs text-gray-500 uppercase">
-            <tr>
-              <th className="px-4 py-4">Date</th>
-              <th className="px-4 py-4">Type</th>
-              <th className="px-4 py-4">Phone</th>
-              <th className="px-4 py-4">Provider</th>
-              <th className="px-4 py-4">Amount (₦)</th>
-              <th className="px-4 py-4">Status</th>
+      <div className="overflow-x-auto bg-white shadow-md rounded-lg p-2">
+        <table className="min-w-full table-auto">
+          <thead className="bg-gray-100">
+            <tr className="text-gray-50">
+              <th className="px-4 py-2 border border-blue-400 bg-blue-500 rounded-tl-md text-start">#</th>
+              <th className="px-4 py-2 border border-blue-400 bg-blue-500 text-start">Description</th>
+              <th className="px-4 py-2 border border-blue-400 bg-blue-500 text-start">Amount</th>
+              <th className="px-4 py-2 border border-blue-400 bg-blue-500 text-start">Type</th>
+              <th className="px-4 py-2 border border-blue-400 bg-blue-500 text-start">Status</th>
+              <th className="px-4 py-2 border border-blue-400 bg-blue-500 rounded-tr-md text-start">Date</th>
             </tr>
           </thead>
           <tbody>
-            {paginatedTransactions.length > 0 ? (
-              paginatedTransactions.map((tx) => (
-                <tr key={tx.id} className="border-b hover:bg-gray-50">
-                  <td className="px-4 py-3">{tx.date}</td>
-                  <td className="px-4 py-3">{tx.type}</td>
-                  <td className="px-4 py-3">{tx.phone}</td>
-                  <td className="px-4 py-3">{tx.provider}</td>
-                  <td className="px-4 py-3">₦{tx.amount.toLocaleString()}</td>
-                  <td className="px-4 py-3">
-                    <span
-                      className={`px-2 py-1 rounded-full text-xs font-medium ${
-                        tx.status === 'Success'
-                          ? 'bg-green-100 text-green-600'
-                          : 'bg-red-100 text-red-600'
-                      }`}
-                    >
-                      {tx.status}
-                    </span>
-                  </td>
+            {currentTransactions.length > 0 ? (
+              currentTransactions.map((tx, index) => (
+                <tr key={index} className="text-start text-sm text-gray-500">
+                  <td className="border px-4 py-2">{indexOfFirstTx + index + 1}</td>
+                  <td className="border px-4 py-2 truncate">{tx.metadata?.paymentDescription}</td>
+                  <td className="border px-4 py-2">₦{tx.amount.toLocaleString()}</td>
+                  <td className="border px-4 py-2 capitalize">{tx.type}</td>
+                  <td className="border px-4 py-2 capitalize">{tx.status}</td>
+                  <td className="border px-4 py-2">{new Date(tx.createdAt).toLocaleString()}</td>
                 </tr>
               ))
             ) : (
               <tr>
-                <td colSpan="6" className="px-4 py-4 text-center text-gray-500">
+                <td colSpan="6" className="text-center py-4 text-gray-500">
                   No transactions found.
                 </td>
               </tr>
@@ -194,33 +136,21 @@ const TransactionHistory = () => {
         </table>
       </div>
 
-      {/* Pagination Controls */}
       {totalPages > 1 && (
-        <div className="mt-4 flex justify-between items-center text-sm">
-          <p className="text-gray-500">
-            Showing {paginatedTransactions.length} of {filteredTransactions.length} transactions
-          </p>
-          <div className="flex gap-2">
+        <div className="flex justify-center mt-4 space-x-2">
+          {Array.from({ length: totalPages }, (_, i) => (
             <button
-              disabled={currentPage === 1}
-              onClick={() => setCurrentPage((prev) => prev - 1)}
-              className="px-3 py-1 border rounded disabled:opacity-50"
+              key={i}
+              onClick={() => paginate(i + 1)}
+              className={`px-3 py-1 rounded border ${currentPage === i + 1 ? "bg-blue-500 text-white" : "bg-white text-black"}`}
             >
-              Prev
+              {i + 1}
             </button>
-            <span className="px-2 py-1">{currentPage} / {totalPages}</span>
-            <button
-              disabled={currentPage === totalPages}
-              onClick={() => setCurrentPage((prev) => prev + 1)}
-              className="px-3 py-1 border rounded disabled:opacity-50"
-            >
-              Next
-            </button>
-          </div>
+          ))}
         </div>
       )}
     </div>
   );
-};
+}
 
-export default TransactionHistory;
+export default TransactionsHistory;

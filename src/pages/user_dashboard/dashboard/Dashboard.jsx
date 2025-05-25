@@ -279,7 +279,7 @@ const Dashboard = () => {
   return (
     <div className="max-w-7xl md:p-3 rounded-lg">
       <DashboardHeader />
-      <DashboardMain />
+      {/* <DashboardMain /> */}
       <DashWallet />
       <NotificationsFAQsSupport />
       <Services/>

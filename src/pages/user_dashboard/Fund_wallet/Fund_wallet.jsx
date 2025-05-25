@@ -6,24 +6,6 @@ import { signOutUserSuccess } from "../../../store/userReducers";
 
 const API_BASE_URL = import.meta.env.API_BASE_URL || 'https://vtu-xpwk.onrender.com';
 
-const CheckoutRedirectPage = `
-  <!DOCTYPE html>
-  <html lang="en">
-    <head>
-      <meta charset="UTF-8" />
-      <title>Redirecting to Checkout...</title>
-      <script src="https://cdn.tailwindcss.com"></script>
-      <style>
-        body {
-          font-family: 'Inter', sans-serif;
-          background-color: #f9fafb;
-        }
-      </style>
-    </head>
-    
-  </html>
-`;
-
 export default function Fund_wallet() {
   const navigate = useNavigate();
   const { currentUser } = useSelector((state) => state.user);
@@ -31,7 +13,7 @@ export default function Fund_wallet() {
   const [formData, setFormData] = useState({
     amount: 0,
     paymentCategory:"Fund Wallet",
-    servicePaidFor: "fund_wallet",
+    servicePaidFor: "Fund Wallet",
     paymentDescription: "",
   });
 

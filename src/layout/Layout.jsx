@@ -35,17 +35,62 @@ const mainlinks = [
 export const SidebarLinkContext = createContext();
 
 const Sidebar = ({ isOpen, toggleSidebar }) => {
+  // Access the currentUser from Redux store to get the token
   const { currentUser } = useSelector((state) => state.user);
   const [isAdmin, setIsAdmin] = useState(false);
 
   useEffect(() => {
     // Ensure currentUser and currentUser.data are defined
-    if (currentUser && currentUser.data && currentUser.data.role) {
+    if (user && user.role) {
       setIsAdmin(true);
     } else {
       console.log("No current user or user data available.");
     }
   }, [currentUser]);
+
+  
+    // Local state to store the fetched user profile data
+    const [user, setUser] = useState([]);
+  
+    // useEffect runs when the component mounts or when currentUser changes
+    useEffect(() => {
+      // Define an async function to fetch the user profile
+      const fetchUserProfile = async () => {
+        try {
+          // Send GET request to the profile API endpoint
+          const response = await fetch("https://vtu-xpwk.onrender.com/api/v1/get-profile", {
+            method: "GET",
+            headers: {
+              // Send the token in the Authorization header
+              'Authorization': `Bearer ${currentUser?.token}`,
+              'Content-Type': 'application/json',
+            },
+          });
+  
+          // Parse the JSON response
+          const data = await response.json();
+  
+          // Check for errors in the response
+          if (!response.ok || data.error) {
+            console.error("Failed to fetch user profile:", data.error || response.statusText);
+            return;
+          }
+  
+          // Update the user state with fetched profile data
+          setUser(data.data);
+        } catch (error) {
+          // Handle any network or unexpected errors
+          console.error("Error fetching user profile:", error.message);
+        }
+      };
+  
+      // Call the fetch function if the token exists
+      if (currentUser?.token) {
+        fetchUserProfile();
+      }
+    }, [currentUser]); // Only re-run the effect if currentUser changes
+  
+    console.log("Current User:", user);
 
   return (
     <div
@@ -59,7 +104,7 @@ const Sidebar = ({ isOpen, toggleSidebar }) => {
           </div>
           <div>
             <h1 className="text-sm font-semibold text-white/60 capitalize">
-             Hi, {currentUser.data.firstName || "User"}
+             Hi, {user.firstName || "User"}
             </h1>
             <p className="text-sm text-white/40">
               balance: ₦ 5,300.00
@@ -164,7 +209,7 @@ export default function Layout() {
               <Outlet />
             </div>
             <div className="w-full bg-white p-3 flex justify-between items-center lg:flex-row flex-col">
-              <p className="text-gray-400 text-sm">Copyright &copy; 2023 - 2024 VPC</p>
+              <p className="text-gray-400 text-sm">Copyright &copy; 2025</p>
               <p className="text-gray-400 text-sm">Made with Love from Nigeria</p>
             </div>
             <div className="text-white flex justify-center items-center absolute bottom-8 right-5 h-[40px] w-[40px] bg-green-500 animate-bounce rounded-full">

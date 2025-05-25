@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { RiMenu4Line } from 'react-icons/ri';
 import { FaRegWindowClose } from 'react-icons/fa';
@@ -14,6 +14,7 @@ const Sidebar = () => {
     { name: 'Contact', path: '/contact' },
   ];
 
+  // Access the currentUser from Redux store to get the token
   const { currentUser } = useSelector((state) => state.user);
 
   return (
