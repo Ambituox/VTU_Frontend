@@ -1,5 +1,5 @@
 import React from 'react';
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import Home from '../pages/Home';
 import Services_page from '../pages/Services_page';
 import About_page from '../pages/About_page';
@@ -32,8 +32,12 @@ import BuyDataNow from '../components/BuyData/BuyDataNow';
 import VerifyPayment from '../pages/user_dashboard/buy_airtime/VerifyPayment';
 import CreateData from '../pages/user_dashboard/buy_data/CreateData';
 import AdminLogin from '../pages/admin/auth/Login';
+import TransactionHistory from '../pages/user_dashboard/TransactionHistory';
+import { useSelector } from 'react-redux';
 
 export default function AppRoutes() {
+  const { currentUser } = useSelector((state) => state.user);
+
   return (
     <Router>
       <Routes>
@@ -55,7 +59,7 @@ export default function AppRoutes() {
 
         {/* Admin Routes */}
         <Route>
-          <Route path="/" element={<Layout />}>
+          <Route path="/" element={currentUser?.token ? <Layout /> : <Navigate to="/login" />}>
             <Route path='/admin/create-data' element={<CreateData/>}/>
             {/* <Route path='admin/update-data/:id' element={<UpdateData/>}/> */}
             <Route path='/admin/update-data/' element={<UpdateData/>}/>
@@ -106,7 +110,8 @@ export default function AppRoutes() {
 
             <Route path='funding-transaction-history' element={<Fund_wallet/>}/>
             
-            <Route path='data-transaction-history' element={<DataPlanForm/>}/>  
+            <Route path='transaction-history' element={<TransactionHistory/>}/>
+             
             <Route path='data-top-up/buy-now/make-payment' element={<MakePayment/>}/>
             <Route path='data-top-up/buy-now/make-payment/verify-payment' element={<VerifyPayment/>}/>
             <Route path='data-top-up/buy-now' element={<BuyDataNow/>}/>
