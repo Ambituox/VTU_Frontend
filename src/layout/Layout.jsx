@@ -2,7 +2,7 @@ import React, { createContext, useEffect, useState } from 'react';
 import { MdOutlinePayment, MdSpaceDashboard } from 'react-icons/md';
 import { FaUserAlt, FaUsers, FaWhatsapp } from 'react-icons/fa';
 import { IoClose } from 'react-icons/io5';
-import { Link, Outlet } from 'react-router-dom';
+import { Link, Outlet, useNavigate } from 'react-router-dom';
 import Main_links from './sidebar/main/Main_links';
 import Services_links from './sidebar/services/Services_links';
 import Extra_links from './sidebar/extra/Extra_links';
@@ -41,7 +41,7 @@ const Sidebar = ({ isOpen, toggleSidebar }) => {
 
   // Local state to store the fetched user profile data
   const [user, setUser] = useState([]);
-  
+
   useEffect(() => {
     // Ensure currentUser and currentUser.data are defined
     if (currentUser.data && currentUser.data.role) {
@@ -94,7 +94,7 @@ const Sidebar = ({ isOpen, toggleSidebar }) => {
       className={`h-screen overflow-y-auto pb-5 z-20 bg-slate-900 text-gray-400 fixed lg:static ${ isOpen ? '64' : 'w-0'
       } transition-all duration-300`}>
       <div className="px-5 py-6 flex items-center justify-between border-b border-slate-700">
-        <Link to={'/'}>
+        <Link to={'user-detail'}>
         <div className="flex items-center justify-center gap-2">
           <div className="text-slate-100 text-3xl font-bold flex items-center text-white/60 border-2 border-blue-500 rounded-full p-2">
             <FaUserAlt />
@@ -144,18 +144,27 @@ const Sidebar = ({ isOpen, toggleSidebar }) => {
 };
 
 const Header = ({ toggleSidebar }) => {
+  const navigate = useNavigate();
+
   const { currentUser } = useSelector((state) => state.user);
 
+  const handleBack = () => {
+
+    navigate(-1) // Go back to the previous page
+  }
   return (
     <header className="text-white z-10 top-0 sticky bg-blue-500">
       <div className="flex items-center justify-between px-6 lg:py-4 py-2">
         {/* Logo */}
-        <div className="flex items-center space-x-2">
-          <button onClick={toggleSidebar} className="text-2xl p-2 text-slate-50 lg:hidden focus:outline-none" aria-label="Open Sidebar">
+        <div className="flex items-center space-x-2 lg:hidden">
+          <button onClick={toggleSidebar} className="text-2xl p-2 text-slate-50 focus:outline-none" aria-label="Open Sidebar">
             ☰
           </button>
         </div>
 
+        <div className="absolutetop-2 left-2 z-10">
+          <button className="bg-gray-50 py-2 px-4 rounded-lg font-semibold text-red-800" onClick={handleBack}>Back</button>
+        </div>
         {/* User Actions */}
         {
           currentUser && ( 
