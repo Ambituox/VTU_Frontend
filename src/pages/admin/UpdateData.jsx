@@ -86,7 +86,7 @@ const UpdateData = () => {
   };
 
   return (
-    <div className=" py-6 px-3 rounded-lg">
+    <div className=" py-20 px-3 rounded-lg">
       <div className="max-w-md mx-auto bg-white p-3 rounded-lg shadow-md relative">
         <div className="absolute top-2 left-2">
           <button className="bg-blue-500 py-2 px-4 rounded-lg font-semibold text-white" onClick={handleBack}>Back</button>

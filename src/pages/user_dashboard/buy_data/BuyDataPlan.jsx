@@ -78,7 +78,7 @@ export default function BuyDataPlan() {
       case "MTN":
         return "bg-yellow-400";
       case "AIRTEL":
-        return "bg-red-500";
+        return "bg-red-800";
       case "GLO":
         return "bg-green-600";
       case "9MOBILE":
@@ -87,7 +87,15 @@ export default function BuyDataPlan() {
         return "bg-gray-900";
     }
   };
-
+// Text color based on uppercase network
+  const getTextColor = (network) => {
+    switch (network) {
+        case "MTN":
+          return "text-gray-800";
+        default: 
+          return  "text-white";
+    }
+  };
   // Handler for page changes
   const handlePageChange = (network, newPage) => {
     setCurrentPage(prev => ({ ...prev, [network]: newPage }));
@@ -144,13 +152,13 @@ export default function BuyDataPlan() {
                   ) : plans.length > 0 ? (
                     <>
                       {currentPlans.map((plan) => (
-                        <div key={plan._id} className={`${getBgColor(network)} relative flex justify-center items-center flex-col p-4 border rounded-lg shadow-sm`}>
-                          <p className="mt-2 text-sm text-gray-800 text-center">{plan.plan} Plan Size</p>
-                          <p className="mt-2 flex items-center text-black font-semibold text-lg">
+                        <div key={plan._id} className={`${getBgColor(network)} ${getTextColor(network)} relative flex justify-center items-center flex-col p-4 border rounded-lg shadow-sm`}>
+                          <p className="mt-2 text-sm text-center">{plan.plan} Plan Size</p>
+                          <p className="mt-2 flex items-center font-semibold text-lg">
                             <TbCurrencyNaira />
                             {plan.price}
                           </p>
-                          <p className="mt-2 text-sm text-gray-800">{plan.duration}</p>
+                          <p className="mt-2 text-sm ">{plan.duration}</p>
                           <button onClick={() => navigate("/profile/data-top-up/buy-now", { state: plan })} className="mt-3 bg-white border-none text-black font-semibold px-3 py-2 rounded hover:bg-gray-800 hover:text-white text-sm transition">
                             Buy Now
                           </button>

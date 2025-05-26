@@ -4,7 +4,7 @@ import { useSelector } from "react-redux";
 
 const API_BASE_URL = import.meta.env.API_BASE_URL || 'https://vtu-xpwk.onrender.com';
 
-const networkProviders = ["MTN", "Glo", "Airtel", "9Mobile"];
+const networkProviders = ["MTN", "GLO", "AIRTEL", "9MOBILE"];
 
 export default function CreateDataComponent() {
   const { currentUser } = useSelector((state) => state.user);
@@ -91,7 +91,7 @@ export default function CreateDataComponent() {
   
 
   return (
-    <div className="max-w-md mx-auto p-6 bg-white my-20 shadow-md rounded-lg relative">
+    <div className="max-w-md mx-auto p-6 bg-white my-16 shadow-md rounded-lg relative">
       <h2 className="text-2xl font-bold mb-4 text-center">Create Data Plan</h2>
       <form onSubmit={handleSubmit} className="space-y-4">
         <label className="block">

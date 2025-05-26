@@ -1,44 +1,42 @@
-import { current } from "@reduxjs/toolkit";
-import React from "react";
-import { useState } from "react";
+import React, { useState } from "react";
+import { useSelector } from "react-redux";
 import { FaMoneyCheckAlt, FaUniversity, FaRegBuilding, FaWhatsapp } from "react-icons/fa";
 import { FaClockRotateLeft } from "react-icons/fa6";
 import { HiUsers } from "react-icons/hi";
 import { ImDatabase } from "react-icons/im";
-import { useSelector } from "react-redux";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import TransactionsHistoryComp from "../../../components/user_dashboard_component/TransactionsHistoryComp";
+import MTNDataDisplay from "../../../components/user_dashboard_component/MTNDataDisplay";
 
 const DashboardHeader = () => {
-  const [showMore, setShowMore] = useState(false);
-
   const { currentUser } = useSelector((state) => state.user);
+  const { firstName } = currentUser?.data || {};
+  const navigate = useNavigate();
 
-  const {firstName} = currentUser.data;
+  const handleLogout = () => {
+    // Implement logout logic here, e.g. dispatch logout action
+    alert("Logout clicked!");
+    // navigate('/login');
+  };
 
   return (
     <div className="bg-white lg:py-18 py-6 text-slate-700 md:px-6 px-3 rounded-lg shadow-md transition-all duration-500">
       <h1 className="text-2xl font-bold">Welcome to Ambitioux, <span className="capitalize text-blue-500">{firstName}</span></h1>
-      <p className="mt-2 text-sm">
+      <p className="mt-2">
         Welcome to Ambitioux VTU, your one-stop platform for seamless and affordable data, airtime, and bill payments. 
         Enjoy exclusive benefits such as discounted data prices, cashback rewards, and commissions on every successful referral. 
         Save money while earning effortlessly by using our reliable VTU services.
       </p>
-      {showMore && (
-        <p className="mt-2 text-sm transition-opacity duration-500 ease-in-out">
-          With Ambitioux, you can:
-          <ul className="list-disc pl-5">
-            <li>Purchase data at unbeatable rates.</li>
-            <li>Earn commissions on every MTN data purchase made by your referrals.</li>
-            <li>Enjoy fast and secure transactions.</li>
-            <li>Get cashback rewards on select purchases.</li>
-          </ul>
-        </p>
-      )}
-      <button  onClick={() => setShowMore(!showMore)}  className="mt-2 text-red-600 underline focus:outline-none transition-colors duration-300 text-sm hover:text-red-400">
-        {showMore ? "See Less" : "See More"}
-      </button>
+      <p className="mt-2 transition-opacity duration-500 ease-in-out">
+        With Ambitioux, you can:
+        <ul className="list-disc pl-5">
+          <li>Purchase data at unbeatable rates.</li>
+          <li>Earn commissions on every MTN data purchase made by your referrals.</li>
+          <li>Enjoy fast and secure transactions.</li>
+          <li>Get cashback rewards on select purchases.</li>
+        </ul>
+      </p>
     </div>
-
   );
 };
 
@@ -80,20 +78,27 @@ const BankDetailsCard = () => {
     },
   };
 
+  const handleCopyAccountNumber = () => {
+    navigator.clipboard.writeText(bankDetails[activeTab].accountNumber);
+    alert(`Account number ${bankDetails[activeTab].accountNumber} copied to clipboard!`);
+  };
+
   const data1 = [
     {
-      icon: <FaClockRotateLeft/>,
-      title: 'Airtime Transactions',
-      link: 'airtime_wallet_summary',
-      style: 'w-10 h-10 flex justify-center items-center rounded-md bg-purple-600 text-white'
+      icon: <FaClockRotateLeft />,
+      title: "Airtime Transactions",
+      link: "/airtime_wallet_summary",
+      style: "w-10 h-10 flex justify-center items-center rounded-md bg-purple-600 text-white",
     },
     {
-      icon: <FaClockRotateLeft/>,
-      title: 'Transactions',
-      link: 'history',
-      style: 'w-10 h-10 flex justify-center items-center rounded-md bg-yellow-400 text-white'
+      icon: <FaClockRotateLeft />,
+      title: "Transactions",
+      link: "/history",
+      style: "w-10 h-10 flex justify-center items-center rounded-md bg-yellow-400 text-white",
     },
   ];
+
+  const navigate = useNavigate();
 
   return (
     <div className="md:mt-10 mt-6">
@@ -115,31 +120,38 @@ const BankDetailsCard = () => {
       </div>
 
       {/* Bank Details Content */}
-      <div className={`md:p-6 p-3 rounded-b-lg text-white transition-all duration-500 ${bankDetails[activeTab].bgColor}`}>
+      <div
+        className={`md:p-6 p-3 rounded-b-lg text-white transition-all duration-500 ${bankDetails[activeTab].bgColor}`}
+      >
         <div className="flex justify-between items-center">
-          <img src={bankDetails[activeTab].icon} alt="" className="max-w-[140px] max-h-[60px] rounded-md"/>
+          <img
+            src={bankDetails[activeTab].icon}
+            alt=""
+            className="max-w-[140px] max-h-[60px] rounded-md"
+          />
           <div className="text-right">
             <p className="text-lg font-bold">{bankDetails[activeTab].charge}</p>
             <p className="text-sm text-gray-200">CHARGE</p>
           </div>
         </div>
         <div className="mt-4">
-          <p className="text-lg font-bold">
-            Account Number: {bankDetails[activeTab].accountNumber}
-          </p>
+          <p className="text-lg font-bold">Account Number: {bankDetails[activeTab].accountNumber}</p>
+          <button
+            onClick={handleCopyAccountNumber}
+            className="mt-1 text-sm underline cursor-pointer hover:text-gray-300"
+            title="Copy Account Number"
+          >
+            Copy Account Number
+          </button>
           <p className="text-md mt-2">
-            Account Name: {" "}
-            <span className="font-semibold">
-              {bankDetails[activeTab].accountName}
-            </span>
+            Account Name: <span className="font-semibold">{bankDetails[activeTab].accountName}</span>
           </p>
           <p className="text-md mt-2">Bank Name: {bankDetails[activeTab].bankName}</p>
         </div>
         <p className="mt-4 text-sm font-semibold">AUTOMATED BANK TRANSFER</p>
-        <p className="text-sm">
-          Make transfer to this account to fund your wallet
-        </p>
+        <p className="text-sm">Make transfer to this account to fund your wallet</p>
       </div>
+
       <div className="my-8 px-4">
         {/* Marquee Section */}
         <div className="bg-gradient-to-r from-blue-400 to-red-600 text-white rounded-full py-2 shadow-md">
@@ -153,10 +165,13 @@ const BankDetailsCard = () => {
         {/* Feature Cards Section */}
         <div className="flex justify-center items-center gap-6 lg:max-w-2xl mx-auto mt-10 bg-blue-100 lg:p-4 p-3 rounded-xl shadow-lg">
           {data1.map((data, index) => (
-            <div  key={index}  className="w-[100%] lg:w-[300px] shadow-lg p-4 bg-blue-200 rounded-xl flex items-center gap-3 transition-all duration-300 hover:scale-105 hover:shadow-xl">
-              <div className={`p-3 rounded-full ${data.style}`}>
-                {data.icon}
-              </div>
+            <div
+              key={index}
+              onClick={() => navigate(data.link)}
+              className="cursor-pointer w-[100%] lg:w-[300px] shadow-lg p-4 bg-blue-200 rounded-xl flex items-center gap-3 transition-all duration-300 hover:scale-105 hover:shadow-xl"
+              title={`Go to ${data.title}`}
+            >
+              <div className={`p-3 rounded-full ${data.style}`}>{data.icon}</div>
               <p className="font-semibold text-gray-800">{data.title}</p>
             </div>
           ))}
@@ -166,76 +181,90 @@ const BankDetailsCard = () => {
   );
 };
 
-const DashboardMain = ({ data }) => {
-  const { currentUser } = useSelector((state) => state.user);
-
-  const {firstName} = currentUser.data;
-
-  return (
-    <div className="bg-white md:p-6 p-3 rounded-lg shadow-md mt-6">
-      <div className="">
-        <p className="text-xl border-b pb-3">
-          Good day, <span className="font-semibold text-blue-500 capitalize">{currentUser && firstName}</span>
-        </p>
-      </div>
-      <BankDetailsCard />
-    </div>
-  );
-};
-
 const DashWallet = () => {
   const walletData = [
-    { title: "MTN SME DATA BALANCE", icon : <ImDatabase /> ,amount: "0.00 GB" },
-    { title: "AIRTEL CG DATA BALANCE", icon : <ImDatabase /> ,amount: "0.00 GB" },
-    { title: "GLO CG DATA BALANCE", icon : <ImDatabase /> ,amount: "0.00 GB" },
-    { title: "9MOBILE CG DATA BALANCE", icon : <ImDatabase /> ,amount: "0.00 GB" },
+    { title: "MTN SME DATA BALANCE", icon: <ImDatabase />, amount: "0.00 GB" },
+    { title: "AIRTEL CG DATA BALANCE", icon: <ImDatabase />, amount: "0.00 GB" },
+    { title: "GLO CG DATA BALANCE", icon: <ImDatabase />, amount: "0.00 GB" },
+    { title: "9MOBILE CG DATA BALANCE", icon: <ImDatabase />, amount: "0.00 GB" },
   ];
 
   return (
-    <div className="grid md:grid-cols-3 grid-cols-2 gap-4 my-12 max-w-7xl bg-blue-200 p-3 rounded-lg">
+    <div className="grid md:grid-cols-4 grid-cols-2 gap-4 my-12 max-w-7xl bg-blue-200 p-3 rounded-lg mx-auto">
       {walletData.map((item, index) => (
-        <div key={index} className="bg-white shadow-md p-4 rounded-lg flex justify-between items-center">
-          <div className="">
+        <div
+          key={index}
+          className="bg-white shadow-md p-4 rounded-lg flex justify-between items-center"
+        >
+          <div>
             <h3 className="font-semibold text-sm text-gray-500">{item.title}</h3>
             <p className="text-xl font-bold mt-2 text-gray-600">{item.amount}</p>
           </div>
-          <div className="bg-blue-500 text-white p-2 rounded-md text-4xl mb-2">
-            {item.icon}
-          </div>
+          <div className="bg-blue-500 text-white p-2 rounded-md text-4xl mb-2">{item.icon}</div>
         </div>
       ))}
     </div>
   );
 };
 
-
 const NotificationsFAQsSupport = () => {
   return (
-    <div className="grid md:grid-cols-3 grid-cols-1 bg-blue-100 p-3 rounded-lg gap-4 mt-6 max-w-7xl">
-      <div className="lg:h-[100px] bg-blue-100 text-blue-700 p-4 rounded-lg shadow-md">
-        <h4 className="font-semibold text-lg mb-2">Notifications</h4>
-        <p>No new notifications at the moment.</p>
+    <div className="grid md:grid-cols-3 grid-cols-1 p-3 rounded-lg gap-4 mt-6 max-w-7xl mx-auto">
+      {/* Latest News */}
+      <div className="lg:h-[170px] bg-blue-100 text-blue-700 p-4 rounded-lg shadow-md flex flex-col justify-between">
+        <div>
+          <h4 className="font-semibold text-lg mb-2">Latest News</h4>
+          <ul className="list-disc pl-5 space-y-1 text-sm">
+            <li>New data plans available from Airtel starting June 1st.</li>
+            <li>Referral program rewards doubled for July!</li>
+            <li>Scheduled maintenance on May 28 from 1-3 AM.</li>
+          </ul>
+        </div>
+        <Link
+          to="/news"
+          className="bg-blue-500 text-white mt-4 px-4 py-2 rounded-lg text-center"
+        >
+          View All News
+        </Link>
       </div>
-      <div className="lg:h-[170px] bg-blue-100 text-blue-700 p-4 rounded-lg shadow-md">
-        <h4 className="font-semibold text-lg mb-2">FAQs</h4>
-        <p>Please go through them to have a better knowledge of this platform.</p>
-        <button className="bg-blue-500 text-white mt-4 px-4 py-2 rounded-lg">
-          FAQs
-        </button>
+
+      {/* Referral Stats */}
+      <div className="lg:h-[170px] bg-blue-100 text-blue-700 p-4 rounded-lg shadow-md flex flex-col justify-between">
+        <div>
+          <h4 className="font-semibold text-lg mb-2">My Referrals</h4>
+          <p className="text-sm mb-2">You have referred <span className="font-bold">12</span> friends.</p>
+          <p className="text-sm mb-2">Total commissions earned: <span className="font-bold">₦5,400</span></p>
+          <p className="text-sm">Keep sharing your referral link to earn more rewards!</p>
+        </div>
+        <Link
+          to="/referrals"
+          className="bg-blue-500 text-white mt-4 px-4 py-2 rounded-lg text-center"
+        >
+          Manage Referrals
+        </Link>
       </div>
+
+      {/* Support Team */}
       <div className="bg-blue-100 text-blue-700 p-4 rounded-lg shadow-md">
         <h4 className="font-semibold text-lg mb-2">Support Team</h4>
-        <p>
-          Have anything to say to us? Please contact our Support Team on
-          WhatsApp.
-        </p>
+        <p>Have anything to say to us? Please contact our Support Team on WhatsApp.</p>
         <div className="mt-4 space-y-4">
-          <button className="bg-blue-500 flex items-center gap-2 text-white px-4 py-2 rounded-lg">
-            <FaWhatsapp/> WhatsApp Us
-          </button>
-          <button className="bg-blue-700 text-white px-4 py-2 rounded-lg flex items-center gap-2">
-            <FaWhatsapp/> Join Our WhatsApp Group
-          </button>
+          <a
+            href="https://wa.me/08162269770"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="bg-green-600 flex items-center gap-2 text-white px-4 py-2 rounded-lg"
+          >
+            <FaWhatsapp /> WhatsApp Us
+          </a>
+          <a
+            href="https://chat.whatsapp.com/YourGroupInviteLink"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="bg-green-800 text-white px-4 py-2 rounded-lg flex items-center gap-2"
+          >
+            <FaWhatsapp /> Join Our WhatsApp Group
+          </a>
         </div>
       </div>
     </div>
@@ -244,31 +273,41 @@ const NotificationsFAQsSupport = () => {
 
 const Services = () => {
   const services = [
-    { logo: "/buyData.jpg", title: "Bulk Reseller Data" },
-    { logo: "/airtime.svg", title: "VTU Airtime Top-up" },
-    { logo: "/tvSub.jpg", title: "Cable Subscription" },
-    { logo: "/epins.jpg", title: "Exam Scratch Card" },
-    { logo: "/pin-coupon.png", title: "Bulk Data" },
-    { logo: "/electric.png", title: "Electricity Bills Payment" },
-    { logo: "/payment-gateway.jpg", title: "Automatic Payment Gateway" },
-    { logo: "/referral.png", title: "My Refferals" },
+    { logo: "/buyData.jpg", title: "Bulk Reseller Data", link: "/bulk-reseller-data" },
+    { logo: "/airtime.svg", title: "VTU Airtime Top-up", link: "/vtu-airtime" },
+    { logo: "/tvSub.jpg", title: "Cable Subscription", link: "/cable-subscription" },
+    { logo: "/epins.jpg", title: "Exam Scratch Card", link: "/exam-scratch-card" },
+    { logo: "/pin-coupon.png", title: "Bulk Data", link: "/bulk-data" },
+    { logo: "/electric.png", title: "Electricity Bills Payment", link: "/electricity-bills" },
+    { logo: "/payment-gateway.jpg", title: "Automatic Payment Gateway", link: "/payment-gateway" },
+    { logo: "/referral.png", title: "My Referrals", link: "/referrals" },
   ];
 
   return (
-    <div className="max-w-7xl mx-auto px-4 py-6 bg-blue-100 mt-6 rounded-lg">
+    <div className="max-w-7xl mx-auto px-4 py-6 bg-gray-100 mt-6 rounded-lg">
       {/* Services Grid */}
-      <div  className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
         {services.map((service, index) => (
-          <div key={index}
-            className="bg-white shadow-md rounded-lg p-6 flex flex-col items-center hover:shadow-lg hover:scale-105 transition-transform duration-300 ease-in-out">
+          <Link
+            to={service.link}
+            key={index}
+            className="bg-white shadow-md rounded-lg p-6 flex flex-col items-center hover:shadow-lg hover:scale-105 transition-transform duration-300 ease-in-out"
+            title={`Go to ${service.title}`}
+          >
             {/* Service Icon */}
             <div className="w-[6rem] h-[6rem] bg-gray-100 rounded-full flex items-center justify-center mb-4 hover:animate-bounce transition-all duration-300">
-              <img src={service.logo} alt={service.title} className="w-full h-full object-contain rounded-full"/>
+              <img
+                src={service.logo}
+                alt={service.title}
+                className="w-full h-full object-contain rounded-full"
+              />
             </div>
 
             {/* Service Title */}
-            <Link to={'/'} className="text-center">{service.title}</Link>
-          </div>
+            <h3 className="text-center text-md font-semibold text-gray-700">
+              {service.title}
+            </h3>
+          </Link>
         ))}
       </div>
     </div>
@@ -277,13 +316,13 @@ const Services = () => {
 
 const Dashboard = () => {
   return (
-    <div className="max-w-7xl md:p-3 rounded-lg">
+    <section className="max-w-7xl mx-auto md:p-6 p-3">
       <DashboardHeader />
-      {/* <DashboardMain /> */}
-      <DashWallet />
-      <NotificationsFAQsSupport />
-      <Services/>
-    </div>
+      {/* <DashWallet /> */}
+      <MTNDataDisplay />
+      <Services />
+      <TransactionsHistoryComp />
+    </section>
   );
 };
 
