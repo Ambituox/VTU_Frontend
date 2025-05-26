@@ -92,32 +92,34 @@ const UpdateData = () => {
           <button className="bg-blue-500 py-2 px-4 rounded-lg font-semibold text-white" onClick={handleBack}>Back</button>
         </div>
         <h2 className="text-2xl font-semibold text-center">Update Data Plan</h2>
-        <div className="p-4 bg-white rounded-lg">
-          <label className="block my-5">
-            <span className="text-gray-700">Network Provider</span>
-            <select name="networkProvider" value={formData.networkProvider} onChange={handleChange} className="mt-1 block w-full p-3 border rounded">
-              {['MTN', 'AIRTEL', 'GLO', '9MOBILE'].map((network, index) => (
-                <option key={index} value={network}>{network}</option>
-              ))}
-            </select>
-          </label>
+        <div className="p-4 bg-white rounded-lg mt-6">
+          <div className="grid md:grid-cols-2 grid-cols-1 gap-3">
+            <label className="block my-2">
+              <span className="text-gray-700">Network Provider</span>
+              <select name="networkProvider" value={formData.networkProvider} onChange={handleChange} className="mt-1 block w-full p-3 border rounded">
+                {['MTN', 'AIRTEL', 'GLO', '9MOBILE'].map((network, index) => (
+                  <option key={index} value={network}>{network}</option>
+                ))}
+              </select>
+            </label>
 
-          <label className="block my-5">
-            <span className="text-gray-700">Plan</span>
-            <input type="text" name="plan" value={formData.plan} onChange={handleChange} className="mt-1 block w-full p-3 border rounded" />
-          </label>
+            <label className="block my-2">
+              <span className="text-gray-700">Plan</span>
+              <input type="text" name="plan" value={formData.plan} onChange={handleChange} className="mt-1 block w-full p-3 border rounded" />
+            </label>
+          </div>
 
-          <label className="block my-5">
+          <label className="block my-2">
             <span className="text-gray-700">Duration</span>
             <input type="text" name="duration" value={formData.duration} onChange={handleChange} className="mt-1 block w-full p-3 border rounded" />
           </label>
 
-          <label className="block my-5">
+          <label className="block my-2">
             <span className="text-gray-700">Amount</span>
             <input type="text" name="amount" value={formData.amount} onChange={handleChange} className="mt-1 block w-full p-3 border rounded" />
           </label>
 
-          <button onClick={handleUpdate} className='bg-blue-500 w-full font-semibold p-3 text-white rounded-md'>
+          <button onClick={handleUpdate} className='mt-4 bg-green-500 w-full font-semibold p-3 text-white rounded-md'>
             {loading ? 'Updating...' : 'Update Data'}
           </button>
         </div>
