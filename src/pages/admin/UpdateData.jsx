@@ -86,13 +86,13 @@ const UpdateData = () => {
   };
 
   return (
-    <div className=" py-20 px-3 rounded-lg">
-      <div className="max-w-md mx-auto bg-white p-3 rounded-lg shadow-md relative">
+    <div className=" md:py-20 py-10 px-3 rounded-lg">
+      <div className="max-w-md mx-auto border border-gray-200 bg-white p-3 rounded-lg shadow-md relative">
         <div className="absolute top-2 left-2">
           <button className="bg-blue-500 py-2 px-4 rounded-lg font-semibold text-white" onClick={handleBack}>Back</button>
         </div>
         <h2 className="text-2xl font-semibold text-center">Update Data Plan</h2>
-        <div className="p-4 bg-white rounded-lg mt-6">
+        <div className="md:p-4 bg-white rounded-lg mt-6">
           <div className="grid md:grid-cols-2 grid-cols-1 gap-3">
             <label className="block my-2">
               <span className="text-gray-700">Network Provider</span>

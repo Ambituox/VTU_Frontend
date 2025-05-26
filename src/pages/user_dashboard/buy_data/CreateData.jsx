@@ -91,7 +91,7 @@ export default function CreateDataComponent() {
   
 
   return (
-    <div className="max-w-md mx-auto p-6 bg-white my-16 shadow-md rounded-lg relative">
+    <div className="max-w-md md:mx-auto md:p-6 p-3 mx-2 bg-white md:my-20 my-10 border border-gray-200 shadow-md rounded-lg relative">
       <h2 className="text-2xl font-bold mb-4 text-center">Create Data Plan</h2>
       <form onSubmit={handleSubmit} className="space-y-4">
         <label className="block">

@@ -138,7 +138,7 @@ const handlePayment = async () => {
   };
 
   return (
-    <div className="relative max-w-md mx-auto my-20 p-6 bg-white shadow-lg rounded-lg">
+    <div className="relative max-w-md md:mx-auto md:my-20 my-10 p-6 mx-2 bg-white shadow-lg rounded-lg">
       <div className="absolute top-2 left-2">
         <button className="bg-blue-500 py-2 px-4 rounded-lg font-semibold text-white" onClick={handleBack}>Back</button>
       </div>

@@ -46,7 +46,7 @@ const Services = () => {
   ];
 
   return (
-    <div className="max-w-7xl mx-auto px-4 py-6 bg-gray-100 mt-6 rounded-lg">
+    <div className="max-w-7xl mx-auto lg:px-4 px-2 lg:py-6 py-2 bg-gray-100 mt-6 rounded-lg">
       {/* Services Grid */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
         {services.map((service, index) => (

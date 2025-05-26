@@ -44,7 +44,7 @@ export default function AboutHero() {
 
               {/* Right Image */}
               <div className="lg:w-1/2 flex justify-center items-center p-2" data-aos="fade-left">
-                <img src="/vtu-hero.png" alt="Ambitioux VTU App Illustration" className="max-w-md h-auto rounded-lg"/>
+                <img src="/vtu-hero.png" alt="Ambitioux VTU App Illustration" className="lg:max-w-md max-w-full h-auto rounded-lg"/>
               </div>
             </div>
           </div>

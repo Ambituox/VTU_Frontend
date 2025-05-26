@@ -14,7 +14,7 @@ export default function UserLogoutButton() {
     };
   return (
     <div className="w-full">
-      <button onClick={handleSignOut} className="flex justify-center items-center gap-2 text-red-600 bg-gray-100 border-2 border-red-500 text-sm py-2 px-4 font-semibold rounded-md hover:text-white transition duration-200">
+      <button onClick={handleSignOut} className="flex justify-center items-center gap-2 text-gray-100 bg-blue-500 border-2 border-ed-500 text-sm py-2 px-4 font-semibold rounded-md hover:text-white transition duration-200">
         <ImSwitch />Logout
       </button>
     </div>

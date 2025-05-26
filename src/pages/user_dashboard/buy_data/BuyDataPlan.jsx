@@ -103,7 +103,7 @@ export default function BuyDataPlan() {
 
   return (
     <>
-      <div className="w-full max-w-5xl mx-auto bg-white px-2 md:p-4 rounded-lg my-10">
+      <div className="w-full max-w-5xl mx-auto bg-white px-2 py-6 md:px-4 rounded-lg my-10">
         <div className="flex justify-between items-center mb-2">
           <h2 className="text-lg font-semibold text-gray-700">Data Plans</h2>
           <button onClick={fetchData} className="flex items-center gap-2 bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 transition">
@@ -139,7 +139,7 @@ export default function BuyDataPlan() {
               const currentPlans = plans.slice(startIndex, startIndex + itemsPerPage);
 
               return (
-                <Tab.Panel key={idx} className="rounded-xl grid lg:grid-cols-4 grid-cols-3 md:gap-4 md:p-3 shadow-md">
+                <Tab.Panel key={idx} className="rounded-xl grid lg:grid-cols-4 md:grid-cols-3 grid-cols-2 md:gap-4 gap-2 md:p-3 shadow-md">
                   {loading ? (
                     [...Array(4)].map((_, i) => (
                       <div key={i} className="bg-gray-200 animate-pulse h-40 rounded-lg flex flex-col justify-center items-center p-4">
@@ -152,7 +152,7 @@ export default function BuyDataPlan() {
                   ) : plans.length > 0 ? (
                     <>
                       {currentPlans.map((plan) => (
-                        <div key={plan._id} className={`${getBgColor(network)} ${getTextColor(network)} relative flex justify-center items-center flex-col p-4 border rounded-lg shadow-sm`}>
+                        <div key={plan._id} className={`${getBgColor(network)} ${getTextColor(network)} relative flex justify-center items-center flex-col p-4 border rounded-lg`}>
                           <p className="mt-2 text-sm text-center">{plan.plan} Plan Size</p>
                           <p className="mt-2 flex items-center font-semibold text-lg">
                             <TbCurrencyNaira />
@@ -167,7 +167,7 @@ export default function BuyDataPlan() {
 
                       {/* Pagination Controls */}
                       {totalPages > 1 && (
-                        <div className="col-span-full flex justify-center mt-4 space-x-2">
+                        <div className="col-span-full flex justify-center my-4 space-x-2">
                           <button
                             onClick={() => handlePageChange(network, currentPage[network] - 1)}
                             disabled={currentPage[network] === 1}

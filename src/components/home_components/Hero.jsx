@@ -44,7 +44,7 @@ export default function Hero() {
             
             {/* Right Image Section */}
             <div className="lg:w-1/2 flex justify-center items-center p-2" data-aos="fade-left">
-              <img src="/home_hero.png" alt="Virtual Top Up" className="transition-transform rounded-xl duration-300 hover:scale-105 max-w-md h-auto"/>
+              <img src="/home_hero.png" alt="Virtual Top Up" className="transition-transform rounded-xl duration-300 hover:scale-105 lg:max-w-md max-w-full h-auto"/>
             </div>
           </div>
         </div>

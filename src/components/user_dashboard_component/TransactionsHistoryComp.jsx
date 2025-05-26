@@ -96,7 +96,7 @@ function TransactionsHistoryComp() {
   const currentTransactions = filteredTransactions.slice(0, 8);
 
   return (
-    <div className="py-8 px-4 max-w-6xl mx-auto">
+    <div className="lg:py-8 py-4 mt-6 lg:px-4 max-w-6xl mx-auto">
       <div className="flex justify-between items-center">
         <div className="mb-4 flex gap-2 items-center lg:flex-nowrap flex-1 min-w-0 flex-wrap">
           <button onClick={() => handleFilterChange("all")} className="px-4 py-2 bg-blue-500 text-gray-50 rounded">
@@ -168,7 +168,7 @@ function TransactionsHistoryComp() {
       {/* See More Button */}
       <div className="flex justify-center mt-6">
         <a
-          href="/transaction-history"
+          href="/profile/transaction-history"
           className="text-blue-600 hover:underline font-medium"
         >
           See full transaction history →

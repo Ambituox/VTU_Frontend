@@ -150,7 +150,7 @@ export default function TabsComponent() {
               const currentPlans = plans.slice(startIndex, startIndex + itemsPerPage);
 
               return (
-                <Tab.Panel key={idx} className="rounded-xl grid lg:grid-cols-4 grid-cols-3 md:gap-4 md:p-3 shadow-md">
+                <Tab.Panel key={idx} className="rounded-xl grid lg:grid-cols-4 md:grid-cols-3 grid-cols-2 md:gap-4 gap-2 md:p-3 shadow-md">
                   {loading ? (
                     [...Array(4)].map((_, i) => (
                       <div
@@ -189,7 +189,7 @@ export default function TabsComponent() {
 
                       {/* Pagination Controls */}
                       {totalPages > 1 && (
-                        <div className="col-span-full flex justify-center mt-4 space-x-2">
+                        <div className="col-span-full flex justify-center my-4 space-x-2">
                           <button
                             onClick={() => handlePageChange(network, currentPage[network] - 1)}
                             disabled={currentPage[network] === 1}

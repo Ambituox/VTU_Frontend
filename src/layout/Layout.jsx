@@ -93,7 +93,7 @@ const Sidebar = ({ isOpen, toggleSidebar }) => {
     <div
       className={`h-screen overflow-y-auto pb-5 z-20 bg-slate-900 text-gray-400 fixed lg:static ${ isOpen ? '64' : 'w-0'
       } transition-all duration-300`}>
-      <div className="px-5 py-6 flex items-center justify-between border-b border-slate-700">
+      <div className="px-5 py-6 flex items-center justify-between border-b border-slate-700 relative">
         <Link to={'user-detail'}>
         <div className="flex items-center justify-center gap-2">
           <div className="text-slate-100 text-3xl font-bold flex items-center text-white/60 border-2 border-blue-500 rounded-full p-2">
@@ -109,13 +109,12 @@ const Sidebar = ({ isOpen, toggleSidebar }) => {
           </div>
         </div>
         </Link>
-        <button
-          onClick={toggleSidebar}
-          className="text-white text-2xl lg:hidden focus:outline-none"
-          aria-label="Close Sidebar"
-        >
-          <IoClose />
-        </button>
+        <div className="absolute top-8 right-2">
+          {/* Close button for mobile view */}
+          <button onClick={toggleSidebar} className="text-gray-800 text-2xl bg-slate-100 lg:hidden focus:outline-none rounded-md hover:bg-gray-700 transition-colors duration-200" aria-label="Close Sidebar">
+            <IoClose />
+          </button>
+        </div>
       </div>
 
       <nav className="flex flex-col gap-1 mx-2 mt-5">
@@ -149,12 +148,11 @@ const Header = ({ toggleSidebar }) => {
   const { existingUser } = useSelector((state) => state.user);
 
   const handleBack = () => {
-
     navigate(-1) // Go back to the previous page
   }
   return (
     <header className="text-white z-10 top-0 sticky bg-blue-500">
-      <div className="flex items-center justify-between px-6 lg:py-4 py-2">
+      <div className="flex items-center justify-between md:px-6 px-2 lg:py-4 py-2">
         {/* Logo */}
         <div className="flex items-center space-x-2 lg:hidden">
           <button onClick={toggleSidebar} className="text-2xl p-2 text-slate-50 focus:outline-none" aria-label="Open Sidebar">
@@ -162,8 +160,8 @@ const Header = ({ toggleSidebar }) => {
           </button>
         </div>
 
-        <div className="absolutetop-2 left-2 z-10">
-          <button className="bg-gray-50 py-2 px-4 rounded-lg font-semibold text-red-800" onClick={handleBack}>Back</button>
+        <div className="">
+          <button className="bg-gray-50 md:py-2 md:px-4 py-1 px-2 rounded-lg font-semibold text-red-800" onClick={handleBack}>Back</button>
         </div>
         {/* User Actions */}
         {
@@ -211,7 +209,7 @@ export default function Layout() {
         <Sidebar isOpen={isSidebarOpen} toggleSidebar={toggleSidebar} />
         <div className="overflow-x-hidden h-[100vh] flex-1 overflow-y-auto bg-gray-50 text-black">
           <Header toggleSidebar={toggleSidebar} />
-            <div className="p-2">
+            <div className="">
               <Outlet />
             </div>
             <div className="w-full bg-white p-3 flex justify-between items-center lg:flex-row flex-col">

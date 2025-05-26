@@ -107,7 +107,7 @@ function TransactionsHistory() {
   const paginate = (pageNumber) => setCurrentPage(pageNumber);
 
   return (
-    <div className="py-8 px-4 max-w-6xl mx-auto">
+    <div className="py-8 md:px-4 px-2 max-w-6xl mx-auto">
       <div className="flex justify-between items-center">
         <div className="mb-4 flex gap-2 items-center lg:flex-nowrap flex-1 min-w-0 flex-wrap">
           <button onClick={() => handleFilterChange("all")} className="px-4 py-2 bg-blue-500 text-gray-50 rounded">

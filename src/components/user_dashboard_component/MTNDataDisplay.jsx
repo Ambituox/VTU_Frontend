@@ -84,17 +84,17 @@ export default function MTNDataDisplay() {
     const getTextColor = (network) => {
         switch (network) {
             case "MTN":
-                return "text-white";
+                return "text-gray-800";
             default: 
-            return  "text-gray-800";
+              return  "text-white";
         }
     };
 
   return (
     <>
-      <div className="max-w-6xl mx-auto p-6 bg-white mt-10 rounded-lg">
+      <div className="max-w-6xl mx-auto md:p-6 md:bg-white mt-10 rounded-lg">
         <div className="flex justify-between items-center mb-6">
-          <h1 className="text-3xl font-bold text-gray-800">Our Best Plan</h1>
+          <h1 className="md:text-3xl text-xl font-bold text-gray-800">Our Best Plan</h1>
           <button
             onClick={fetchPlans}
             className="flex items-center gap-2 bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 transition"

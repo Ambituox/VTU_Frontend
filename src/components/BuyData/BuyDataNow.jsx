@@ -25,7 +25,7 @@ export default function BuyDataNow() {
     navigate(-1) // Go back to the previous page
   }
   return (
-    <div className="flex justify-center my-14">
+    <div className="flex justify-center my-14 px-2">
       <div className="w-96 border border-gray-200 shadow-xl rounded-xl bg-white transition transform hover:scale-105 duration-300">
         <div className="absolute top-2 left-2 z-10">
           <button className="bg-red-600 py-2 px-4 rounded-lg font-semibold text-white" onClick={handleBack}>Back</button>

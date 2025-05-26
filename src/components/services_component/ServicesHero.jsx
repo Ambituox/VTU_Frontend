@@ -12,10 +12,10 @@ export default function ServicesHero() {
     const { existingUser } = useSelector((state) => state.user);
 
   return (
-    <section className="bg-gradient-to-b from-gray-50 to-blue-400 text-black py-20 px-6 md:px-12">
-      <div className="max-w-7xl mx-auto flex flex-col lg:flex-row items-center justify-between space-y-12 lg:space-y-0">
+    <section className="bg-gradient-to-b from-gray-50 to-blue-400 text-black py-20 px-6 lg:px-12">
+      <div className="max-w-7xl w-full mx-auto flex flex-col md:flex-row items-center justify-between gap-4 space-y-12 lg:space-y-0">
         {/* Text Content */}
-        <div className="md:w-1/2 text-center md:text-left" data-aos="fade-right" data-aos-duration="1000">
+        <div className="md:w-1/2 w-full text-center md:text-left" data-aos="fade-right" data-aos-duration="1000">
           <h1 className="text-4xl sm:text-5xl font-extrabold leading-tight mb-6">
             <span className="text-black">Seamless </span>
             <span className="text-blue-600">VTU Recharge</span>
@@ -41,8 +41,8 @@ export default function ServicesHero() {
         </div>
 
         {/* Right Image Section */}
-        <div className="lg:w-1/2 flex justify-center items-center p-2" data-aos="fade-left">
-            <img src="/home_hero.png" alt="Virtual Top Up" className="transition-transform rounded-xl duration-300 hover:scale-105 max-w-md h-auto"/>
+        <div className="md:w-1/2 flex justify-center items-center p-2" data-aos="fade-left">
+            <img src="/home_hero.png" alt="Virtual Top Up" className="transition-transform rounded-xl duration-300 hover:scale-105 lg:max-w-md max-w-full h-auto"/>
         </div>
       </div>
     </section>

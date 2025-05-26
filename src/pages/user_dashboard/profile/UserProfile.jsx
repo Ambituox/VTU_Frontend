@@ -108,7 +108,7 @@ const UserProfile = () => {
           onChange={handleChange}
           disabled={!isEditing}
           className={`mt-2 block w-full p-3 bg-gray-50 border ${
-            isEditing ? "border-gray-300" : "border-transparent"
+            isEditing ? "border-gray-300" : "border border-gray-200"
           } rounded-lg focus:ring-blue-500 focus:border-blue-500 transition`}
         />
       )}
@@ -116,8 +116,8 @@ const UserProfile = () => {
   );
 
   return (
-    <div className="py-20 bg-gray-50 flex items-center justify-center lg:px-3">
-      <div className="bg-white shadow-lg rounded-xl p-4 w-full max-w-2xl border border-gray-200">
+    <div className="md:py-20 py-10 mx-2 bg-gray-50 flex items-center justify-center lg:px-3">
+      <div className="bg-white shadow-lg rounded-xl lg:p-4 p-2 w-full max-w-2xl border border-gray-200">
         <h2 className="text-3xl font-bold text-center text-gray-800 mb-6">User Profile</h2>
 
         <form onSubmit={handleSubmit} className="py-5">
