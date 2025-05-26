@@ -1,250 +1,241 @@
-import { createContext, useEffect, useState } from 'react';
-import { FaArrowsRotate } from 'react-icons/fa6';
-import { useSelector } from 'react-redux';
-import BuyDataNow from '../../../components/BuyData/BuyDataNow';
-import { useNavigate } from 'react-router-dom';
+import { Tab } from "@headlessui/react";
+import { useState, useEffect, Fragment } from "react";
+import { BiEditAlt } from "react-icons/bi";
+import { TbCurrencyNaira } from "react-icons/tb";
+import { useSelector } from "react-redux";
+import { Link, useNavigate } from "react-router-dom";
+import { FiRefreshCw } from "react-icons/fi";
+import { Dialog, Transition } from "@headlessui/react";
 
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'https://vtu-xpwk.onrender.com';
+const API_BASE_URL = import.meta.env.API_BASE_URL || 'https://vtu-xpwk.onrender.com';
 
-const Dialog = ({ message, onClose }) => (
-  <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
-    <div className="bg-white p-6 rounded-lg shadow-lg max-w-sm w-full">
-      <p className="text-gray-800">{message}</p>
-      <button className="mt-4 w-full bg-red-500 text-white py-2 rounded" onClick={onClose}>Close</button>
-    </div>
-  </div>
-);
+function classNames(...classes) {
+  return classes.filter(Boolean).join(" ");
+}
 
-const ConfirmDialog = ({ onProceed, onClose }) => (
-  <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
-    <div className="bg-white p-6 rounded-lg shadow-lg max-w-sm w-full">
-      <p className="text-gray-800">Data plan available. Proceed to payment</p>
-      <button className="mt-4 w-full bg-green-500 text-white py-2 rounded" onClick={onProceed}>Proceed</button>
-      <button className="mt-2 w-full bg-gray-300 text-gray-800 py-2 rounded" onClick={onClose}>Cancel</button>
-    </div>
-  </div>
-);
-
-export const dataContext = createContext();
-
-const BuyDataPlan = () => {
-  const [formData, setFormData] = useState({
-    network: 'MTN', // Fixed: 'MTN' -> 'MTN_PLAN'
-    plan: '',
-    duration: '',
-    mobileNumber: '',
-    price: '',
-    sku: '',
-  });
-
-  const [plans, setPlans] = useState([]);
+export default function BuyDataPlan() {
+  const [selectedIndex, setSelectedIndex] = useState(0);
+  const [dataPlans, setDataPlans] = useState({ MTN: [], AIRTEL: [], GLO: [], "9MOBILE": [] });
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState('');
-  const [dialogOpen, setDialogOpen] = useState(false);
-  const [confirmDialog, setConfirmDialog] = useState(false);
-  const [showPurchaseForm, setShowPurchaseForm] = useState(false);
-  const [datas, setDatas] = useState([]);
-
-  const { currentUser } = useSelector((state) => state.user);
+  const [error, setError] = useState("");  // <-- error state added
+  const [isErrorOpen, setIsErrorOpen] = useState(false); // modal open state
   const navigate = useNavigate();
 
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const response = await fetch(`${API_BASE_URL}/api/v1/admin/get-all-data`, {
-          headers: { 'Authorization': `Bearer ${currentUser.token}` }
-        });
+  const { currentUser } = useSelector((state) => state.user);
 
-        const data = await response.json();
-        if (response.ok) {
-          setPlans(data);
-        } else {
-          throw new Error('Failed to load data plans');
+  // Pagination state per network tab
+  const [currentPage, setCurrentPage] = useState({
+    MTN: 1,
+    AIRTEL: 1,
+    GLO: 1,
+    "9MOBILE": 1,
+  });
+
+  const itemsPerPage = 8;
+
+  const fetchData = () => {
+    setLoading(true);
+    fetch(`${API_BASE_URL}/api/v1/admin/get-all-data`, {
+      headers: { 'Authorization': `Bearer ${currentUser.token}` }
+    })
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error("Failed to fetch data plans.");
         }
-      } catch (err) {
-        setError(err.message);
-        setDialogOpen(true);
-      }
-    };
+        return response.json();
+      })
+      .then((data) => {
+        const groupedData = { MTN: [], AIRTEL: [], GLO: [], "9MOBILE": [] };
+        data.forEach((plan) => {
+          if (groupedData[plan.networkProvider]) {
+            groupedData[plan.networkProvider].push(plan);
+          }
+        });
+        setDataPlans(groupedData);
 
-    fetchData();
-  }, [currentUser.token]);
+        // Reset all pagination pages to 1 after data fetch
+        setCurrentPage({
+          MTN: 1,
+          AIRTEL: 1,
+          GLO: 1,
+          "9MOBILE": 1,
+        });
+      })
+      .catch((error) => {
+        console.error("Error fetching data plans:", error);
+        setError(error.message || "Unknown error occurred");
+        setIsErrorOpen(true);  // open modal on error
+      })
+      .finally(() => setLoading(false));
+  };
 
   useEffect(() => {
-    if (plans.length > 0 && formData.plan) {
-      const selectedPlan = plans.find((plan) => plan.plan === formData.plan);
-      if (selectedPlan) {
-        setFormData((prev) => ({
-          ...prev,
-          sku: selectedPlan.sku,
-          price: selectedPlan.price,
-        }));
-      }
-    }
-  }, [plans, formData.plan]);
+    fetchData();
+  }, []);
 
-  const handleChange = (e) => {
-    setFormData((prev) => ({
-      ...prev,
-      [e.target.name]: e.target.value,
-      ...(e.target.name === 'plan' ? { duration: '' } : {}),
-    }));
-  };
-
-  let updatedDuration = formData.duration.includes('day') && !formData.duration.includes('days')
-    ? formData.duration.replace('day', 'days')
-    : formData.duration;
-
-  const payload = {
-    network: `${formData.network}_PLAN`,
-    plan: formData.plan,
-    duration: updatedDuration
-  };
-
-  const handleSearch = async () => {
-    if (!formData.plan || !formData.duration) {
-      setError('Please select a plan and duration.');
-      setDialogOpen(true);
-      return;
-    }
-
-    const databaseData = {
-      network: `${formData.network}`,
-      plan: formData.plan,
-      duration: updatedDuration,
-      price: formData.price,
-      sku: formData.sku
-    };
-
-    try {
-      setLoading(true);
-      const response = await fetch(`${API_BASE_URL}/api/v1/find-data`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${currentUser.token}`,
-        },
-        body: JSON.stringify(payload),
-      });
-
-      const data = await response.json();
-
-      if (data.success && data.data) {
-        setLoading(false);
-        console.log(data);
-        
-        
-        navigate("buy-now", { state: databaseData });
-        setConfirmDialog(true);
-        return;
-      }
-
-      setError(data.error);
-      setDialogOpen(true);
-      setLoading(false);
-
-    } catch (err) {
-      setError(err.message);
-      setDialogOpen(true);
-      setLoading(false);
+  const getBgColor = (network) => {
+    switch (network) {
+      case "MTN":
+        return "bg-yellow-400";
+      case "AIRTEL":
+        return "bg-red-500";
+      case "GLO":
+        return "bg-green-600";
+      case "9MOBILE":
+        return "bg-green-600";
+      default:
+        return "bg-gray-900";
     }
   };
 
-  const selectedPlan = plans.find((plan) =>
-    plan.plan === formData.plan && plan.networkProvider === formData.network
-  );
-
-  const handleBack = () => {
-    navigate(-1);
+  // Handler for page changes
+  const handlePageChange = (network, newPage) => {
+    setCurrentPage(prev => ({ ...prev, [network]: newPage }));
   };
 
   return (
-    <div className="bg-whie py-6 px-3 rounded-lg">
-      <div className="relative bg-white max-w-md mx-auto p-3 rounded-lg shadow-md">
-        <div className="absolute top-2 left-2">
-          <button className="bg-blue-500 py-2 px-4 rounded-lg font-semibold text-white" onClick={handleBack}>Back</button>
+    <>
+      <div className="w-full max-w-5xl mx-auto bg-white px-2 md:p-4 rounded-lg my-10">
+        <div className="flex justify-between items-center mb-2">
+          <h2 className="text-lg font-semibold text-gray-700">Data Plans</h2>
+          <button onClick={fetchData} className="flex items-center gap-2 bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 transition">
+            <FiRefreshCw className={`${loading ? "animate-spin" : ""}`} />
+            {loading ? "Refreshing..." : "Refresh"}
+          </button>
         </div>
-        <h2 className="text-2xl font-semibold text-center">Buy Data Plan</h2>
-        {!showPurchaseForm ? (
-          <div className="p-4 bg-white rounded-lg">
-            <label className="block my-5">
-              <span className="text-gray-700">Network</span>
-              <select name="network" value={formData.network} onChange={handleChange} className="mt-1 block w-full p-3 border rounded">
-                {['MTN', 'AIRTEL', 'GLO', '9MOBILE'].map((network, index) => (
-                  <option key={index} value={network}>{network}</option>
-                ))}
-              </select>
-            </label>
 
-            <label className="block my-5">
-              <span className="text-gray-500">Plan</span>
-              <select name="plan" value={formData.plan} onChange={handleChange} className="mt-1 block w-full p-3 border rounded">
-                <option value="" className='text-gray-400'>Select Plan</option>
-                {plans.map((p, index) =>
-                  p.networkProvider === formData.network && (
-                    <option key={index} value={p.plan}>{p.plan}</option>
+        <Tab.Group selectedIndex={selectedIndex} onChange={setSelectedIndex}>
+          <Tab.List className="relative flex space-x-3 rounded-xl bg-slate-800 p-3">
+            {Object.keys(dataPlans).map((network) => (
+              <Tab
+                key={network}
+                className={({ selected }) =>
+                  classNames(
+                    "w-full rounded-lg py-3.5 text-sm font-medium leading-5",
+                    selected
+                      ? "bg-white text-blue-700 shadow"
+                      : "text-blue-100 bg-blue-400 hover:bg-blue-400 hover:text-white"
                   )
-                )}
-              </select>
-            </label>
-
-            <label className="block my-5">
-              <span className="text-gray-500">Duration</span>
-              <select
-                name="duration"
-                disabled={!formData.plan}
-                value={formData.duration}
-                onChange={handleChange}
-                className="mt-1 block w-full p-3 border border-gray-300 rounded"
+                }
               >
-                <option value="" className='text-gray-400'>Select Duration</option>
-                {plans
-                  .filter((p) =>
-                    p.networkProvider === formData.network &&
-                    p.plan === formData.plan
-                  )
-                  .map((p, index) => (
-                    <option key={index} value={p.duration}>{p.duration}</option>
-                  ))}
-              </select>
-            </label>
+                {network}
+              </Tab>
+            ))}
+          </Tab.List>
+          <Tab.Panels className="mt-4 max-w-full">
+            {Object.keys(dataPlans).map((network, idx) => {
+              // Calculate pagination data
+              const plans = dataPlans[network];
+              const totalPages = Math.ceil(plans.length / itemsPerPage);
+              const startIndex = (currentPage[network] - 1) * itemsPerPage;
+              const currentPlans = plans.slice(startIndex, startIndex + itemsPerPage);
 
-            <label className='block my-5'>
-              <span className="text-gray-700">Price</span><br />
-              <input
-                type="text"
-                name="price"
-                value={selectedPlan ? selectedPlan.price : ''}
-                readOnly
-                className="text-gray-500 font-semibold mt-1 block w-full p-3 border border-gray-300 rounded"
-              />
-            </label>
+              return (
+                <Tab.Panel key={idx} className="rounded-xl grid lg:grid-cols-4 grid-cols-3 md:gap-4 md:p-3 shadow-md">
+                  {loading ? (
+                    [...Array(4)].map((_, i) => (
+                      <div key={i} className="bg-gray-200 animate-pulse h-40 rounded-lg flex flex-col justify-center items-center p-4">
+                        <div className="w-16 h-4 bg-gray-300 rounded mb-2"></div>
+                        <div className="w-12 h-4 bg-gray-300 rounded mb-2"></div>
+                        <div className="w-20 h-4 bg-gray-300 rounded"></div>
+                        <div className="px-10 py-4 bg-gray-300 rounded mt-2"></div>
+                      </div>
+                    ))
+                  ) : plans.length > 0 ? (
+                    <>
+                      {currentPlans.map((plan) => (
+                        <div key={plan._id} className={`${getBgColor(network)} relative flex justify-center items-center flex-col p-4 border rounded-lg shadow-sm`}>
+                          <p className="mt-2 text-sm text-gray-800 text-center">{plan.plan} Plan Size</p>
+                          <p className="mt-2 flex items-center text-black font-semibold text-lg">
+                            <TbCurrencyNaira />
+                            {plan.price}
+                          </p>
+                          <p className="mt-2 text-sm text-gray-800">{plan.duration}</p>
+                          <button onClick={() => navigate("/profile/data-top-up/buy-now", { state: plan })} className="mt-3 bg-white border-none text-black font-semibold px-3 py-2 rounded hover:bg-gray-800 hover:text-white text-sm transition">
+                            Buy Now
+                          </button>
+                        </div>
+                      ))}
 
-            <button onClick={handleSearch} className='bg-blue-500 w-full font-semibold p-3 text-white rounded-md'>
-              {loading ? (
-                <span className="flex justify-center items-center gap-2">
-                  <FaArrowsRotate className='animate-spin' />Searching Data...
-                </span>
-              ) : 'Search Data'}
-            </button>
-          </div>
-        ) : (
-          <BuyDataNow datas={datas} />
-        )}
-
-        {dialogOpen && <Dialog message={error} onClose={() => setDialogOpen(false)} />}
-        {confirmDialog && (
-          <ConfirmDialog
-            onProceed={() => {
-              setShowPurchaseForm(true);
-              setConfirmDialog(false);
-            }}
-            onClose={() => setConfirmDialog(false)}
-          />
-        )}
+                      {/* Pagination Controls */}
+                      {totalPages > 1 && (
+                        <div className="col-span-full flex justify-center mt-4 space-x-2">
+                          <button
+                            onClick={() => handlePageChange(network, currentPage[network] - 1)}
+                            disabled={currentPage[network] === 1}
+                            className="px-3 py-1 rounded bg-gray-300 hover:bg-gray-400 disabled:opacity-50 disabled:cursor-not-allowed"
+                          >
+                            Prev
+                          </button>
+                          {[...Array(totalPages)].map((_, i) => (
+                            <button
+                              key={i}
+                              onClick={() => handlePageChange(network, i + 1)}
+                              className={classNames(
+                                "px-3 py-1 rounded",
+                                currentPage[network] === i + 1
+                                  ? "bg-blue-500 text-white"
+                                  : "bg-gray-200 hover:bg-gray-300"
+                              )}
+                            >
+                              {i + 1}
+                            </button>
+                          ))}
+                          <button
+                            onClick={() => handlePageChange(network, currentPage[network] + 1)}
+                            disabled={currentPage[network] === totalPages}
+                            className="px-3 py-1 rounded bg-gray-300 hover:bg-gray-400 disabled:opacity-50 disabled:cursor-not-allowed"
+                          >
+                            Next
+                          </button>
+                        </div>
+                      )}
+                    </>
+                  ) : (
+                    <p className="text-sm text-gray-500">No plans available.</p>
+                  )}
+                </Tab.Panel>
+              );
+            })}
+          </Tab.Panels>
+        </Tab.Group>
       </div>
-    </div>
-  );
-};
 
-export default BuyDataPlan;
+      {/* Headless UI Modal for error message */}
+      <Transition appear show={isErrorOpen} as={Fragment}>
+        <Dialog as="div" className="fixed inset-0 z-50 overflow-y-auto" onClose={() => setIsErrorOpen(false)}>
+          <div className="min-h-screen px-4 text-center bg-black bg-opacity-30">
+            <Transition.Child
+              as={Fragment}
+              enter="ease-out duration-300"
+              enterFrom="opacity-0 scale-95"
+              enterTo="opacity-100 scale-100"
+              leave="ease-in duration-200"
+              leaveFrom="opacity-100 scale-100"
+              leaveTo="opacity-0 scale-95"
+            >
+              <Dialog.Panel className="inline-block w-full max-w-md p-6 my-20 overflow-hidden text-left align-middle transition-all transform bg-white shadow-xl rounded-lg">
+                <Dialog.Title as="h3" className="text-lg font-medium leading-6 text-red-600">
+                  Error
+                </Dialog.Title>
+                <div className="mt-2">
+                  <p className="text-sm text-gray-700">{error}</p>
+                </div>
+
+                <div className="mt-4">
+                  <button
+                    type="button"
+                    className="inline-flex justify-center px-4 py-2 text-sm font-medium text-white bg-red-600 border border-transparent rounded-md hover:bg-red-700 focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-red-500"
+                    onClick={() => setIsErrorOpen(false)}
+                  >
+                    Close
+                  </button>
+                </div>
+              </Dialog.Panel>
+            </Transition.Child>
+          </div>
+        </Dialog>
+      </Transition>
+    </>
+  );
+}
