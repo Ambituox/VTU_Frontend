@@ -81,8 +81,8 @@ const SignIn = () => {
   return (
     <>
       <Header />
-      <div className="flex min-h-screen bg-gray-100 items-center justify-center lg:p-6 p-3">
-        <div className="w-full max-w-md rounded-lg bg-white shadow-lg lg:p-8 p-6" data-aos="fade-up">
+      <div className="flex md:py-20 py-10 bg-gray-100 items-center justify-center lg:p-6 p-3">
+        <div className="w-full max-w-md rounded-lg bg-white shadow-lg lg:p-8 md:p-6 p-3" data-aos="fade-up">
           <h2 className="text-3xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-[#ADF802] text-center mb-6">Sign In</h2>
           <form className="space-y-6" onSubmit={handleSubmit}>
             <div className="flex flex-col">

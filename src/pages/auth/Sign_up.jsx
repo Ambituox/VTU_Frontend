@@ -101,8 +101,8 @@ const CreateAccountPage = () => {
   return (
     <>
       <Header />
-      <div className="min-h-screen bg-gray-100 py-10 flex justify-center items-center px-4 sm:px-6 lg:px-8">
-        <div className="max-w-md w-full bg-white rounded-lg shadow-lg p-6" data-aos="fade-up">
+      <div className="min-h-screen bg-gray-100 md:py-20 py-10 flex justify-center items-center px-4 sm:px-6 lg:px-8">
+        <div className="max-w-md w-full bg-white rounded-lg shadow-lg md:p-6 p-3" data-aos="fade-up">
           <h2 className="text-3xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-[#ADF802] text-center mb-6" data-aos="zoom-in">Register Now</h2>
           <form className="space-y-4" onSubmit={handleSubmit}>
             {['firstName', 'lastName', 'email', 'phone', 'password', 'confirmPassword'].map((field, index) => (
