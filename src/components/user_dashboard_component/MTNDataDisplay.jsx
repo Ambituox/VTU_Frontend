@@ -121,12 +121,12 @@ export default function MTNDataDisplay() {
             {Object.entries(plansByNetwork).map(([network, plans]) => (
               <div
                 key={network}
-                className="mb-8 border border-gray-300 p-4 rounded-lg"
+                className="mb-8 border border-gray-300 md:p-4 p-2 rounded-lg"
               >
                 <h3 className={`text-xl font-semibold mb-4 text-gray-700`}>
                   {network} Plans
                 </h3>
-                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+                <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3">
                   {plans.map((plan) => (
                     <div key={plan._id} className={`${getBgColor(
                         normalizeNetwork(plan.networkProvider)
