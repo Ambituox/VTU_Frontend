@@ -10,14 +10,14 @@ const navSections = [
   {
     title: "Data Management",
     routes: [
-      { label: "Create Data", path: "/admin/create-data" },
-      { label: "Update Data", path: "/admin/update-data" },
+      { label: "Create Data", path: "admin/create-data" },
+      { label: "Update Data", path: "admin/update-data" },
     ],
   },
   {
     title: "User Management",
     routes: [
-      { label: "All Users", path: "/admin/users" },
+      { label: "All Users", path: "admin/all-users" },
     //   { label: "User Requests", path: "/admin/requests" },
     ],
   },
@@ -37,8 +37,8 @@ export default function AdminNav() {
                         <ul className="text-slate-400 flex flex-col gap-1 list-disc pl-10">
                             {section.routes.map((route, idx) => (
                                 <li key={idx} className='hover:text-blue-500 hover:translate-x-2 duration-150'>
-                                    <Link to={route.path}>
-                                        {route.label}
+                                    <Link to={route?.path}>
+                                        {route?.label}
                                     </Link>
                                 </li>
                             ))}

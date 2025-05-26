@@ -41,12 +41,10 @@ const Sidebar = ({ isOpen, toggleSidebar }) => {
 
   // Local state to store the fetched user profile data
   const [user, setUser] = useState([]);
-
-  console.log(user)
-
+  
   useEffect(() => {
     // Ensure currentUser and currentUser.data are defined
-    if (user && user.role) {
+    if (currentUser.data && currentUser.data.role) {
       setIsAdmin(true);
     } else {
       console.log("No current user or user data available.");

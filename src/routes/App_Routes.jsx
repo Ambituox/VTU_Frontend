@@ -34,6 +34,8 @@ import CreateData from '../pages/user_dashboard/buy_data/CreateData';
 import AdminLogin from '../pages/admin/auth/Login';
 import TransactionHistory from '../pages/user_dashboard/TransactionHistory';
 import { useSelector } from 'react-redux';
+import NotFound from '../pages/NotFound/NotFound';
+import AllUsers from '../pages/admin/all_user/AllUsers';
 
 export default function AppRoutes() {
   const { currentUser } = useSelector((state) => state.user);
@@ -56,19 +58,11 @@ export default function AppRoutes() {
         <Route path="/reset-password" element={<ResetPassword />} />
         <Route path="/verify-account" element={<VerifyAccount />} />
         <Route path="/verify-email" element={<VerifyEmailWithOTP />} />
-
-        {/* Admin Routes */}
-        <Route>
-          <Route path="/" element={currentUser?.token ? <Layout /> : <Navigate to="/login" />}>
-            <Route path='/admin/create-data' element={<CreateData/>}/>
-            {/* <Route path='admin/update-data/:id' element={<UpdateData/>}/> */}
-            <Route path='/admin/update-data/' element={<UpdateData/>}/>
-          </Route>
-        </Route>
+        <Route path="*" element={<NotFound />} />
 
         {/* Alternate routes */}
-        <Route>
-          <Route path="/" element={<Layout />}>
+        {/* <Route>
+          <Route path="/" element={currentUser?.token ? <Layout /> : <Navigate to="/login" />}>
             <Route path="/user-detail/change-password" element={<ChangePassword />} />
             <Route path="/account-pin" element={<AccountPin />} />
             <Route path="/fund_wallet" element={<Fund_wallet />} />
@@ -89,7 +83,7 @@ export default function AppRoutes() {
             <Route path="/data-top-up/buy-now/make-payment" element={<MakePayment />} />
             <Route path="/data-top-up/buy-now/make-payment/verify-payment" element={<VerifyPayment />} />
           </Route>
-        </Route>
+        </Route> */}
 
         {/* Protected/User Dashboard Routes */}
         <Route element={<Private_Route />}>
@@ -108,8 +102,13 @@ export default function AppRoutes() {
             <Route path='user-detail' element={<UserProfile/>}/>
             <Route path='documentation' element={<ApiComponent/>}/>
 
+            {/* Admin Routes */}
+            <Route path='admin/all-users' element={<AllUsers/>}/>
+            <Route path='admin/create-data' element={<CreateData/>}/>
+            {/* <Route path='admin/update-data/:id' element={<UpdateData/>}/> */}
+            <Route path='admin/update-data/' element={<UpdateData/>}/>
+
             <Route path='funding-transaction-history' element={<Fund_wallet/>}/>
-            
             <Route path='transaction-history' element={<TransactionHistory/>}/>
              
             <Route path='data-top-up/buy-now/make-payment' element={<MakePayment/>}/>
