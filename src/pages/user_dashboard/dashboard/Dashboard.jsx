@@ -9,15 +9,8 @@ import TransactionsHistoryComp from "../../../components/user_dashboard_componen
 import MTNDataDisplay from "../../../components/user_dashboard_component/MTNDataDisplay";
 
 const DashboardHeader = () => {
-  const { currentUser } = useSelector((state) => state.user);
-  const { firstName } = currentUser?.data || {};
-  const navigate = useNavigate();
-
-  const handleLogout = () => {
-    // Implement logout logic here, e.g. dispatch logout action
-    alert("Logout clicked!");
-    // navigate('/login');
-  };
+  const { existingUser } = useSelector((state) => state.user);
+  const { firstName } = existingUser?.data || {};
 
   return (
     <div className="bg-white lg:py-18 py-6 text-slate-700 md:px-6 px-3 rounded-lg shadow-md transition-all duration-500">
@@ -36,237 +29,6 @@ const DashboardHeader = () => {
           <li>Get cashback rewards on select purchases.</li>
         </ul>
       </p>
-    </div>
-  );
-};
-
-const BankDetailsCard = () => {
-  const [activeTab, setActiveTab] = useState("Sterling Bank");
-
-  const bankDetails = {
-    "Sterling Bank": {
-      accountNumber: "2048543516",
-      accountName: "Ambitioux",
-      bankName: "Sterling Bank",
-      charge: "₦53",
-      icon: '/sterling.jpeg',
-      bgColor: "bg-gradient-to-r from-red-500 to-red-700",
-    },
-    "9Payment Service Bank": {
-      accountNumber: "1234567890",
-      accountName: "Ambitioux",
-      bankName: "9Payment Service Bank",
-      charge: "₦20",
-      icon: '/9payment.png',
-      bgColor: "bg-gradient-to-r from-blue-500 to-blue-900",
-    },
-    "Wema Bank": {
-      accountNumber: "9876543210",
-      accountName: "Ambitioux",
-      bankName: "Wema Bank",
-      charge: "₦35",
-      icon: '/Wema_Bank_Plc.jpg',
-      bgColor: "bg-gradient-to-r from-purple-500 to-purple-800",
-    },
-    "Moniepoint Microfinance Bank": {
-      accountNumber: "5678901234",
-      accountName: "Ambitioux",
-      bankName: "Moniepoint Microfinance Bank",
-      charge: "₦15",
-      icon: '/Moniepoint_logo.png',
-      bgColor: "bg-gradient-to-r from-blue-700 to-blue-800",
-    },
-  };
-
-  const handleCopyAccountNumber = () => {
-    navigator.clipboard.writeText(bankDetails[activeTab].accountNumber);
-    alert(`Account number ${bankDetails[activeTab].accountNumber} copied to clipboard!`);
-  };
-
-  const data1 = [
-    {
-      icon: <FaClockRotateLeft />,
-      title: "Airtime Transactions",
-      link: "/airtime_wallet_summary",
-      style: "w-10 h-10 flex justify-center items-center rounded-md bg-purple-600 text-white",
-    },
-    {
-      icon: <FaClockRotateLeft />,
-      title: "Transactions",
-      link: "/history",
-      style: "w-10 h-10 flex justify-center items-center rounded-md bg-yellow-400 text-white",
-    },
-  ];
-
-  const navigate = useNavigate();
-
-  return (
-    <div className="md:mt-10 mt-6">
-      {/* Tabs for Banks */}
-      <div className="flex justify-start items-center bg-white shadow-lg rounded-lg">
-        {Object.keys(bankDetails).map((bank) => (
-          <button
-            key={bank}
-            onClick={() => setActiveTab(bank)}
-            className={`md:px-4 px-2 py-2 text-sm transition-all duration-300 ${
-              activeTab === bank
-                ? "text-blue-500 border-b-2 border-blue-500 font-semibold"
-                : "text-gray-500 hover:text-blue-500"
-            }`}
-          >
-            {bank}
-          </button>
-        ))}
-      </div>
-
-      {/* Bank Details Content */}
-      <div
-        className={`md:p-6 p-3 rounded-b-lg text-white transition-all duration-500 ${bankDetails[activeTab].bgColor}`}
-      >
-        <div className="flex justify-between items-center">
-          <img
-            src={bankDetails[activeTab].icon}
-            alt=""
-            className="max-w-[140px] max-h-[60px] rounded-md"
-          />
-          <div className="text-right">
-            <p className="text-lg font-bold">{bankDetails[activeTab].charge}</p>
-            <p className="text-sm text-gray-200">CHARGE</p>
-          </div>
-        </div>
-        <div className="mt-4">
-          <p className="text-lg font-bold">Account Number: {bankDetails[activeTab].accountNumber}</p>
-          <button
-            onClick={handleCopyAccountNumber}
-            className="mt-1 text-sm underline cursor-pointer hover:text-gray-300"
-            title="Copy Account Number"
-          >
-            Copy Account Number
-          </button>
-          <p className="text-md mt-2">
-            Account Name: <span className="font-semibold">{bankDetails[activeTab].accountName}</span>
-          </p>
-          <p className="text-md mt-2">Bank Name: {bankDetails[activeTab].bankName}</p>
-        </div>
-        <p className="mt-4 text-sm font-semibold">AUTOMATED BANK TRANSFER</p>
-        <p className="text-sm">Make transfer to this account to fund your wallet</p>
-      </div>
-
-      <div className="my-8 px-4">
-        {/* Marquee Section */}
-        <div className="bg-gradient-to-r from-blue-400 to-red-600 text-white rounded-full py-2 shadow-md">
-          <marquee behavior="" direction="" className="text-lg font-semibold">
-            🚀 Welcome to Ambitioux VTU! Enjoy fast, affordable data, airtime, and bill payments. 
-            Need help? Chat with us at 08162269770 or 08082792885 (WhatsApp only). 
-            Reminder: For Airtel SME data, avoid sending to numbers with active loans.
-          </marquee>
-        </div>
-
-        {/* Feature Cards Section */}
-        <div className="flex justify-center items-center gap-6 lg:max-w-2xl mx-auto mt-10 bg-blue-100 lg:p-4 p-3 rounded-xl shadow-lg">
-          {data1.map((data, index) => (
-            <div
-              key={index}
-              onClick={() => navigate(data.link)}
-              className="cursor-pointer w-[100%] lg:w-[300px] shadow-lg p-4 bg-blue-200 rounded-xl flex items-center gap-3 transition-all duration-300 hover:scale-105 hover:shadow-xl"
-              title={`Go to ${data.title}`}
-            >
-              <div className={`p-3 rounded-full ${data.style}`}>{data.icon}</div>
-              <p className="font-semibold text-gray-800">{data.title}</p>
-            </div>
-          ))}
-        </div>
-      </div>
-    </div>
-  );
-};
-
-const DashWallet = () => {
-  const walletData = [
-    { title: "MTN SME DATA BALANCE", icon: <ImDatabase />, amount: "0.00 GB" },
-    { title: "AIRTEL CG DATA BALANCE", icon: <ImDatabase />, amount: "0.00 GB" },
-    { title: "GLO CG DATA BALANCE", icon: <ImDatabase />, amount: "0.00 GB" },
-    { title: "9MOBILE CG DATA BALANCE", icon: <ImDatabase />, amount: "0.00 GB" },
-  ];
-
-  return (
-    <div className="grid md:grid-cols-4 grid-cols-2 gap-4 my-12 max-w-7xl bg-blue-200 p-3 rounded-lg mx-auto">
-      {walletData.map((item, index) => (
-        <div
-          key={index}
-          className="bg-white shadow-md p-4 rounded-lg flex justify-between items-center"
-        >
-          <div>
-            <h3 className="font-semibold text-sm text-gray-500">{item.title}</h3>
-            <p className="text-xl font-bold mt-2 text-gray-600">{item.amount}</p>
-          </div>
-          <div className="bg-blue-500 text-white p-2 rounded-md text-4xl mb-2">{item.icon}</div>
-        </div>
-      ))}
-    </div>
-  );
-};
-
-const NotificationsFAQsSupport = () => {
-  return (
-    <div className="grid md:grid-cols-3 grid-cols-1 p-3 rounded-lg gap-4 mt-6 max-w-7xl mx-auto">
-      {/* Latest News */}
-      <div className="lg:h-[170px] bg-blue-100 text-blue-700 p-4 rounded-lg shadow-md flex flex-col justify-between">
-        <div>
-          <h4 className="font-semibold text-lg mb-2">Latest News</h4>
-          <ul className="list-disc pl-5 space-y-1 text-sm">
-            <li>New data plans available from Airtel starting June 1st.</li>
-            <li>Referral program rewards doubled for July!</li>
-            <li>Scheduled maintenance on May 28 from 1-3 AM.</li>
-          </ul>
-        </div>
-        <Link
-          to="/news"
-          className="bg-blue-500 text-white mt-4 px-4 py-2 rounded-lg text-center"
-        >
-          View All News
-        </Link>
-      </div>
-
-      {/* Referral Stats */}
-      <div className="lg:h-[170px] bg-blue-100 text-blue-700 p-4 rounded-lg shadow-md flex flex-col justify-between">
-        <div>
-          <h4 className="font-semibold text-lg mb-2">My Referrals</h4>
-          <p className="text-sm mb-2">You have referred <span className="font-bold">12</span> friends.</p>
-          <p className="text-sm mb-2">Total commissions earned: <span className="font-bold">₦5,400</span></p>
-          <p className="text-sm">Keep sharing your referral link to earn more rewards!</p>
-        </div>
-        <Link
-          to="/referrals"
-          className="bg-blue-500 text-white mt-4 px-4 py-2 rounded-lg text-center"
-        >
-          Manage Referrals
-        </Link>
-      </div>
-
-      {/* Support Team */}
-      <div className="bg-blue-100 text-blue-700 p-4 rounded-lg shadow-md">
-        <h4 className="font-semibold text-lg mb-2">Support Team</h4>
-        <p>Have anything to say to us? Please contact our Support Team on WhatsApp.</p>
-        <div className="mt-4 space-y-4">
-          <a
-            href="https://wa.me/08162269770"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="bg-green-600 flex items-center gap-2 text-white px-4 py-2 rounded-lg"
-          >
-            <FaWhatsapp /> WhatsApp Us
-          </a>
-          <a
-            href="https://chat.whatsapp.com/YourGroupInviteLink"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="bg-green-800 text-white px-4 py-2 rounded-lg flex items-center gap-2"
-          >
-            <FaWhatsapp /> Join Our WhatsApp Group
-          </a>
-        </div>
-      </div>
     </div>
   );
 };
@@ -314,11 +76,26 @@ const Services = () => {
   );
 };
 
+const Marquee = () => {
+  const {existingUser} = useSelector((state) => state.user);
+  const { firstName } = existingUser?.data || {};
+
+  return (
+    <div className="bg-gradient-to-r from-blue-400 to-red-600 mt-6 text-white rounded-full py-2 shadow-md">
+      <marquee behavior="" direction="" className="text-lg font-semibold">
+        🚀 Welcome to Ambitioux VTU <span className="capitalize">{firstName}!</span> Enjoy fast, affordable data, airtime, and bill payments. 
+        Need help? Chat with us at 08162269770 or 08082792885 (WhatsApp only). 
+        Reminder: For Airtel SME data, avoid sending to numbers with active loans.
+      </marquee>
+    </div>
+  )
+}
+
 const Dashboard = () => {
   return (
     <section className="max-w-7xl mx-auto md:p-6 p-3">
       <DashboardHeader />
-      {/* <DashWallet /> */}
+      <Marquee />
       <MTNDataDisplay />
       <Services />
       <TransactionsHistoryComp />

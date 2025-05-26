@@ -5,19 +5,18 @@ import Header from '../../components/Header';
 import Footer from '../../components/Footer';
 import { Link, useNavigate } from 'react-router-dom';
 import { Dialog, Transition } from '@headlessui/react';
-import { useDispatch, useSelector } from 'react-redux';
-import { signinFailure, signinStart, signinSuccess } from '../../store/userReducers';
-
-const API_BASE_URL = import.meta.env.API_BASE_URL || 'https://vtu-xpwk.onrender.com';
+import { useDispatch } from 'react-redux';
+import { signinSuccess } from '../../store/userReducers';
 
 const SignIn = () => {
   const [email, setEmail] = useState(''); 
   const [password, setPassword] = useState('');
-  // const [error, setError] = useState('');
+  const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
-  // const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
 
+  let navigate = useNavigate();
   let dispatch = useDispatch();
 
   function closeModal() {
@@ -32,51 +31,50 @@ const SignIn = () => {
     Aos.init({ duration: 1000 });
   }, []);
 
-  const {loading, error} = useSelector((state) => state.user);
-
-  let navigate = useNavigate();
-
   const handleSubmit = async (e) => {
     e.preventDefault();
 
     if (!email || !password) {
-        dispatch(signinFailure('Please fill in all fields'));
-        openModal();
-        return;
+      setError('Please fill in all fields');
+      setSuccess('');
+      openModal();
+      return;
     }
 
-    dispatch(signinStart());
+    setLoading(true);
+    setError('');
+    setSuccess('');
 
     try {
       const response = await fetch(`https://vtu-xpwk.onrender.com/api/v1/login`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        // credentials: 'include', 
-        // Needed if backend uses session/cookie authentication
         body: JSON.stringify({ email, password }),
       });
 
-      // Read response text first
       const data = await response.json();
 
-      // Validate expected response fields
       if (data.status === 'error' || !data.token || !response.ok) {
-          dispatch(signinFailure(data.message || 'Invalid response'));
-          if (data.message === 'Please verify your email address first') {
-              setTimeout(() => navigate('/verify-email'), 1000);
-          }
-          openModal();
-          return;
+        setError(data || 'Invalid response');
+        if (data === 'Please verify your email address first') {
+          setTimeout(() => navigate('/verify-email'), 1000);
+        }
+        setLoading(false);
+        openModal();
+        return;
       }
 
       dispatch(signinSuccess(data));
-      openModal();
-      navigate("/profile");
 
-    } catch (error) {
-        console.error("Error in sign-in:", error.message);
-        dispatch(signinFailure('An error occurred. Please try again.'));
-        openModal();
+      setSuccess('Login successful!');
+      setLoading(false);
+      openModal();
+      setTimeout(() => navigate('/profile'), 1000);
+    } catch (err) {
+      console.error('Error in sign-in:', err.message);
+      setError('An error occurred. Please try again.');
+      setLoading(false);
+      openModal();
     }
   };
 
@@ -107,7 +105,7 @@ const SignIn = () => {
             </p>
 
             <button type="submit" className="w-full py-3 px-4 bg-gradient-to-r from-blue-600 to-[#ADF802] text-white font-semibold rounded-lg hover:from-blue-500 hover:to-purple-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:bg-gray-400" disabled={loading}>
-              {loading ? 'Authenticating...' : 'Sign In'}
+              {loading ? 'Loading...' : 'Sign In'}
             </button>
           </form>
         </div>

@@ -8,7 +8,7 @@ const API_BASE_URL = import.meta.env.API_BASE_URL || 'https://vtu-xpwk.onrender.
 
 export default function Fund_wallet() {
   const navigate = useNavigate();
-  const { currentUser } = useSelector((state) => state.user);
+  const { existingUser } = useSelector((state) => state.user);
 
   const [formData, setFormData] = useState({
     amount: 0,
@@ -76,8 +76,8 @@ const handlePayment = async () => {
   setLoading(true);
   setError("");
 
-  if (currentUser?.token) {
-    const decoded = jwtDecode(currentUser.token);
+  if (existingUser?.token) {
+    const decoded = jwtDecode(existingUser.token);
     const isExpired = decoded.exp * 1000 < Date.now();
 
     if (isExpired) {
@@ -94,7 +94,7 @@ const handlePayment = async () => {
       const response = await fetch(`${API_BASE_URL}/api/v1/make-payment`, {
         method: "POST",
         headers: {
-          'Authorization': `Bearer ${currentUser?.token}`,
+          'Authorization': `Bearer ${existingUser?.token}`,
           'Content-Type': 'application/json'
         },
         body: JSON.stringify({

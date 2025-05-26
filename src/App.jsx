@@ -6,13 +6,13 @@ import { useDispatch, useSelector } from "react-redux";
 
 function App() {
   const dispatch = useDispatch();
-  const { currentUser } = useSelector((state) => state.user);
+  const { existingUser } = useSelector((state) => state.user);
 
   
   useEffect(() => {
-    if (currentUser?.token) {
+    if (existingUser?.token) {
       try {
-        const decoded = jwtDecode(currentUser.token);
+        const decoded = jwtDecode(existingUser.token);
         const isExpired = decoded.exp * 1000 < Date.now();
         
         if (isExpired) {
@@ -28,7 +28,7 @@ function App() {
         window.location.href = "/login"; // 👈 Navigate without React Router
       }
     }
-  }, [currentUser, dispatch]);
+  }, [existingUser, dispatch]);
 
   return <App_Routes />;
 }

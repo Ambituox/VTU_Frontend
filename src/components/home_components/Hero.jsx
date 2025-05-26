@@ -10,7 +10,7 @@ export default function Hero() {
     AOS.init({ duration: 1000, once: true }); // Initialize AOS with custom options
   }, []);
 
-  const { currentUser } = useSelector((state) => state.user);
+  const { existingUser } = useSelector((state) => state.user);
 
   return (
     <div className="bg-gradient-to-b from-gray-50 to-blue-400">
@@ -26,7 +26,7 @@ export default function Hero() {
               <p className="mt-6 text-gray-700 text-lg font-medium leading-relaxed">
                 Experience seamless and secure online top-ups with our fast and reliable service. Get started today and stay connected in just a few clicks.
               </p>
-              {currentUser ? (
+              {existingUser ? (
                 <div className="mt-5">
                   <BuyDataButton />
                 </div>

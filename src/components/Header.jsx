@@ -15,7 +15,7 @@ const navigation = [
 export default function Header() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
-  const { currentUser } = useSelector((state) => state.user);
+  const { existingUser } = useSelector((state) => state.user);
 
   return (
     <header className="shadow-sm sticky top-0 z-50 bg-white">
@@ -35,15 +35,15 @@ export default function Header() {
             </Link>
           ))}
           {/* Dynamic 'Create Account' or 'Profile' Link */}
-          <Link to={currentUser ? '/profile' : '/signup'} className="text-lg font-semibold text-gray-900 transition duration-300 ease-in-out transform hover:scale-105">
-            {currentUser ? '' : 'Create Account'}
+          <Link to={existingUser ? '/profile' : '/signup'} className="text-lg font-semibold text-gray-900 transition duration-300 ease-in-out transform hover:scale-105">
+            {existingUser ? '' : 'Create Account'}
           </Link>
         </div>
 
         {/* Right-side buttons */}
         <div className="flex gap-6 items-center">
           {
-            !currentUser ? (
+            !existingUser ? (
               <div className="hidden lg:flex">
                 <Link to="/login" className="text-white cl2 px-4 py-2 rounded-md font-semibold transition duration-300 ease-in-out transform hover:scale-105">
                   Log In

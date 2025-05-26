@@ -14,8 +14,8 @@ const Sidebar = () => {
     { name: 'Contact', path: '/contact' },
   ];
 
-  // Access the currentUser from Redux store to get the token
-  const { currentUser } = useSelector((state) => state.user);
+  // Access the existingUser from Redux store to get the token
+  const { existingUser } = useSelector((state) => state.user);
 
   return (
     <div>
@@ -49,7 +49,7 @@ const Sidebar = () => {
           ))}
 
           {
-            !currentUser ? (
+            !existingUser ? (
               <div className="hidden lg:flex">
                 <Link to="/login" className="block hover:bg-gray-200 px-4 py-3 hover:text-blue-500 text-lg font-medium rounded-md duration-150 ease-in-out">
                   Log In

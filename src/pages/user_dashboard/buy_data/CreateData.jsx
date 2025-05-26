@@ -7,7 +7,7 @@ const API_BASE_URL = import.meta.env.API_BASE_URL || 'https://vtu-xpwk.onrender.
 const networkProviders = ["MTN", "GLO", "AIRTEL", "9MOBILE"];
 
 export default function CreateDataComponent() {
-  const { currentUser } = useSelector((state) => state.user);
+  const { existingUser } = useSelector((state) => state.user);
 
   const [dataPlan, setDataPlan] = useState({
     networkProvider: "MTN",
@@ -62,7 +62,7 @@ export default function CreateDataComponent() {
         method: "POST",
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': `Bearer ${currentUser.token}`,
+          'Authorization': `Bearer ${existingUser.token}`,
         },
         body: JSON.stringify(payload),
       });

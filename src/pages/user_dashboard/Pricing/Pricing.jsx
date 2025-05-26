@@ -20,7 +20,7 @@ export default function TabsComponent() {
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
-  const { currentUser } = useSelector((state) => state.user);
+  const { existingUser } = useSelector((state) => state.user);
 
   // Pagination state per network tab
   const [currentPage, setCurrentPage] = useState({
@@ -39,7 +39,7 @@ export default function TabsComponent() {
   const fetchData = () => {
     setLoading(true);
     fetch(`${API_BASE_URL}/api/v1/admin/get-all-data`, {
-      headers: { 'Authorization': `Bearer ${currentUser.token}` }
+      headers: { 'Authorization': `Bearer ${existingUser.token}` }
     })
       .then((response) => {
         if (!response.ok) {
@@ -77,10 +77,10 @@ export default function TabsComponent() {
   }, []);
 
   useEffect(() => {
-    if (currentUser && currentUser.data?.role) {
+    if (existingUser && existingUser.data?.role) {
       setIsAdmin(true);
     }
-  }, [currentUser]);
+  }, [existingUser]);
 
   const getBgColor = (network) => {
     switch (network) {

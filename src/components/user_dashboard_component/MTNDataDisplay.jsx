@@ -15,7 +15,7 @@ export default function MTNDataDisplay() {
   const [loading, setLoading] = useState(false);
   const [errorModalOpen, setErrorModalOpen] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
-  const { currentUser } = useSelector((state) => state.user);
+  const { existingUser } = useSelector((state) => state.user);
   const navigate = useNavigate();
 
   // Fetch all data plans from API
@@ -23,7 +23,7 @@ export default function MTNDataDisplay() {
     setLoading(true);
     try {
       const res = await fetch(`${API_BASE_URL}/api/v1/admin/get-all-data`, {
-        headers: { Authorization: `Bearer ${currentUser?.token}` },
+        headers: { Authorization: `Bearer ${existingUser?.token}` },
       });
       if (!res.ok) throw new Error(`Error fetching plans: ${res.statusText}`);
       const data = await res.json();

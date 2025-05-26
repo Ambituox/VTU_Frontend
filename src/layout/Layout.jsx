@@ -35,23 +35,23 @@ const mainlinks = [
 export const SidebarLinkContext = createContext();
 
 const Sidebar = ({ isOpen, toggleSidebar }) => {
-  // Access the currentUser from Redux store to get the token
-  const { currentUser } = useSelector((state) => state.user);
+  // Access the existingUser from Redux store to get the token
+  const { existingUser } = useSelector((state) => state.user);
   const [isAdmin, setIsAdmin] = useState(false);
 
   // Local state to store the fetched user profile data
   const [user, setUser] = useState([]);
 
   useEffect(() => {
-    // Ensure currentUser and currentUser.data are defined
-    if (currentUser.data && currentUser.data.role) {
+    // Ensure existingUser and existingUser.data are defined
+    if (existingUser.data && existingUser.data.role) {
       setIsAdmin(true);
     } else {
       console.log("No current user or user data available.");
     }
-  }, [currentUser]);
+  }, [existingUser]);
 
-  // useEffect runs when the component mounts or when currentUser changes
+  // useEffect runs when the component mounts or when existingUser changes
   useEffect(() => {
     // Define an async function to fetch the user profile
     const fetchUserProfile = async () => {
@@ -61,7 +61,7 @@ const Sidebar = ({ isOpen, toggleSidebar }) => {
           method: "GET",
           headers: {
             // Send the token in the Authorization header
-            'Authorization': `Bearer ${currentUser?.token}`,
+            'Authorization': `Bearer ${existingUser?.token}`,
             'Content-Type': 'application/json',
           },
         });
@@ -84,10 +84,10 @@ const Sidebar = ({ isOpen, toggleSidebar }) => {
     };
 
     // Call the fetch function if the token exists
-    if (currentUser?.token) {
+    if (existingUser?.token) {
       fetchUserProfile();
     }
-  }, [currentUser]); // Only re-run the effect if currentUser changes
+  }, [existingUser]); // Only re-run the effect if existingUser changes
 
   return (
     <div
@@ -101,7 +101,7 @@ const Sidebar = ({ isOpen, toggleSidebar }) => {
           </div>
           <div>
             <h1 className="text-sm font-semibold text-white/60 capitalize">
-             Hi, {currentUser?.data?.firstName || "User"}
+             Hi, {existingUser?.data?.firstName || "User"}
             </h1>
             <p className="text-sm text-white/40">
               balance: ₦ 5,300.00
@@ -146,7 +146,7 @@ const Sidebar = ({ isOpen, toggleSidebar }) => {
 const Header = ({ toggleSidebar }) => {
   const navigate = useNavigate();
 
-  const { currentUser } = useSelector((state) => state.user);
+  const { existingUser } = useSelector((state) => state.user);
 
   const handleBack = () => {
 
@@ -167,7 +167,7 @@ const Header = ({ toggleSidebar }) => {
         </div>
         {/* User Actions */}
         {
-          currentUser && ( 
+          existingUser && ( 
             <div className="">
               <UserLogoutButton/>
               {/* <Link to={'/profile'} className={`text-black`}>

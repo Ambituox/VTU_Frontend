@@ -21,7 +21,7 @@ export default function BuyDataPlan() {
   const [isErrorOpen, setIsErrorOpen] = useState(false); // modal open state
   const navigate = useNavigate();
 
-  const { currentUser } = useSelector((state) => state.user);
+  const { existingUser } = useSelector((state) => state.user);
 
   // Pagination state per network tab
   const [currentPage, setCurrentPage] = useState({
@@ -36,7 +36,7 @@ export default function BuyDataPlan() {
   const fetchData = () => {
     setLoading(true);
     fetch(`${API_BASE_URL}/api/v1/admin/get-all-data`, {
-      headers: { 'Authorization': `Bearer ${currentUser.token}` }
+      headers: { 'Authorization': `Bearer ${existingUser.token}` }
     })
       .then((response) => {
         if (!response.ok) {

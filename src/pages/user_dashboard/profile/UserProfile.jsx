@@ -7,7 +7,7 @@ import { updateSuccess } from "../../../store/userReducers";
 const API_BASE_URL = import.meta.env.API_BASE_URL || 'https://vtu-xpwk.onrender.com';
 
 const UserProfile = () => {
-  const { currentUser } = useSelector((state) => state.user);
+  const { existingUser } = useSelector((state) => state.user);
 
   const [formData, setFormData] = useState({
     firstName: "",
@@ -31,7 +31,7 @@ const UserProfile = () => {
         const response = await fetch(`${API_BASE_URL}/api/v1/get-profile`, {
           method: "GET",
           headers: {
-            Authorization: `Bearer ${currentUser?.token}`,
+            Authorization: `Bearer ${existingUser?.token}`,
             "Content-Type": "application/json",
           },
         });
@@ -52,10 +52,10 @@ const UserProfile = () => {
       }
     };
 
-    if (currentUser?.token) {
+    if (existingUser?.token) {
       fetchUserProfile();
     }
-  }, [currentUser]);
+  }, [existingUser]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -71,7 +71,7 @@ const UserProfile = () => {
       const response = await fetch(`${API_BASE_URL}/api/v1/update-profile`, {
         method: "PUT",
         headers: {
-          Authorization: `Bearer ${currentUser?.token}`,
+          Authorization: `Bearer ${existingUser?.token}`,
           "Content-Type": "application/json",
         },
         body: JSON.stringify(formData),

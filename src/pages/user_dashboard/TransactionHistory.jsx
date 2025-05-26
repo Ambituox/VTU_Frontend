@@ -16,7 +16,7 @@ const SkeletonRow = () => (
 );
 
 function TransactionsHistory() {
-  const { currentUser } = useSelector((state) => state.user);
+  const { existingUser } = useSelector((state) => state.user);
   const [transactions, setTransactions] = useState([]);
   const [filteredTransactions, setFilteredTransactions] = useState([]);
   const [filter, setFilter] = useState("all");
@@ -33,7 +33,7 @@ function TransactionsHistory() {
         method: "GET",
         headers: {
           "Content-Type": "application/json",
-          Authorization: `Bearer ${currentUser?.token}`,
+          Authorization: `Bearer ${existingUser?.token}`,
         },
       });
 
@@ -55,8 +55,8 @@ function TransactionsHistory() {
   }, []);
 
   useEffect(() => {
-    if (currentUser?.token) {
-      const decoded = jwtDecode(currentUser.token);
+    if (existingUser?.token) {
+      const decoded = jwtDecode(existingUser.token);
       const isExpired = decoded.exp * 1000 < Date.now();
 
       if (isExpired) {
@@ -65,7 +65,7 @@ function TransactionsHistory() {
         return;
       }
     }
-  }, [currentUser]);
+  }, [existingUser]);
 
   // Handle transaction filtering
   const handleFilterChange = (type) => {

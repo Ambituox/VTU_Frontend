@@ -13,7 +13,7 @@ export default function DataPlansMixedFiltered() {
   const [loading, setLoading] = useState(false);
   const [errorModalOpen, setErrorModalOpen] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
-  const { currentUser } = useSelector((state) => state.user);
+  const { existingUser } = useSelector((state) => state.user);
   const [isAdmin, setIsAdmin] = useState(false);
   const navigate = useNavigate();
 
@@ -22,7 +22,7 @@ export default function DataPlansMixedFiltered() {
     setLoading(true);
     try {
       const res = await fetch(`${API_BASE_URL}/api/v1/admin/get-all-data`, {
-        headers: { Authorization: `Bearer ${currentUser?.token}` },
+        headers: { Authorization: `Bearer ${existingUser?.token}` },
       });
       if (!res.ok) throw new Error(`Error fetching plans: ${res.statusText}`);
       const data = await res.json();
@@ -43,10 +43,10 @@ export default function DataPlansMixedFiltered() {
   }, []);
 
   useEffect(() => {
-    if (currentUser && currentUser.data?.role) {
+    if (existingUser && existingUser.data?.role) {
       setIsAdmin(true);
     }
-  }, [currentUser]);
+  }, [existingUser]);
 
   // Filter plans priced between 1000 and 5000 inclusive
   const filteredPlans = plans.filter(

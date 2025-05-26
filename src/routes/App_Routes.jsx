@@ -38,7 +38,7 @@ import NotFound from '../pages/NotFound/NotFound';
 import AllUsers from '../pages/admin/all_user/AllUsers';
 
 export default function AppRoutes() {
-  const { currentUser } = useSelector((state) => state.user);
+  const { existingUser } = useSelector((state) => state.user);
 
   return (
     <Router>
@@ -59,31 +59,6 @@ export default function AppRoutes() {
         <Route path="/verify-account" element={<VerifyAccount />} />
         <Route path="/verify-email" element={<VerifyEmailWithOTP />} />
         <Route path="*" element={<NotFound />} />
-
-        {/* Alternate routes */}
-        {/* <Route>
-          <Route path="/" element={currentUser?.token ? <Layout /> : <Navigate to="/login" />}>
-            <Route path="/user-detail/change-password" element={<ChangePassword />} />
-            <Route path="/account-pin" element={<AccountPin />} />
-            <Route path="/fund_wallet" element={<Fund_wallet />} />
-            <Route path="/solution-center" element={<Solution_center />} />
-
-            <Route path="/data-top-up" element={<DataPlanForm />} />
-            <Route path="/airtime-recharge-card" element={<AirtimeTopUp />} />
-            <Route path="/utility-payment" element={<ElectricityBillPayment />} />
-            <Route path="/cable-tv-subscription" element={<CableSubscription />} />
-            <Route path="/pricing" element={<PricingComponent />} />
-            <Route path="/user-detail" element={<UserProfile />} />
-            <Route path="/documentation" element={<ApiComponent />} />
-
-            <Route path="/funding-transaction-history" element={<Fund_wallet />} />
-            <Route path="/data-transaction-history" element={<DataPlanForm />} />
-
-            <Route path="/data-top-up/buy-now" element={<BuyDataNow />} />
-            <Route path="/data-top-up/buy-now/make-payment" element={<MakePayment />} />
-            <Route path="/data-top-up/buy-now/make-payment/verify-payment" element={<VerifyPayment />} />
-          </Route>
-        </Route> */}
 
         {/* Protected/User Dashboard Routes */}
         <Route element={<Private_Route />}>
