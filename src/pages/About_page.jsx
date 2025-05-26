@@ -7,6 +7,7 @@ import Testimonial from '../components/Testimonial';
 import FAQ from '../components/home_components/Faqs';
 import { Link } from 'react-router-dom';
 import Footer from '../components/Footer';
+import AboutHero from '../components/about_component/AboutHero';
 
 const About_page = () => {
   // Initialize AOS on page load
@@ -17,8 +18,9 @@ const About_page = () => {
   return (
     <>
       <Header />
-      <div className="py-12 px-6 bg-gray-50 text-gray-800">
-        <div className="max-w-7xl mx-auto">
+      <div className=" bg-gray-50 text-gray-800">
+        <AboutHero/>
+        <div className="max-w-7xl mx-auto mt-12">
           <h1
             className="text-4xl text-center sm:text-5xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-[#ADF802] via-[#4169E1] to-[#ADF802] leading-tight mt-4 mb-4"
             data-aos="fade-up"
@@ -64,7 +66,7 @@ const About_page = () => {
           {/* FAQ Section */}
           <FAQ/>
 
-          <div className="mt-12 text-center max-w-3xl mx-auto" data-aos="zoom-in">
+          <div className="my-12 text-center max-w-3xl md:px-0 px-3 mx-auto" data-aos="zoom-in">
             <h2 className="text-3xl font-semibold text-blu-600">Our Commitment to You</h2>
             <p className="mt-4 text-lg text-gray-700">
               We are committed to providing top-notch services that make your life easier and more connected. Whether it's making sure you never run out of mobile data or ensuring your gaming experience is always on point, [Your Website Name] is here to make it happen.

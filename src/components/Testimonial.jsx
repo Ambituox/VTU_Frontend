@@ -18,7 +18,6 @@ const Testimonial = () => {
       content: 'The virtual top-up was seamless, fast, and convenient. I’m definitely coming back.',
       name: 'John Doe',
       role: 'Software Engineer',
-      image: 'https://via.placeholder.com/150',
       aosDelay: 0
     },
     {
@@ -27,7 +26,6 @@ const Testimonial = () => {
       content: 'The process was incredibly easy and customer support was top-notch. I recommend this service to everyone.',
       name: 'Jane Smith',
       role: 'Business Owner',
-      image: 'https://via.placeholder.com/150',
       aosDelay: 200
     },
     {
@@ -36,13 +34,12 @@ const Testimonial = () => {
       content: 'I’ve used many top-up services before, but this one stands out for its speed and reliability.',
       name: 'Alice Johnson',
       role: 'Freelancer',
-      image: 'https://via.placeholder.com/150',
       aosDelay: 400
     },
   ];
 
   return (
-    <div className="bg-blue-100 py-16 px-4 sm:px-6 lg:px-8">
+    <div className="bg-gray-50 py-16 px-4 sm:px-6 lg:px-8">
       <div className="max-w-7xl mx-auto text-center">
         {/* Customized h2 Tag with Custom Colors */}
         <h2 className="text-4xl sm:text-4xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-[#ADF802] via-[#4169E1] to-[#ADF802] leading-tight mt-4 mb-8">
@@ -65,7 +62,6 @@ const Testimonial = () => {
               <p className="text-xl font-semibold text-gray-800">{quote}</p>
               <p className="mt-4 text-gray-600">{content}</p>
               <div className="mt-6 flex items-center">
-                <img className="w-12 h-12 rounded-full" src={image} alt={name} />
                 <div className="ml-4">
                   <p className="font-semibold text-gray-800">{name}</p>
                   <p className="text-sm text-gray-500">{role}</p>

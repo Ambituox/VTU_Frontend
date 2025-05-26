@@ -1,10 +1,9 @@
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
-import Home from '../pages/Home';
-import Services_page from '../pages/Services_page';
+import Home from '../pages/Home';;
 import About_page from '../pages/About_page';
-import AboutUs from '../pages/about';
 import ContactPage from '../pages/Contact_page';
+import ServicesPage from '../pages/Services_page';
 import CreateAccountPage from '../pages/auth/Sign_up';
 import SignIn from '../pages/auth/Sign_in';
 import Layout from '../layout/Layout';
@@ -31,7 +30,6 @@ import MakePayment from '../components/BuyData/MakePayment';
 import BuyDataNow from '../components/BuyData/BuyDataNow';
 import VerifyPayment from '../pages/user_dashboard/buy_airtime/VerifyPayment';
 import CreateData from '../pages/user_dashboard/buy_data/CreateData';
-import AdminLogin from '../pages/admin/auth/Login';
 import TransactionHistory from '../pages/user_dashboard/TransactionHistory';
 import { useSelector } from 'react-redux';
 import NotFound from '../pages/NotFound/NotFound';
@@ -46,8 +44,7 @@ export default function AppRoutes() {
         {/* Public Routes */}
         <Route path="/" element={<Home />} />
         <Route path="/about" element={<About_page />} />
-        <Route path="/aboutus" element={<AboutUs />} />
-        <Route path="/services" element={<Services_page />} />
+        <Route path="/services" element={<ServicesPage />} />
         <Route path="/contact" element={<ContactPage />} />
         
         {/* Authentication route */}
