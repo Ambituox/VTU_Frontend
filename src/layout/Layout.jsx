@@ -192,43 +192,60 @@ const Header = ({ toggleSidebar }) => {
 };
 
 export default function Layout() {
+  // State to track if sidebar is open or closed
   const [isSidebarOpen, setSidebarOpen] = useState(false);
-  const location = useLocation(); // 👈 Detect current route path
 
+  // Access the current route path
+  const location = useLocation();
+
+  // Function to toggle the sidebar (used on small screens)
   const toggleSidebar = () => {
     setSidebarOpen(!isSidebarOpen);
   };
 
-  // 🟡 Automatically close sidebar on route change
+  /**
+   * 👇 Close sidebar automatically on route change
+   * Only does this on screens less than 992px (mobile/tablet)
+   */
   useEffect(() => {
-    setSidebarOpen(false);
+    if (window.innerWidth < 992) {
+      setSidebarOpen(false); // Auto-close sidebar on mobile after route change
+    }
   }, [location.pathname]);
 
-  // 🟡 Toggle sidebar based on screen width
+  /**
+   * 👇 Listen to screen resizing to show/hide sidebar
+   * Shows sidebar on desktop, hides it on smaller devices
+   */
   useEffect(() => {
     const handleResize = () => {
       if (window.innerWidth < 992) {
-        setSidebarOpen(false);
+        setSidebarOpen(false); // Small screens: hide sidebar
       } else {
-        setSidebarOpen(true);
+        setSidebarOpen(true); // Large screens: show sidebar
       }
     };
 
+    // Add listener and run it immediately on mount
     window.addEventListener('resize', handleResize);
-    handleResize(); // Initial check
+    handleResize();
+
+    // Cleanup listener on unmount
     return () => window.removeEventListener('resize', handleResize);
   }, []);
 
   return (
     <div className="flex flex-col relative max-h-[100vh]">
       <div className="flex flex-1">
-        {/* Sidebar */}
+        {/* Sidebar Panel */}
         <Sidebar isOpen={isSidebarOpen} toggleSidebar={toggleSidebar} />
 
-        {/* Main Content */}
+        {/* Main Content Area */}
         <div className="overflow-x-hidden h-[100vh] flex-1 overflow-y-auto bg-gray-50 text-black">
+          {/* Sticky Header with menu and logout */}
           <Header toggleSidebar={toggleSidebar} />
 
+          {/* Dynamic page content */}
           <div className="">
             <Outlet />
           </div>
@@ -239,7 +256,7 @@ export default function Layout() {
             <p className="text-gray-400 text-sm">Made with Love from Nigeria</p>
           </div>
 
-          {/* WhatsApp Button */}
+          {/* Floating WhatsApp Icon */}
           <div className="text-white flex justify-center items-center absolute bottom-8 right-5 h-[40px] w-[40px] bg-green-500 animate-bounce rounded-full">
             <FaWhatsapp />
           </div>
