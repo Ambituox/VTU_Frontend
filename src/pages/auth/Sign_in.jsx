@@ -16,6 +16,9 @@ const SignIn = () => {
   const [loading, setLoading] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
 
+  const getEmail = localStorage.setItem('userEmail', email);
+  console.log('Email stored in localStorage:', getEmail);
+  
   let navigate = useNavigate();
   let dispatch = useDispatch();
 

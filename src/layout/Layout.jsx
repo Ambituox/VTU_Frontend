@@ -2,7 +2,7 @@ import React, { createContext, useEffect, useState } from 'react';
 import { MdOutlinePayment, MdSpaceDashboard } from 'react-icons/md';
 import { FaUserAlt, FaUsers, FaWhatsapp } from 'react-icons/fa';
 import { IoClose } from 'react-icons/io5';
-import { Link, Outlet, useNavigate } from 'react-router-dom';
+import { Link, Outlet, useLocation, useNavigate } from 'react-router-dom';
 import Main_links from './sidebar/main/Main_links';
 import Services_links from './sidebar/services/Services_links';
 import Extra_links from './sidebar/extra/Extra_links';
@@ -34,6 +34,8 @@ const mainlinks = [
 
 export const SidebarLinkContext = createContext();
 
+const API_BASE_URL = import.meta.env.API_BASE_URL || 'https://vtu-xpwk.onrender.com';
+
 const Sidebar = ({ isOpen, toggleSidebar }) => {
   // Access the existingUser from Redux store to get the token
   const { existingUser } = useSelector((state) => state.user);
@@ -57,7 +59,7 @@ const Sidebar = ({ isOpen, toggleSidebar }) => {
     const fetchUserProfile = async () => {
       try {
         // Send GET request to the profile API endpoint
-        const response = await fetch("https://vtu-xpwk.onrender.com/api/v1/get-profile", {
+        const response = await fetch(`${API_BASE_URL}/api/v1/get-profile`, {
           method: "GET",
           headers: {
             // Send the token in the Authorization header
@@ -104,7 +106,17 @@ const Sidebar = ({ isOpen, toggleSidebar }) => {
              Hi, {existingUser?.data?.firstName || "User"}
             </h1>
             <p className="text-sm text-white/40">
-              balance: ₦ 5,300.00
+              {
+                existingUser ? (
+                  <>
+                    Wallet balance : ₦ {existingUser?.data?.wallet?.balance}
+                  </>
+                ) : (
+                  <>
+                    0
+                  </>
+                )
+              }
             </p>
           </div>
         </div>
@@ -179,16 +191,20 @@ const Header = ({ toggleSidebar }) => {
   );
 };
 
-// Admin Layout Component
-
-
 export default function Layout() {
   const [isSidebarOpen, setSidebarOpen] = useState(false);
+  const location = useLocation(); // 👈 Detect current route path
 
   const toggleSidebar = () => {
     setSidebarOpen(!isSidebarOpen);
   };
 
+  // 🟡 Automatically close sidebar on route change
+  useEffect(() => {
+    setSidebarOpen(false);
+  }, [location.pathname]);
+
+  // 🟡 Toggle sidebar based on screen width
   useEffect(() => {
     const handleResize = () => {
       if (window.innerWidth < 992) {
@@ -199,26 +215,34 @@ export default function Layout() {
     };
 
     window.addEventListener('resize', handleResize);
-    handleResize();
+    handleResize(); // Initial check
     return () => window.removeEventListener('resize', handleResize);
   }, []);
 
   return (
     <div className="flex flex-col relative max-h-[100vh]">
       <div className="flex flex-1">
+        {/* Sidebar */}
         <Sidebar isOpen={isSidebarOpen} toggleSidebar={toggleSidebar} />
+
+        {/* Main Content */}
         <div className="overflow-x-hidden h-[100vh] flex-1 overflow-y-auto bg-gray-50 text-black">
           <Header toggleSidebar={toggleSidebar} />
-            <div className="">
-              <Outlet />
-            </div>
-            <div className="w-full bg-white p-3 flex justify-between items-center lg:flex-row flex-col">
-              <p className="text-gray-400 text-sm">Copyright &copy; 2025</p>
-              <p className="text-gray-400 text-sm">Made with Love from Nigeria</p>
-            </div>
-            <div className="text-white flex justify-center items-center absolute bottom-8 right-5 h-[40px] w-[40px] bg-green-500 animate-bounce rounded-full">
-              <FaWhatsapp />
-            </div>
+
+          <div className="">
+            <Outlet />
+          </div>
+
+          {/* Footer */}
+          <div className="w-full bg-white p-3 flex justify-between items-center lg:flex-row flex-col">
+            <p className="text-gray-400 text-sm">Copyright &copy; 2025</p>
+            <p className="text-gray-400 text-sm">Made with Love from Nigeria</p>
+          </div>
+
+          {/* WhatsApp Button */}
+          <div className="text-white flex justify-center items-center absolute bottom-8 right-5 h-[40px] w-[40px] bg-green-500 animate-bounce rounded-full">
+            <FaWhatsapp />
+          </div>
         </div>
       </div>
     </div>

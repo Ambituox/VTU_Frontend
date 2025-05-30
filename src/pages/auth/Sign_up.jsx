@@ -74,12 +74,22 @@ const CreateAccountPage = () => {
       });
 
       const data = await response.json();
-
+      // Check if the response is ok and if there's an error in the data
       if (!response.ok || data.error) {
         setError(data.error || 'Something went wrong');
         
         openModal();
-        setLoading(false)
+        setLoading(false);
+
+        if (data.error === 'Email already registered') {
+          setError('Email already registered. Please login or use a different email.');
+          setLoading(false);
+          openModal();
+          console.log(email);
+          localStorage.setItem('userEmail', email);
+          setTimeout(() => navigate("/login"), 2500);
+          return;
+        }
         return;
       }
 

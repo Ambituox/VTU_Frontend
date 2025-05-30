@@ -108,7 +108,7 @@ const UserProfile = () => {
           onChange={handleChange}
           disabled={!isEditing}
           className={`mt-2 block w-full p-3 bg-gray-50 border ${
-            isEditing ? "border-gray-300" : "border border-gray-200"
+            isEditing ? "border-gray-300" : "border border-gray-100"
           } rounded-lg focus:ring-blue-500 focus:border-blue-500 transition`}
         />
       )}
@@ -129,6 +129,24 @@ const UserProfile = () => {
             <button className="bg-blue-500 p-3 rounded-md text-start text-gray-50 font-semibold">
               <Link to={'/profile/transaction-history'}>My Transaction History</Link>
             </button>
+            <div className="flex items-center">
+              <button className="bg-red-300 px-3 py-3 rounded-l-lg font-semibold">
+                {
+                  existingUser ? (
+                    <>
+                      My wallet balance : ₦ {existingUser?.data?.wallet?.balance}
+                    </>
+                  ) : (
+                    <>
+                      0
+                    </>
+                  )
+                }
+              </button>
+              <button className="bg-green-500 py-3 px-1 font-semibold text-gray-100 rounded-r-lg">
+                <Link to={'/profile/fund_wallet'}>Fund wallet</Link>
+              </button>
+            </div>
           </div>
 
           <div className="flex justify-between items-center mt-8">
