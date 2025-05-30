@@ -204,7 +204,7 @@ export default function Layout() {
   };
 
   /**
-   * 👇 Close sidebar automatically on route change
+   * Close sidebar automatically on route change
    * Only does this on screens less than 992px (mobile/tablet)
    */
   useEffect(() => {
@@ -214,7 +214,7 @@ export default function Layout() {
   }, [location.pathname]);
 
   /**
-   * 👇 Listen to screen resizing to show/hide sidebar
+   * Listen to screen resizing to show/hide sidebar
    * Shows sidebar on desktop, hides it on smaller devices
    */
   useEffect(() => {
