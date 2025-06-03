@@ -116,9 +116,12 @@ const handlePayment = async () => {
       setLoading(false);
 
       const checkoutUrl = result?.data?.responseBody?.checkoutUrl;
-
+      // console.log(checkoutUrl);
+      
+      // if (!loading) {
+      // }
       if (checkoutUrl) {
-        newWindow.location.href = checkoutUrl; // Redirect user here
+        // newWindow.location.href = checkoutUrl; // Redirect user here
         setSuccess(false);
       } else {
         newWindow.close(); // Fallback: close if no URL

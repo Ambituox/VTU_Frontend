@@ -46,7 +46,7 @@ const Sidebar = ({ isOpen, toggleSidebar }) => {
 
   useEffect(() => {
     // Ensure existingUser and existingUser.data are defined
-    if (existingUser.data && existingUser.data.role) {
+    if (existingUser.data && existingUser.data.role === 'admin') {
       setIsAdmin(true);
     } else {
       console.log("No current user or user data available.");
@@ -241,7 +241,7 @@ export default function Layout() {
         <Sidebar isOpen={isSidebarOpen} toggleSidebar={toggleSidebar} />
 
         {/* Main Content Area */}
-        <div className="overflow-x-hidden h-[100vh] flex-1 overflow-y-auto bg-gray-50 text-black">
+        <div className="overflow-x-hidden h-[100vh] flex-1 overflow-y-auto bg-gray-50 text-black relative">
           {/* Sticky Header with menu and logout */}
           <Header toggleSidebar={toggleSidebar} />
 
@@ -251,7 +251,7 @@ export default function Layout() {
           </div>
 
           {/* Footer */}
-          <div className="w-full bg-white p-3 flex justify-between items-center lg:flex-row flex-col">
+          <div className="absolute bottom-0 w-full bg-white p-3 flex justify-between items-center lg:flex-row flex-col">
             <p className="text-gray-400 text-sm">Copyright &copy; 2025</p>
             <p className="text-gray-400 text-sm">Made with Love from Nigeria</p>
           </div>

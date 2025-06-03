@@ -8,7 +8,7 @@ const API_BASE_URL = import.meta.env.API_BASE_URL || 'https://vtu-xpwk.onrender.
 
 const UpdateData = () => {
   const { networkProvider } = useParams();
-  const { currentUser } = useSelector((state) => state.user);
+  const { existingUser } = useSelector((state) => state.user);
   const location = useLocation();
   const navigate = useNavigate();
 
@@ -52,7 +52,7 @@ const UpdateData = () => {
         {
           headers: {
             'Content-Type': 'application/json',
-            'Authorization': `Bearer ${currentUser.token}`,
+            'Authorization': `Bearer ${existingUser.token}`,
           },
         }
       );
