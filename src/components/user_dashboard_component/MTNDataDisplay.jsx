@@ -132,7 +132,7 @@ export default function MTNDataDisplay() {
                         normalizeNetwork(plan.networkProvider)
                       )} ${getTextColor(normalizeNetwork(plan.networkProvider))} hover:bg-blue-500 relative flex flex-col items-center justify-center p-4 rounded-lg shadow-md`}>
                       <p className="mt-2 text-sm font-semibold ">
-                        {plan.plan} Plan
+                        {plan.size} Plan
                       </p>
                       <p className="mt-1 text-lg font-bold  flex items-center">
                         <TbCurrencyNaira /> {plan.price.toLocaleString()}

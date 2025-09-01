@@ -93,7 +93,7 @@ const Sidebar = ({ isOpen, toggleSidebar }) => {
 
   return (
     <div
-      className={`h-screen overflow-y-auto pb-5 z-20 bg-slate-900 text-gray-400 fixed lg:static ${ isOpen ? '64' : 'w-0'
+      className={`h-screen sidebarOverflow overflow-y-auto pb-5 z-20 bg-slate-900 text-gray-400 fixed lg:static ${ isOpen ? '64' : 'w-0'
       } transition-all duration-300`}>
       <div className="px-5 py-6 flex items-center justify-between border-b border-slate-700 relative">
         <Link to={'user-detail'}>
@@ -109,7 +109,7 @@ const Sidebar = ({ isOpen, toggleSidebar }) => {
               {
                 existingUser ? (
                   <>
-                    Wallet balance : ₦ {existingUser?.data?.wallet?.balance}
+                    Wallet: <span className='font-bold text-xl'>₦{existingUser?.data?.wallet?.balance.toLocaleString()}.00</span>
                   </>
                 ) : (
                   <>

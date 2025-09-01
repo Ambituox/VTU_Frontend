@@ -146,16 +146,16 @@ export default function BuyDataPlan() {
           </Tab.List>
 
           {/* Service types under selected network */}
-          <div className="mt-6">
+          <div className="mt-3">
             {serviceTypes.length > 0 ? (
               <Tab.Group>
-                <Tab.List className="flex space-x-3 overflow-x-auto whitespace-nowrap bg-gray-200 p-2 rounded-lg">
+                <Tab.List className="tab-list-container flex space-x-3 overflow-x-auto whitespace-nowrap bg-gray-200 p-2 rounded-lg">
                   {serviceTypes.map((stype) => (
                     <Tab
                       key={stype}
                       className={({ selected }) =>
                         classNames(
-                          "min-w-[120px] px-4 py-2 rounded-lg text-sm font-medium",
+                          " min-w-[120px] px-4 py-2 rounded-lg text-sm font-medium",
                           selected
                             ? "bg-blue-600 text-white"
                             : "bg-gray-300 text-gray-700 hover:bg-gray-400"

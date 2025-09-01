@@ -56,6 +56,7 @@ const NetworkPlan = () => {
         const result = await res.json();
 
         // Filter only this network
+        console.log(result);
         const networkPlans = result.filter(
           (plan) =>
             plan.networkProvider?.toUpperCase() === networkProvider?.toUpperCase()

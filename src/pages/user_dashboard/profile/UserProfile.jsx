@@ -4,7 +4,11 @@ import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 import { updateSuccess } from "../../../store/userReducers";
 
-const API_BASE_URL = import.meta.env.API_BASE_URL || 'https://vtu-xpwk.onrender.com';
+const API_BASE_URL = import.meta.env.API_BASE_URL || "https://vtu-xpwk.onrender.com";
+
+// Cloudinary Config (replace with your details)
+const CLOUD_NAME = "dypn7gna0";
+const UPLOAD_PRESET = "ambitioux"; // create one in Cloudinary settings
 
 const UserProfile = () => {
   const { existingUser } = useSelector((state) => state.user);
@@ -21,6 +25,7 @@ const UserProfile = () => {
   const [loadingProfile, setLoadingProfile] = useState(true);
   const [message, setMessage] = useState("");
   const [error, setError] = useState("");
+  const [uploadingImage, setUploadingImage] = useState(false);
 
   const dispatch = useDispatch();
 
@@ -44,7 +49,7 @@ const UserProfile = () => {
         }
 
         const { firstName, lastName, email, phone, image } = data.data;
-        setFormData({ firstName, lastName, email, phone, image: image || "" });
+        setFormData({ firstName, lastName, email, phone, image: image});
       } catch (error) {
         console.error("Error fetching user profile:", error.message);
       } finally {
@@ -57,11 +62,43 @@ const UserProfile = () => {
     }
   }, [existingUser]);
 
+  console.log(formData);
+
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData({ ...formData, [name]: value });
   };
 
+  // ✅ Cloudinary Upload
+  const handleImageUpload = async (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+
+    setUploadingImage(true);
+    const formDataUpload = new FormData();
+    formDataUpload.append("file", file);
+    formDataUpload.append("upload_preset", UPLOAD_PRESET);
+
+    try {
+      const res = await fetch(`https://api.cloudinary.com/v1_1/${CLOUD_NAME}/image/upload`, {
+        method: "POST",
+        body: formDataUpload,
+      });
+
+      const data = await res.json();
+      if (data.secure_url) {
+        setFormData((prev) => ({ ...prev, image: data.secure_url }));
+      } else {
+        setError("Image upload failed. Try again.");
+      }
+    } catch (err) {
+      setError("Error uploading image: " + err.message);
+    } finally {
+      setUploadingImage(false);
+      
+    }
+  };
+  
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
@@ -78,14 +115,13 @@ const UserProfile = () => {
       });
 
       const data = await response.json();
-
       if (!response.ok || data.status === "error") {
         setError(data.message || "Failed to update profile");
         return;
       }
 
       setMessage("Profile updated successfully!");
-      dispatch(updateSuccess(data));
+      dispatch(updateSuccess(data.data));
       setIsEditing(false);
     } catch (err) {
       setError(err.message);
@@ -121,30 +157,46 @@ const UserProfile = () => {
         <h2 className="text-3xl font-bold text-center text-gray-800 mb-6">User Profile</h2>
 
         <form onSubmit={handleSubmit} className="py-5">
+          {/* Profile Image */}
+          <div className="flex flex-col items-center mb-6">
+            {formData.image ? (
+              <img
+                src={formData.image}
+                alt="Profile"
+                className="w-24 h-24 rounded-full object-cover border-2 border-gray-300"
+              />
+            ) : (
+              <FaUserAlt className="w-24 h-24 text-gray-400 border rounded-full p-4" />
+            )}
+
+            {isEditing && (
+              <div className="mt-3">
+                <input type="file" accept="image/*" onChange={handleImageUpload} />
+                {uploadingImage && <p className="text-sm text-blue-500 mt-2">Uploading...</p>}
+              </div>
+            )}
+          </div>
+
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
             {renderInput("First Name", "firstName", formData.firstName)}
             {renderInput("Last Name", "lastName", formData.lastName)}
             {renderInput("Email", "email", formData.email)}
             {renderInput("Phone", "phone", formData.phone)}
+
             <button className="bg-blue-500 p-3 rounded-md text-start text-gray-50 font-semibold">
-              <Link to={'/profile/transaction-history'}>My Transaction History</Link>
+              <Link to={"/profile/transaction-history"}>My Transaction History</Link>
             </button>
+
             <div className="flex items-center">
               <button className="bg-red-300 px-3 py-3 rounded-l-lg font-semibold">
-                {
-                  existingUser ? (
-                    <>
-                      My wallet balance : ₦ {existingUser?.data?.wallet?.balance}
-                    </>
-                  ) : (
-                    <>
-                      0
-                    </>
-                  )
-                }
+                {existingUser ? (
+                  <>My wallet balance : ₦ {existingUser?.data?.wallet?.balance}</>
+                ) : (
+                  <>0</>
+                )}
               </button>
               <button className="bg-green-500 py-3 px-1 font-semibold text-gray-100 rounded-r-lg">
-                <Link to={'/profile/fund_wallet'}>Fund wallet</Link>
+                <Link to={"/profile/fund_wallet"}>Fund wallet</Link>
               </button>
             </div>
           </div>
@@ -182,12 +234,8 @@ const UserProfile = () => {
           </div>
         </form>
 
-        {error && (
-          <div className="mt-6 p-3 bg-red-100 text-red-700 text-center rounded-lg shadow-sm">{error}</div>
-        )}
-        {message && (
-          <div className="mt-6 p-3 bg-green-100 text-green-700 text-center rounded-lg shadow-sm">{message}</div>
-        )}
+        {error && <div className="mt-6 p-3 bg-red-100 text-red-700 text-center rounded-lg shadow-sm">{error}</div>}
+        {message && <div className="mt-6 p-3 bg-green-100 text-green-700 text-center rounded-lg shadow-sm">{message}</div>}
       </div>
     </div>
   );
