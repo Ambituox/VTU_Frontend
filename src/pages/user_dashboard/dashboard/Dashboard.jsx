@@ -96,6 +96,7 @@ const Dashboard = () => {
     <section className="max-w-7xl mx-auto md:p-6 p-3">
       <DashboardHeader />
       <Marquee />
+      {/* <NetworkServices /> */}
       <MTNDataDisplay />
       <Services />
       <TransactionsHistoryComp />

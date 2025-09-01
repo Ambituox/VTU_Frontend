@@ -251,15 +251,17 @@ export default function Layout() {
           </div>
 
           {/* Footer */}
-          <div className="absolute bottom-0 w-full bg-white p-3 flex justify-between items-center lg:flex-row flex-col">
+          <div className="fixed bottom-0 w-full bg-white p-3 flex justify-between items-center lg:flex-row flex-col">
             <p className="text-gray-400 text-sm">Copyright &copy; 2025</p>
             <p className="text-gray-400 text-sm">Made with Love from Nigeria</p>
           </div>
 
           {/* Floating WhatsApp Icon */}
-          <div className="text-white flex justify-center items-center absolute bottom-8 right-5 h-[40px] w-[40px] bg-green-500 animate-bounce rounded-full">
-            <FaWhatsapp />
-          </div>
+          <Link to={'https://wa.me/09134841368'}>
+            <div className="text-white flex justify-center items-center fixed bottom-8 right-5 h-[40px] w-[40px] bg-green-500 animate-bounce rounded-full">
+              <FaWhatsapp />
+            </div>
+          </Link>
         </div>
       </div>
     </div>

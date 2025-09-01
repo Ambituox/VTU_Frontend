@@ -13,19 +13,15 @@ function App() {
     if (existingUser?.token) {
       try {
         const decoded = jwtDecode(existingUser.token);
-        const isExpired = decoded.exp * 1000 < Date.now();
-        
-        if (isExpired) {
-          console.log('Expired');
+
+        // check expiry (exp is in seconds → convert to ms)
+        if (decoded.exp * 1000 < Date.now()) {
           dispatch(signOutUserSuccess());
-          window.location.href = "/login"; // 👈 Navigate without React Router
-          console.log('Expired');
-          return;
+          window.location.href = "/login"; // redirect user
         }
       } catch (err) {
-        console.error("Invalid token:", err);
-        dispatch(signOutUserSuccess());
-        window.location.href = "/login"; // 👈 Navigate without React Router
+        dispatch(signOutUserSuccess()); // ✅ fallback logout
+        window.location.href = "/login";
       }
     }
   }, [existingUser, dispatch]);

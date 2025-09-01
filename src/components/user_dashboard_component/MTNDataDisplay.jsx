@@ -154,8 +154,8 @@ export default function MTNDataDisplay() {
                 <div className="mt-4 text-center flex justify-start">
                   <button
                     onClick={() =>
-                      navigate("/profile/data-top-up", {
-                        state: { networkProvider: network },
+                      navigate("services", {
+                        state: { networkProvider: network }, // pass network to services
                       })
                     }
                     className={`inline-block ${getBgColor(

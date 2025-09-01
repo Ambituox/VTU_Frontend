@@ -34,6 +34,7 @@ import TransactionHistory from '../pages/user_dashboard/TransactionHistory';
 import { useSelector } from 'react-redux';
 import NotFound from '../pages/NotFound/NotFound';
 import AllUsers from '../pages/admin/all_user/AllUsers';
+import NetworkPlan from '../pages/user_dashboard/buy_data/NetworkPlan';
 
 export default function AppRoutes() {
   const { existingUser } = useSelector((state) => state.user);
@@ -66,7 +67,7 @@ export default function AppRoutes() {
             <Route path="account-pin" element={<AccountPin />} />
             <Route path="fund_wallet" element={<Fund_wallet />} />
             <Route path="solution-center" element={<Solution_center />} />
-
+            <Route path="services" element={<NetworkPlan />} />
             <Route path='data-top-up' element={<DataPlanForm/>}/>
             <Route path='airtime-recharge-card' element={<AirtimeTopUp/>}/>
             <Route path='utility-payment' element={<ElectricityBillPayment/>}/>

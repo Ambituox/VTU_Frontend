@@ -44,7 +44,7 @@ export default function BuyDataNow() {
 
         {/* Plan Details */}
         <div className="px-6 py-4">
-          <h2 className="text-2xl font-bold text-gray-800">{data.plan}</h2>
+          <h2 className="text-2xl font-bold text-gray-800">{data.size}</h2>
           <div className="border-t my-2"></div>
 
           <div className="flex justify-between gap-3 text-gray-600">
