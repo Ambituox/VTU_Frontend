@@ -6,10 +6,6 @@ import { updateSuccess } from "../../../store/userReducers";
 
 const API_BASE_URL = import.meta.env.API_BASE_URL || "https://vtu-xpwk.onrender.com";
 
-// Cloudinary Config (replace with your details)
-const CLOUD_NAME = "dypn7gna0";
-const UPLOAD_PRESET = "ambitioux"; // create one in Cloudinary settings
-
 const UserProfile = () => {
   const { existingUser } = useSelector((state) => state.user);
 
@@ -18,14 +14,14 @@ const UserProfile = () => {
     lastName: "",
     email: "",
     phone: "",
-    image: "",
+    image: "", // image URL or filename (backend will return this)
   });
+  const [imageFile, setImageFile] = useState(null); // store raw file
   const [isEditing, setIsEditing] = useState(false);
   const [loading, setLoading] = useState(false);
   const [loadingProfile, setLoadingProfile] = useState(true);
   const [message, setMessage] = useState("");
   const [error, setError] = useState("");
-  const [uploadingImage, setUploadingImage] = useState(false);
 
   const dispatch = useDispatch();
 
@@ -49,7 +45,7 @@ const UserProfile = () => {
         }
 
         const { firstName, lastName, email, phone, image } = data.data;
-        setFormData({ firstName, lastName, email, phone, image: image});
+        setFormData({ firstName, lastName, email, phone, image: image });
       } catch (error) {
         console.error("Error fetching user profile:", error.message);
       } finally {
@@ -62,56 +58,43 @@ const UserProfile = () => {
     }
   }, [existingUser]);
 
-  console.log(formData);
-
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData({ ...formData, [name]: value });
   };
 
-  // ✅ Cloudinary Upload
-  const handleImageUpload = async (e) => {
+  // ✅ Store selected image file
+  const handleImageUpload = (e) => {
     const file = e.target.files[0];
-    if (!file) return;
-
-    setUploadingImage(true);
-    const formDataUpload = new FormData();
-    formDataUpload.append("file", file);
-    formDataUpload.append("upload_preset", UPLOAD_PRESET);
-
-    try {
-      const res = await fetch(`https://api.cloudinary.com/v1_1/${CLOUD_NAME}/image/upload`, {
-        method: "POST",
-        body: formDataUpload,
-      });
-
-      const data = await res.json();
-      if (data.secure_url) {
-        setFormData((prev) => ({ ...prev, image: data.secure_url }));
-      } else {
-        setError("Image upload failed. Try again.");
-      }
-    } catch (err) {
-      setError("Error uploading image: " + err.message);
-    } finally {
-      setUploadingImage(false);
-      
+    if (file) {
+      setImageFile(file); // store raw file for sending
+      setFormData((prev) => ({ ...prev, image: URL.createObjectURL(file) })); // preview
     }
   };
-  
+
+  console.log(formData);
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
     setError("");
 
     try {
+      const body = new FormData();
+      body.append("firstName", formData.firstName);
+      body.append("lastName", formData.lastName);
+      body.append("email", formData.email);
+      body.append("phone", formData.phone);
+      if (imageFile) {
+        body.append("image", imageFile); // send raw file
+      }
+
       const response = await fetch(`${API_BASE_URL}/api/v1/update-profile`, {
         method: "PUT",
         headers: {
           Authorization: `Bearer ${existingUser?.token}`,
-          "Content-Type": "application/json",
         },
-        body: JSON.stringify(formData),
+        body, // no JSON.stringify, we send FormData
       });
 
       const data = await response.json();
@@ -172,7 +155,6 @@ const UserProfile = () => {
             {isEditing && (
               <div className="mt-3">
                 <input type="file" accept="image/*" onChange={handleImageUpload} />
-                {uploadingImage && <p className="text-sm text-blue-500 mt-2">Uploading...</p>}
               </div>
             )}
           </div>

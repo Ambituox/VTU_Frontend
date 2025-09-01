@@ -42,8 +42,6 @@ const NetworkPlan = () => {
 
   const { existingUser } = useSelector((state) => state.user);
 
-  console.log(networkProvider);
-
   // For pagination
   const itemsPerPage = 8;
   const [currentPage, setCurrentPage] = useState({});
@@ -58,7 +56,6 @@ const NetworkPlan = () => {
         const result = await res.json();
 
         // Filter only this network
-        console.log(result);
         const networkPlans = result.filter(
           (plan) =>
             plan.networkProvider?.toUpperCase() === networkProvider?.toUpperCase()
