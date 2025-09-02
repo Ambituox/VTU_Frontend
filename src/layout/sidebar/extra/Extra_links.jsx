@@ -16,15 +16,15 @@ export default function Extra_links() {
         <div className="pl-3 pt-2 font-">
             <Link to={'user-detail'} className='hover:text-blue-500 duration-150 flex items-center gap-3'><FaUser /> Account</Link>
         </div>
-        <div className="pl-3 pt-2 font-">
+        {/* <div className="pl-3 pt-2 font-">
             <Link to={'account-pin'} className='hover:text-blue-500 duration-150 flex items-center gap-3'><IoMdSettings /> Change Pin</Link>
-        </div>
+        </div> */}
         {/* <div className="pl-3 pt-2 font-">
             <Link to={'/'} className='hover:text-blue-500 duration-150'>Setting</Link>
         </div> */}
-        <div className="pl-3 pt-2 font-">
+        {/* <div className="pl-3 pt-2 font-">
             <Link to={'documentation'} className='hover:text-blue-500 duration-150 flex items-center gap-3'><FaCode />Developer's API</Link>
-        </div>
+        </div> */}
         {/* <div className="pl-3 pt-2 font-">
             <Link to={'solution-center'} className='hover:text-blue-500 duration-150 flex items-center gap-3'><MdOutlinePayment />Solution Center</Link>
         </div> */}

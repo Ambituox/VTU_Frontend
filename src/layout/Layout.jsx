@@ -109,7 +109,7 @@ const Sidebar = ({ isOpen, toggleSidebar }) => {
               {
                 existingUser ? (
                   <>
-                    Wallet: <span className='font-bold text-xl'>₦{existingUser?.data?.wallet?.balance.toLocaleString()}.00</span>
+                    Wallet: <span className='font-bold text-xl'>₦{existingUser?.data?.wallet?.balance}.00</span>
                   </>
                 ) : (
                   <>

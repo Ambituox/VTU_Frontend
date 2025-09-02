@@ -67,6 +67,9 @@ const SignIn = () => {
         return;
       }
 
+      // ✅ Save token separately
+      localStorage.setItem("authToken", data.token);
+
       dispatch(signinSuccess(data));
 
       setSuccess('Login successful!');

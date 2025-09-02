@@ -41,39 +41,43 @@ export default function Fund_wallet() {
   
     setLoading(true);
     setError("");
-  
-    try {
-      const response = await fetch(`/api/v1/make-payment`, {
-        method: "POST",
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${existingUser.token}`,
-        },
-        body: JSON.stringify(formData),
-      });
+  try {
+  const response = await fetch(`${API_BASE_URL}/api/v1/make-payment`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      "Authorization": `Bearer ${existingUser.token}`,
+    },
+    body: JSON.stringify(formData),
+  });
 
-      const result = await response.json();
-      console.log(result);
+  const result = await response.json();
+console.log(result)
+  if (!response.ok || result.error) {
+    setError(result.message || "Payment failed");
+    setIsDialogOpen(true);
+    setLoading(false);
+    return;
+  }
 
-      if (!response.ok || result.error) {
-        setError(result.message || "Payment failed");
-        setIsDialogOpen(true);
-        setLoading(false);
-        return;
-      }
+  // ✅ Redirect user to Monnify checkout page
+  if (result.data.requestSuccessful) {
+    window.location.href = result.data.responseBody.checkoutUrl;
+    return; // stop further execution
+  }
 
-      setSuccess(true);
-      setLoading(false);
+  // ✅ If no redirect (maybe success from API directly)
+  setSuccess(true);
+  setLoading(false);
 
-    } catch (err) {
-      setError(err.message);
-      console.error(err);
-      setIsDialogOpen(true);
-      setLoading(false);
-    }
-  };
-  
-  
+} catch (err) {
+  setError(err.message || "Something went wrong");
+  console.error(err);
+  setIsDialogOpen(true);
+  setLoading(false);
+}
+
+  }
 
   const handleBack = () => {
     navigate(-1);

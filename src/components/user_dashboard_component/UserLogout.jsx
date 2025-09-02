@@ -9,6 +9,7 @@ export default function UserLogoutButton() {
     const navigate = useNavigate();
 
     const handleSignOut = () => {
+        localStorage.removeItem("authToken");
         dispatch(signOutUserSuccess()); // Clear user state
         navigate("/login"); // Redirect to login page
     };
