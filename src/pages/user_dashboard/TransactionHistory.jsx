@@ -7,7 +7,7 @@ import { FiRefreshCw } from "react-icons/fi";
 // Skeleton loading row
 const SkeletonRow = () => (
   <tr className="animate-pulse text-gray-400">
-    {Array.from({ length: 6 }).map((_, i) => (
+    {Array.from({ length: 7 }).map((_, i) => (
       <td key={i} className="border px-4 py-2">
         <div className="h-4 bg-gray-300 rounded w-full"></div>
       </td>
@@ -145,27 +145,41 @@ function TransactionsHistory() {
               <th className="px-4 py-2 border border-blue-400 bg-blue-500 text-start">Amount</th>
               <th className="px-4 py-2 border border-blue-400 bg-blue-500 text-start">Type</th>
               <th className="px-4 py-2 border border-blue-400 bg-blue-500 text-start">Status</th>
-              <th className="px-4 py-2 border border-blue-400 bg-blue-500 rounded-tr-md text-start">Date</th>
+              <th className="px-4 py-2 border border-blue-400 bg-blue-500 text-start">Date</th>
+              <th className="px-4 py-2 border border-blue-400 bg-blue-500 rounded-tr-md text-start">Time</th>
             </tr>
           </thead>
           <tbody>
             {loading ? (
               Array.from({ length: 10 }).map((_, i) => <SkeletonRow key={i} />)
             ) : currentTransactions.length > 0 ? (
-              currentTransactions.map((tx, index) => (
-                <tr key={index} className="text-start text-sm text-gray-500">
-                  <td className="border px-4 py-2">{indexOfFirstTx + index + 1}</td>
-                  <td className="border px-4 py-2 truncate">{tx.metadata?.paymentDescription}</td>
-                  <td className="border px-4 py-2">₦{tx.amount.toLocaleString()}</td>
-                  <td className="border px-4 py-2 capitalize">{tx.type}</td>
-                  <td className="border px-4 py-2 capitalize">{tx.status}</td>
-                  <td className="border px-4 py-2">{new Date(tx.createdAt).toLocaleString()}</td>
-                  <td className="border px-4 py-2">{new Date(tx.createdAt).toLocaleString()}</td>
-                </tr>
-              ))
+              currentTransactions.map((tx, index) => {
+                const date = new Date(tx.createdAt).toLocaleDateString("en-US", {
+                  year: "numeric",
+                  month: "short",
+                  day: "numeric",
+                });
+
+                const time = new Date(tx.createdAt).toLocaleTimeString("en-US", {
+                  hour: "2-digit",
+                  minute: "2-digit",
+                });
+
+                return (
+                  <tr key={index} className="text-start text-sm text-gray-500">
+                    <td className="border px-4 py-2">{indexOfFirstTx + index + 1}</td>
+                    <td className="border px-4 py-2 truncate">{tx.metadata?.paymentDescription}</td>
+                    <td className="border px-4 py-2">₦{tx.amount.toLocaleString()}</td>
+                    <td className="border px-4 py-2 capitalize">{tx.type}</td>
+                    <td className="border px-4 py-2 capitalize">{tx.status}</td>
+                    <td className="border px-4 py-2">{date}</td>
+                    <td className="border px-4 py-2">{time}</td>
+                  </tr>
+                );
+              })
             ) : (
               <tr>
-                <td colSpan="6" className="text-center py-4 text-gray-500">
+                <td colSpan="7" className="text-center py-4 text-gray-500">
                   No transactions found.
                 </td>
               </tr>
