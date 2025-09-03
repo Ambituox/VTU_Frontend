@@ -246,7 +246,7 @@ export default function Layout() {
           <Header toggleSidebar={toggleSidebar} />
 
           {/* Dynamic page content */}
-          <div className="">
+          <div className="pb-20">
             <Outlet />
           </div>
 

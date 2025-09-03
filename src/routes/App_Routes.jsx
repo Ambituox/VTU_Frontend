@@ -35,6 +35,7 @@ import { useSelector } from 'react-redux';
 import NotFound from '../pages/NotFound/NotFound';
 import AllUsers from '../pages/admin/all_user/AllUsers';
 import NetworkPlan from '../pages/user_dashboard/buy_data/NetworkPlan';
+import AdminServiceTypeForm from '../pages/admin/AdminServiceTypeForm';
 
 export default function AppRoutes() {
   const { existingUser } = useSelector((state) => state.user);
@@ -81,6 +82,7 @@ export default function AppRoutes() {
             <Route path='admin/create-data' element={<CreateData/>}/>
             {/* <Route path='admin/update-data/:id' element={<UpdateData/>}/> */}
             <Route path='admin/update-data/' element={<UpdateData/>}/>
+            <Route path='admin/change-service-type' element={<AdminServiceTypeForm/>}/>
 
             <Route path='funding-transaction-history' element={<Fund_wallet/>}/>
             <Route path='transaction-history' element={<TransactionHistory/>}/>

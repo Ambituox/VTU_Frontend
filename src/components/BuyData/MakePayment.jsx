@@ -1,25 +1,35 @@
 import React, { useState } from "react";
 import { useSelector } from "react-redux";
 import { useLocation, useNavigate } from "react-router-dom";
+import { useServiceType } from "../SwitchServiceType/ServiceTypeContext";
 
 const API_BASE_URL = import.meta.env.API_BASE_URL || 'https://vtu-xpwk.onrender.com';
+const token = localStorage.getItem("authToken");
 
 export default function MakePayment() {
   const location = useLocation();
   const navigate = useNavigate();
   const paymentData = location.state; // Retrieve data
 
+  const { serviceType } = useServiceType();
+  
+  console.log(serviceType)
+
   // Initialize form data state
   const [formData, setFormData] = useState({
-    sku: paymentData?.sku,
-    amount: paymentData?.price,
-    paymentDescription: "",
+    networkProvider: paymentData?.networkProvider,
+    size: paymentData?.size,
+    duration: paymentData?.duration,
+    serviceType: paymentData?.serviceType,
+    mobile_number: '',
+    price: paymentData?.price,
   });
 
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [success, setSuccess] = useState(false);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const { existingUser } = useSelector((state) => state.user);
 
   // Handle input change
   const handleChange = (e) => {
@@ -30,11 +40,10 @@ export default function MakePayment() {
   };
 
   // Get current user from Redux store
-  const { currentUser } = useSelector((state) => state.user);
   // Handle payment request
   const handlePayment = async () => {
-    if (!formData.paymentDescription) {
-      setError("Payment description is required.");
+    if (!formData.mobile_number) {
+      setError("Mobile number is required.");
       setIsDialogOpen(true);
       return;
     }
@@ -43,14 +52,17 @@ export default function MakePayment() {
     setError("");
 
     try {
-      const response = await fetch(`${API_BASE_URL}/api/v1/make-payment`, {
+      const response = await fetch(`${API_BASE_URL}/api/v1/buy-data`, {
         method: "POST",
-        headers: { 'Authorization': `Bearer ${currentUser.token}` },
+        headers: { 
+          'Authorization': `Bearer ${token}`,
+          'X-Service-Type' : serviceType
+        },
         body: JSON.stringify(formData),
       });
 
       const result = await response.json();
-
+      console.log(result);
       if (!response.ok || result.error) {
         setError(result.error || "Payment failed");
         setIsDialogOpen(true); // Show error dialog
@@ -60,7 +72,7 @@ export default function MakePayment() {
       }
 
       setSuccess(true);
-      console.log(result);
+      
       setLoading(false);
       
       setTimeout(() => navigate("verify-payment"), 2000); // Redirect after 2 sec
@@ -90,13 +102,13 @@ export default function MakePayment() {
 
       <div className="mt-4 p-4 border rounded space-y-3">
         <label className="block">
-          <span className="text-gray-700">SKU</span>
+          <span className="text-gray-700">Phone Number</span>
           <input
-            type="text"
-            name="sku"
-            value={formData.sku}
-            disabled
-            className="mt-1 block w-full p-2 border rounded bg-gray-100 cursor-not-allowed"
+            type="number"
+            name="mobile_number"
+            onChange={handleChange}
+            value={formData.mobile_number}
+            className="mt-1 block w-full p-2 border rounded bg-gray-100"
           />
         </label>
 
@@ -104,13 +116,13 @@ export default function MakePayment() {
           <span className="text-gray-700">Amount</span>
           <input
             type="number"
-            name="amount"
-            value={formData.amount}
+            name="price"
+            value={formData.price}
             disabled
             className="mt-1 block w-full p-2 border rounded bg-gray-100 cursor-not-allowed"
           />
         </label>
-
+{/* 
         <label className="block">
           <span className="text-gray-700">Payment Description</span>
           <input
@@ -121,7 +133,7 @@ export default function MakePayment() {
             className="mt-1 block w-full p-2 border rounded"
             placeholder="Enter payment description..."
           />
-        </label>
+        </label> */}
       </div>
 
       {success && <p className="text-green-500 mt-2">Payment Successful! Redirecting...</p>}
@@ -137,7 +149,7 @@ export default function MakePayment() {
       {/* Error Dialog Modal */}
       {isDialogOpen && (
         <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
-          <div className="bg-white p-6 rounded-lg shadow-lg max-w-sm">
+          <div className="bg-white p-6 rounded-lg shadow-lg max-w-md">
             <h3 className="text-lg font-bold text-red-600">Payment Error</h3>
             <p className="text-gray-700 mt-2">{error}</p>
             <button

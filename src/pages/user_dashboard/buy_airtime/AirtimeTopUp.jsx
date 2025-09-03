@@ -1,13 +1,23 @@
 // Import React and necessary hooks
 import React, { useState } from 'react';
+import { useServiceType } from '../../../components/SwitchServiceType/ServiceTypeContext';
+
+const token = localStorage.getItem("authToken");
+const API_BASE_URL = import.meta.env.API_BASE_URL || 'https://vtu-xpwk.onrender.com';
 
 const AirtimeTopUpForm = () => {
   const [formData, setFormData] = useState({
     network: '',
-    airtimeType: '',
-    mobileNumber: '',
+    phone: '',
     amount: ''
   });
+
+  const { serviceType } = useServiceType();
+
+  console.log(serviceType)
+
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
 
   const [modal, setModal] = useState({ show: false, type: '', message: '' });
 
@@ -21,12 +31,12 @@ const AirtimeTopUpForm = () => {
     return phoneRegex.test(number);
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
-    const { network, airtimeType, mobileNumber, amount } = formData;
+    const { network, phone, amount } = formData;
 
-    if (!network || !airtimeType || !mobileNumber || !amount) {
+    if (!network || !phone || !amount) {
       setModal({
         show: true,
         type: 'error',
@@ -35,7 +45,7 @@ const AirtimeTopUpForm = () => {
       return;
     }
 
-    if (!validatePhoneNumber(mobileNumber)) {
+    if (!validatePhoneNumber(phone)) {
       setModal({
         show: true,
         type: 'error',
@@ -44,11 +54,50 @@ const AirtimeTopUpForm = () => {
       return;
     }
 
-    setModal({
-      show: true,
-      type: 'success',
-      message: 'Airtime top-up successful!'
-    });
+    setLoading(true);
+    setError("");
+
+    try {
+      const response = await fetch(`${API_BASE_URL}/api/v1/buy-airtime`, {
+        method: "POST",
+        headers: { 
+          'Authorization': `Bearer ${token}`,
+          'X-Service-Type' : serviceType
+        },
+        body: JSON.stringify(formData),
+      });
+
+      const result = await response.json();
+
+      console.log(result)
+      if (!response.ok || result.error) {
+        setModal({
+          show: true,
+          type: 'error',
+          message: result.error || "Payment failed"
+        });
+        setLoading(false);
+        return;
+      }
+// 07087013965
+      console.log(result);
+      setModal({
+        show: true,
+        type: 'success',
+        message: result.message || 'Airtime top-up successful!'
+      });
+      setLoading(false);
+      
+      // setTimeout(() => navigate("verify-payment"), 2000); // Redirect after 2 sec
+    } catch (err) {
+      console.log(err)
+      setModal({
+        show: true,
+        type: 'error',
+        message: err.message
+      });
+      setLoading(false);
+    }
   };
 
   const closeModal = () => {
@@ -67,16 +116,16 @@ const AirtimeTopUpForm = () => {
               name="network"
               value={formData.network}
               onChange={handleChange}
-              className="w-full p-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full p-2 border uppercase border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
             >
               <option value="">-------</option>
               <option value="MTN">MTN</option>
-              <option value="Airtel">Airtel</option>
-              <option value="Glo">Glo</option>
-              <option value="9mobile">9mobile</option>
+              <option value="Airtel">AIRTEL</option>
+              <option value="Glo">GLO</option>
+              <option value="9mobile">9MOBILE</option>
             </select>
           </div>
-          <div className="mb-4">
+          {/* <div className="mb-4">
             <label htmlFor="airtimeType" className="block text-sm font-medium mb-1">Airtime Type*</label>
             <select
               id="airtimeType"
@@ -89,14 +138,14 @@ const AirtimeTopUpForm = () => {
               <option value="VTU">VTU</option>
               <option value="Share and Sell">Share and Sell</option>
             </select>
-          </div>
+          </div> */}
           <div className="mb-4">
-            <label htmlFor="mobileNumber" className="block text-sm font-medium mb-1">Mobile Number*</label>
+            <label htmlFor="phone" className="block text-sm font-medium mb-1">Mobile Number*</label>
             <input
-              type="text"
-              id="mobileNumber"
-              name="mobileNumber"
-              value={formData.mobileNumber}
+              type="number"
+              id="phone"
+              name="phone"
+              value={formData.phone}
               onChange={handleChange}
               className="w-full p-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
             />
@@ -112,17 +161,14 @@ const AirtimeTopUpForm = () => {
               className="w-full p-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
             />
           </div>
-          <button
-            type="submit"
-            className="w-full bg-blue-600 text-white py-2 px-4 rounded hover:bg-blue-700"
-          >
-            Buy Now
+          <button type="submit" className="w-full bg-blue-600 text-white py-2 px-4 rounded hover:bg-blue-700">
+            {loading ? "Processing..." : "Buy Now"}
           </button>
         </form>
       </div>
 
       {modal.show && (
-        <div className="fixed inset-0 bg-gray-800 bg-opacity-50 flex items-center justify-center">
+        <div className="fixed inset-0 px-2 bg-gray-800 bg-opacity-50 flex items-center justify-center">
           <div className="bg-white p-6 rounded shadow-md w-full max-w-sm">
             <h3 className={`text-lg font-bold mb-2 ${modal.type === 'error' ? 'text-red-500' : 'text-green-500'}`}>
               {modal.type === 'error' ? 'Error' : 'Success'}
