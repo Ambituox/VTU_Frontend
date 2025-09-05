@@ -10,6 +10,7 @@ import { useSelector } from 'react-redux';
 import { GrTransaction } from 'react-icons/gr';
 import AdminNav from '../pages/admin/AdminNav';
 import UserLogoutButton from '../components/user_dashboard_component/UserLogout';
+import WalletBalance from '../components/walletBallance/WalletBallance';
 
 const mainlinks = [
   {
@@ -108,9 +109,10 @@ const Sidebar = ({ isOpen, toggleSidebar }) => {
             <p className="text-sm text-white/40">
               {
                 existingUser ? (
-                  <>
-                    Wallet: <span className='font-bold text-xl'>₦{existingUser?.data?.wallet?.balance}.00</span>
-                  </>
+                  <div className='flex items-center gap-2'>
+                    Wallet:
+                    <WalletBalance/>
+                  </div>
                 ) : (
                   <>
                     0

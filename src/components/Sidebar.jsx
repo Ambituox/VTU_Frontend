@@ -4,6 +4,8 @@ import { RiMenu4Line } from 'react-icons/ri';
 import { FaRegWindowClose } from 'react-icons/fa';
 import { useSelector } from 'react-redux';
 
+const API_BASE_URL = import.meta.env.API_BASE_URL || "https://vtu-xpwk.onrender.com";
+
 const Sidebar = () => {
   const [sidebarOpen, setSidebarOpen] = useState(false);
 

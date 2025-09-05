@@ -1,6 +1,7 @@
 // Import React and necessary hooks
 import React, { useState } from 'react';
 import { useServiceType } from '../../../components/SwitchServiceType/ServiceTypeContext';
+import { useSelector } from 'react-redux';
 
 const token = localStorage.getItem("authToken");
 const API_BASE_URL = import.meta.env.API_BASE_URL || 'https://vtu-xpwk.onrender.com';
@@ -13,9 +14,9 @@ const AirtimeTopUpForm = () => {
   });
 
   const { serviceType } = useServiceType();
+  const { existingUser } = useSelector((state) => state.user);
 
   console.log(serviceType)
-
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
@@ -62,6 +63,7 @@ const AirtimeTopUpForm = () => {
         method: "POST",
         headers: { 
           'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json',
           'X-Service-Type' : serviceType
         },
         body: JSON.stringify(formData),
@@ -103,6 +105,8 @@ const AirtimeTopUpForm = () => {
   const closeModal = () => {
     setModal({ show: false, type: '', message: '' });
   };
+
+  console.log(formData)
 
   return (
     <div className="py-10 flex items-center justify-center ">

@@ -56,15 +56,18 @@ export default function MakePayment() {
         method: "POST",
         headers: { 
           'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json',
           'X-Service-Type' : serviceType
         },
         body: JSON.stringify(formData),
       });
 
       const result = await response.json();
+      
       console.log(result);
-      if (!response.ok || result.error) {
-        setError(result.error || "Payment failed");
+
+      if (!response.ok || result.status === 'error') {
+        setError(result.message || "Payment failed");
         setIsDialogOpen(true); // Show error dialog
         // console.log(result);
         setLoading(false);
