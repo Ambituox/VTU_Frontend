@@ -74,11 +74,9 @@ export default function MakePayment() {
         return;
       }
 
-      setSuccess(true);
-      
+      setSuccess(result.message);
+      setIsDialogOpen(true);
       setLoading(false);
-      
-      setTimeout(() => navigate("verify-payment"), 2000); // Redirect after 2 sec
     } catch (err) {
       setError(err.message);
       setIsDialogOpen(true); // Show error dialog
@@ -107,7 +105,7 @@ export default function MakePayment() {
         <label className="block">
           <span className="text-gray-700">Phone Number</span>
           <input
-            type="number"
+            type="text"
             name="mobile_number"
             onChange={handleChange}
             value={formData.mobile_number}
@@ -139,7 +137,7 @@ export default function MakePayment() {
         </label> */}
       </div>
 
-      {success && <p className="text-green-500 mt-2">Payment Successful! Redirecting...</p>}
+      {/* {success && <p className="text-green-500 mt-2">Payment Successful! Redirecting...</p>} */}
 
       <button
         onClick={handlePayment}
@@ -153,8 +151,8 @@ export default function MakePayment() {
       {isDialogOpen && (
         <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
           <div className="bg-white p-6 rounded-lg shadow-lg max-w-md">
-            <h3 className="text-lg font-bold text-red-600">Payment Error</h3>
-            <p className="text-gray-700 mt-2">{error}</p>
+            <h3 className={`${success ? 'text-green-600' : 'text-red-600'} text-lg font-bold`}>Payment {success ? 'Success' : 'Error'}</h3>
+            <p className="text-gray-700 mt-2">{success ? success : error}</p>
             <button
               onClick={() => setIsDialogOpen(false)}
               className="mt-4 w-full bg-red-500 hover:bg-red-600 text-white py-2 rounded-lg transition"

@@ -95,7 +95,7 @@ console.log(result)
           <label className="block">
             <span className="text-gray-500">Amount</span>
             <input
-              type="number"
+              type="text"
               name="amount"
               value={formData.amount}
               onChange={handleChange}

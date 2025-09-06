@@ -13,16 +13,18 @@ const ElectricityBillPayment = () => {
   const [loading, setLoading] = useState(false);
 
   const discos = [
-    { value: "IKEJA", label: "Ikeja Electric" },
-    { value: "EKO", label: "Eko Electricity Distribution Company" },
-    { value: "ABUJA", label: "Abuja Electricity Distribution Company" },
-    { value: "KANO", label: "Kano Electricity Distribution Company" },
-    { value: "ENUGU", label: "Enugu Electricity Distribution Company" },
-    { value: "JOS", label: "Jos Electricity Distribution Company" },
-    { value: "PHED", label: "Port Harcourt Electricity Distribution Company" },
-    { value: "YOLA", label: "Yola Electricity Distribution Company" },
-    { value: "IBADAN", label: "Ibadan Electricity Distribution Company" },
-    { value: "BENIN", label: "Benin Electricity Distribution Company" },
+    { value: "abuja-electric", label: "Abuja Electric" },
+    { value: "eko-electric", label: "Eko Electric" },
+    { value: "ibadan-electric", label: "Ibadan Electric" },
+    { value: "ikeja-electric", label: "Ikeja Electric" },
+    { value: "jos-electric", label: "Jos Electric" },
+    { value: "kaduna-electric", label: "Kaduna Electric" },
+    { value: "kano-electric", label: "Kano Electric" },
+    { value: "portharcourt-electric", label: "Port Harcourt Electric" },
+    { value: "aba-electric", label: "Aba Electric" },
+    { value: "yola-electric", label: "Yola Electric" },
+    { value: "benin-electric", label: "Benin Electric" },
+    { value: "enugu-electric", label: "Enugu Electric" },
   ];
 
   const meterTypes = [

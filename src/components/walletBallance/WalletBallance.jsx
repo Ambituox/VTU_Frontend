@@ -21,6 +21,8 @@ useEffect(() => {
     },
     onmessage(ev) {
       const data = JSON.parse(ev.data);
+      // console.log(token);
+      // console.log(data.error);
       if (data.balance !== undefined) {
         setBalance(data.balance);
       } else if (data.error) {
@@ -38,10 +40,8 @@ useEffect(() => {
     <div className="">
       {/* <h1 className="text-lg font-bold">Wallet Balance</h1> */}
       {/* {error && <p className="text-red-500">{error}</p>} */}
-      {balance !== null ? (
+      {balance !== null && (
         <p className="font-bold text-xl">₦{balance}</p>
-      ) : (
-        <p>Loading balance...</p>
       )}
     </div>
   );
