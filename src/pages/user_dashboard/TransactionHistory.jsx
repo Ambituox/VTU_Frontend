@@ -22,7 +22,7 @@ function TransactionsHistory() {
   const [filter, setFilter] = useState("all");
   const [searchQuery, setSearchQuery] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
-  const transactionsPerPage = 10;
+  const transactionsPerPage = 7;
   const [loading, setLoading] = useState(false);
 
   // Fetch profile and extract transactions

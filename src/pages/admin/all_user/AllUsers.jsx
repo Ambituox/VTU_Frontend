@@ -1,15 +1,6 @@
 import React, { useState, useEffect, useMemo } from "react";
 import { BiEditAlt } from "react-icons/bi";
 
-const MOCK_USERS = Array.from({ length: 43 }).map((_, i) => ({
-  id: i + 1,
-  firstName: `First${i + 1}`,
-  lastName: `Last${i + 1}`,
-  email: `user${i + 1}@example.com`,
-  phone: `+234-800-000-${(1000 + i).toString().slice(-4)}`,
-  role: ["user", "admin"][Math.floor(Math.random() * 2)],
-}));
-
 const ITEMS_PER_PAGE = 8;
 
 export default function AllUsersTable({ isAdmin = true }) {
@@ -19,15 +10,42 @@ export default function AllUsersTable({ isAdmin = true }) {
   const [currentPage, setCurrentPage] = useState(1);
   const [loading, setLoading] = useState(true);
 
+  // Fetch all users from backend
   useEffect(() => {
-    setLoading(true);
-    const timer = setTimeout(() => {
-      setUsers(MOCK_USERS);
-      setLoading(false);
-    }, 1500);
-    return () => clearTimeout(timer);
+    const fetchUsers = async () => {
+      setLoading(true);
+      try {
+        const token = localStorage.getItem("authToken"); // if you still use token
+        const res = await fetch(
+          "https://vtu-xpwk.onrender.com/api/v1/admin/all-users",
+          {
+            method: "GET",
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${token}`, // pass token
+            },
+            credentials: "include", // allow cookies (if backend sends them)
+          }
+        );
+
+        if (!res.ok) {
+          throw new Error(`Error ${res.status}: ${res.statusText}`);
+        }
+
+        const data = await res.json();
+        setUsers(data?.users || []); // adjust if API wraps in { users: [...] }
+      } catch (err) {
+        console.error("Failed to fetch users:", err);
+        setUsers([]);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchUsers();
   }, []);
 
+  // Filtering logic
   const filteredUsers = useMemo(() => {
     let filtered = users;
     if (roleFilter !== "all") {
@@ -37,10 +55,10 @@ export default function AllUsersTable({ isAdmin = true }) {
       const lower = searchTerm.toLowerCase();
       filtered = filtered.filter(
         (u) =>
-          u.firstName.toLowerCase().includes(lower) ||
-          u.lastName.toLowerCase().includes(lower) ||
-          u.email.toLowerCase().includes(lower) ||
-          u.phone.toLowerCase().includes(lower)
+          u.firstName?.toLowerCase().includes(lower) ||
+          u.lastName?.toLowerCase().includes(lower) ||
+          u.email?.toLowerCase().includes(lower) ||
+          u.phone?.toLowerCase().includes(lower)
       );
     }
     return filtered;
@@ -52,10 +70,11 @@ export default function AllUsersTable({ isAdmin = true }) {
     currentPage * ITEMS_PER_PAGE
   );
 
+  // Toggle user role (frontend only demo)
   const toggleUserRole = (id) => {
     setUsers((prev) =>
       prev.map((user) =>
-        user.id === id
+        user._id === id // if backend uses _id instead of id
           ? { ...user, role: user.role === "admin" ? "user" : "admin" }
           : user
       )
@@ -98,87 +117,79 @@ export default function AllUsersTable({ isAdmin = true }) {
         </select>
       </div>
 
-      {/* Table or Skeleton */}
+      {/* Table */}
       {loading ? (
-        <table className="w-full table-auto border-collapse border border-gray-200">
-          <thead>
-            <tr className="bg-gray-100 ">
-              {["#", "First Name", "Last Name", "Email", "Phone", "Role", "Edit"].map(
-                (head) => (
-                  <th
-                    key={head}
-                    className="border border-gray-300 p-3 text-left text-gray-600"
-                  >
-                    {head}
-                  </th>
-                )
-              )}
-            </tr>
-          </thead>
-          <tbody>
-            {[...Array(ITEMS_PER_PAGE)].map((_, idx) => (
-              <tr key={idx} className="animate-pulse bg-gray-50">
-                {[...Array(7)].map((__, i) => (
-                  <td key={i} className="border border-gray-300 p-3">
-                    <div className="h-5 bg-gray-300 rounded w-full"></div>
-                  </td>
-                ))}
-              </tr>
-            ))}
-          </tbody>
-        </table>
+        <p className="text-center text-gray-500">Loading users...</p>
       ) : filteredUsers.length === 0 ? (
         <p className="text-center text-gray-500 mt-8">No users found.</p>
       ) : (
         <table className="min-w-full table-auto">
           <thead>
             <tr className="bg-gray-100 text-gray-50">
-              <th className="px-4 py-2 border border-blue-400 bg-blue-500 rounded-tl-md text-startt">#</th>
-              <th className="px-4 py-2 border border-blue-400 bg-blue-500 text-start">First Name</th>
-              <th className="px-4 py-2 border border-blue-400 bg-blue-500 text-start">Last Name</th>
-              <th className="px-4 py-2 border border-blue-400 bg-blue-500 text-start">Email</th>
-              <th className="px-4 py-2 border border-blue-400 bg-blue-500 text-start">Phone</th>
-              <th className="px-4 py-2 border border-blue-400 bg-blue-500 text-start">Role</th>
+              <th className="px-4 py-2 border border-blue-400 bg-blue-500 rounded-tl-md text-start">
+                #
+              </th>
+              <th className="px-4 py-2 border border-blue-400 bg-blue-500 text-start">
+                First Name
+              </th>
+              <th className="px-4 py-2 border border-blue-400 bg-blue-500 text-start">
+                Last Name
+              </th>
+              <th className="px-4 py-2 border border-blue-400 bg-blue-500 text-start">
+                Email
+              </th>
+              <th className="px-4 py-2 border border-blue-400 bg-blue-500 text-start">
+                Phone
+              </th>
+              <th className="px-4 py-2 border border-blue-400 bg-blue-500 text-start">
+                Role
+              </th>
               {isAdmin && (
-                <th className="px-4 py-2 border border-blue-400 bg-blue-500 rounded-tr-md text-start">Edit Role</th>
+                <th className="px-4 py-2 border border-blue-400 bg-blue-500 rounded-tr-md text-start">
+                  Edit Role
+                </th>
               )}
             </tr>
           </thead>
           <tbody>
-            {paginatedUsers.map(({ id, firstName, lastName, email, phone, role }, idx) => (
-              <tr
-                key={id}
-                className="hover:bg-gray-50 transition cursor-default text-start text-sm text-gray-500"
-              >
-                <td className="border px-4 py-2">{(currentPage - 1) * ITEMS_PER_PAGE + idx + 1}</td>
-                <td className="border px-4 py-2">{firstName}</td>
-                <td className="border px-4 py-2">{lastName}</td>
-                <td className="border px-4 py-2">{email}</td>
-                <td className="border px-4 py-2">{phone}</td>
-                <td className="border px-4 py-2">
-                  <span
-                    className={`inline-block px-3 py-1 rounded-full text-sm font-semibold ${
-                      role === "admin"
-                        ? "bg-green-100 text-green-800"
-                        : "bg-gray-200 text-gray-700"
-                    }`}
-                  >
-                    {role.toUpperCase()}
-                  </span>
-                </td>
-                {isAdmin && (
-                  <td className="border border-gray-300">
-                    <button
-                      onClick={() => toggleUserRole(id)}
-                      title="Toggle Role"
-                      className="p-1 rounded hover:bg-gray-200 text-gray-600 hover:text-gray-900 transition"
-                    >
-                      <BiEditAlt size={20} />
-                    </button>
+            {paginatedUsers.map(
+              ({ _id, id, firstName, lastName, email, phone, role }, idx) => (
+                <tr
+                  key={_id || id}
+                  className="hover:bg-gray-50 transition cursor-default text-start text-sm text-gray-500"
+                >
+                  <td className="border px-4 py-2">
+                    {(currentPage - 1) * ITEMS_PER_PAGE + idx + 1}
                   </td>
-                )}
-              </tr>
-            ))}
+                  <td className="border px-4 py-2">{firstName}</td>
+                  <td className="border px-4 py-2">{lastName}</td>
+                  <td className="border px-4 py-2">{email}</td>
+                  <td className="border px-4 py-2">{phone}</td>
+                  <td className="border px-4 py-2">
+                    <span
+                      className={`inline-block px-3 py-1 rounded-full text-sm font-semibold ${
+                        role === "admin"
+                          ? "bg-green-100 text-green-800"
+                          : "bg-gray-200 text-gray-700"
+                      }`}
+                    >
+                      {role?.toUpperCase()}
+                    </span>
+                  </td>
+                  {isAdmin && (
+                    <td className="border border-gray-300">
+                      <button
+                        onClick={() => toggleUserRole(_id || id)}
+                        title="Toggle Role"
+                        className="p-1 rounded hover:bg-gray-200 text-gray-600 hover:text-gray-900 transition"
+                      >
+                        <BiEditAlt size={20} />
+                      </button>
+                    </td>
+                  )}
+                </tr>
+              )
+            )}
           </tbody>
         </table>
       )}
