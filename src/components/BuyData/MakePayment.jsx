@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { useSelector } from "react-redux";
 import { useLocation, useNavigate } from "react-router-dom";
 import { useServiceType } from "../SwitchServiceType/ServiceTypeContext";
+import OutstandingDebtNotice from "../OutstandingDebtNotice";
 
 const API_BASE_URL = import.meta.env.API_BASE_URL || 'https://vtu-xpwk.onrender.com';
 const token = localStorage.getItem("authToken");
@@ -95,73 +96,76 @@ export default function MakePayment() {
   }
 
   return (
-    <div className="relative max-w-md mx-auto my-20 p-6 bg-white shadow-lg rounded-lg">
-      <div className="absolute top-2 left-2">
-        <button className="bg-blue-500 py-2 px-4 rounded-lg font-semibold text-white" onClick={handleBack}>Back</button>
-      </div>
-      <h2 className="text-2xl font-bold text-center">Make Payment</h2>
-
-      <div className="mt-4 p-4 border rounded space-y-3">
-        <label className="block">
-          <span className="text-gray-700">Phone Number</span>
-          <input
-            type="text"
-            name="mobile_number"
-            onChange={handleChange}
-            value={formData.mobile_number}
-            className="mt-1 block w-full p-2 border rounded bg-gray-100"
-          />
-        </label>
-
-        <label className="block">
-          <span className="text-gray-700">Amount</span>
-          <input
-            type="number"
-            name="price"
-            value={formData.price}
-            disabled
-            className="mt-1 block w-full p-2 border rounded bg-gray-100 cursor-not-allowed"
-          />
-        </label>
-{/* 
-        <label className="block">
-          <span className="text-gray-700">Payment Description</span>
-          <input
-            type="text"
-            name="paymentDescription"
-            value={formData.paymentDescription}
-            onChange={handleChange}
-            className="mt-1 block w-full p-2 border rounded"
-            placeholder="Enter payment description..."
-          />
-        </label> */}
-      </div>
-
-      {/* {success && <p className="text-green-500 mt-2">Payment Successful! Redirecting...</p>} */}
-
-      <button
-        onClick={handlePayment}
-        disabled={loading}
-        className="mt-4 w-full bg-blue-600 text-white py-3 rounded-lg shadow-md hover:bg-blue-700 transition"
-      >
-        {loading ? "Processing..." : "Pay Now"}
-      </button>
-
-      {/* Error Dialog Modal */}
-      {isDialogOpen && (
-        <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
-          <div className="bg-white p-6 rounded-lg shadow-lg max-w-md">
-            <h3 className={`${success ? 'text-green-600' : 'text-red-600'} text-lg font-bold`}>Payment {success ? 'Success' : 'Error'}</h3>
-            <p className="text-gray-700 mt-2">{success ? success : error}</p>
-            <button
-              onClick={() => setIsDialogOpen(false)}
-              className="mt-4 w-full bg-red-500 hover:bg-red-600 text-white py-2 rounded-lg transition"
-            >
-              Close
-            </button>
-          </div>
+    <div className="">
+      <OutstandingDebtNotice />
+      <div className="relative max-w-md mx-auto mb-20 mt-5 p-6 bg-white shadow-lg rounded-lg">
+        <div className="absolute top-2 left-2">
+          <button className="bg-blue-500 py-2 px-4 rounded-lg font-semibold text-white" onClick={handleBack}>Back</button>
         </div>
-      )}
+        <h2 className="text-2xl font-bold text-center">Make Payment</h2>
+
+        <div className="mt-4 p-4 border rounded space-y-3">
+          <label className="block">
+            <span className="text-gray-700">Phone Number</span>
+            <input
+              type="text"
+              name="mobile_number"
+              onChange={handleChange}
+              value={formData.mobile_number}
+              className="mt-1 block w-full p-2 border rounded bg-gray-100"
+            />
+          </label>
+
+          <label className="block">
+            <span className="text-gray-700">Amount</span>
+            <input
+              type="number"
+              name="price"
+              value={formData.price}
+              disabled
+              className="mt-1 block w-full p-2 border rounded bg-gray-100 cursor-not-allowed"
+            />
+          </label>
+  {/* 
+          <label className="block">
+            <span className="text-gray-700">Payment Description</span>
+            <input
+              type="text"
+              name="paymentDescription"
+              value={formData.paymentDescription}
+              onChange={handleChange}
+              className="mt-1 block w-full p-2 border rounded"
+              placeholder="Enter payment description..."
+            />
+          </label> */}
+        </div>
+
+        {/* {success && <p className="text-green-500 mt-2">Payment Successful! Redirecting...</p>} */}
+
+        <button
+          onClick={handlePayment}
+          disabled={loading}
+          className="mt-4 w-full bg-blue-600 text-white py-3 rounded-lg shadow-md hover:bg-blue-700 transition"
+        >
+          {loading ? "Processing..." : "Pay Now"}
+        </button>
+
+        {/* Error Dialog Modal */}
+        {isDialogOpen && (
+          <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
+            <div className="bg-white p-6 rounded-lg shadow-lg max-w-md">
+              <h3 className={`${success ? 'text-green-600' : 'text-red-600'} text-lg font-bold`}>Payment {success ? 'Success' : 'Error'}</h3>
+              <p className="text-gray-700 mt-2">{success ? success : error}</p>
+              <button
+                onClick={() => setIsDialogOpen(false)}
+                className="mt-4 w-full bg-red-500 hover:bg-red-600 text-white py-2 rounded-lg transition"
+              >
+                Close
+              </button>
+            </div>
+          </div>
+        )}
+      </div>
     </div>
   );
 }
