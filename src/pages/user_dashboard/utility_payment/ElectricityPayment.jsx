@@ -1,22 +1,29 @@
 import React, { useState } from "react";
+import { useSelector } from "react-redux";
+
+const API_BASE_URL = import.meta.env.API_BASE_URL || 'https://vtu-xpwk.onrender.com';
 
 const ElectricityBillPayment = () => {
   const [formData, setFormData] = useState({
-    discoName: "",
+    provider: "",
     meterNumber: "",
-    meterType: "",
+    variation_code: "",
     amount: "",
-    customerPhone: "",
+    phone: "",
   });
+
+  const { existingUser } = useSelector((state) => state.user);
+
+  // console.log(existingUser);
 
   const [modal, setModal] = useState({ show: false, type: "", message: "" });
   const [loading, setLoading] = useState(false);
 
   const discos = [
-    { value: "abuja-electric", label: "Abuja Electric" },
-    { value: "eko-electric", label: "Eko Electric" },
-    { value: "ibadan-electric", label: "Ibadan Electric" },
-    { value: "ikeja-electric", label: "Ikeja Electric" },
+    { value: "abuja", label: "Abuja Electric" },
+    { value: "eko", label: "Eko Electric" },
+    { value: "ibadan", label: "Ibadan Electric" },
+    { value: "ikeja", label: "Ikeja Electric" },
     { value: "jos-electric", label: "Jos Electric" },
     { value: "kaduna-electric", label: "Kaduna Electric" },
     { value: "kano-electric", label: "Kano Electric" },
@@ -27,7 +34,7 @@ const ElectricityBillPayment = () => {
     { value: "enugu-electric", label: "Enugu Electric" },
   ];
 
-  const meterTypes = [
+  const variation_code = [
     { value: "prepaid", label: "Prepaid" },
     { value: "postpaid", label: "Postpaid" },
   ];
@@ -40,9 +47,9 @@ const ElectricityBillPayment = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    const { discoName, meterNumber, meterType, amount, customerPhone } = formData;
+    const { provider, meterNumber, variation_code, amount, phone } = formData;
 
-    if (!discoName || !meterNumber || !meterType || !amount || !customerPhone) {
+    if (!provider || !meterNumber || !variation_code || !amount || !phone) {
       setModal({
         show: true,
         type: "error",
@@ -51,7 +58,7 @@ const ElectricityBillPayment = () => {
       return;
     }
 
-    if (!/^\d{11}$/.test(customerPhone)) {
+    if (!/^\d{11}$/.test(phone)) {
       setModal({
         show: true,
         type: "error",
@@ -60,16 +67,49 @@ const ElectricityBillPayment = () => {
       return;
     }
 
+    if (amount < 1000) {
+      setModal({
+        show: true,
+        type: "error",
+        message: "Minimum amount for electricity purchase is ₦1000",
+      });
+      return;
+    }
+
+
     setLoading(true);
 
+    // ✅ Transform frontend formData into backend payload
+    const payload = {
+      provider: provider,
+      phone: phone,
+      meterNumber,
+      amount,
+      variation_code: variation_code,
+    };
+
     try {
-      const response = await fetch("/api/electricity-payment", {
+      const response = await fetch(`${API_BASE_URL}/api/v1/buy-electricity`, {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(formData),
+        headers: { 
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${existingUser.token}`,
+        },
+        body: JSON.stringify(payload),
       });
 
       const data = await response.json();
+      console.log(data);
+
+      if (!response.ok || result.error) {
+        setModal({
+          show: true,
+          type: "error",
+          message: data.error,
+        });
+        return;
+      }
+
       if (!response.ok) throw new Error(data.message || "Failed to submit payment");
 
       setModal({
@@ -77,12 +117,14 @@ const ElectricityBillPayment = () => {
         type: "success",
         message: "Electricity bill payment validated successfully!",
       });
+
+      // Reset form
       setFormData({
-        discoName: "",
+        provider: "",
         meterNumber: "",
-        meterType: "",
+        variation_code: "",
         amount: "",
-        customerPhone: "",
+        phone: "",
       });
     } catch (err) {
       setModal({
@@ -95,6 +137,8 @@ const ElectricityBillPayment = () => {
     }
   };
 
+  console.log(formData);
+
   const closeModal = () => {
     setModal({ show: false, type: "", message: "" });
   };
@@ -105,15 +149,17 @@ const ElectricityBillPayment = () => {
         <h2 className="text-2xl font-bold mb-4 text-center">Electricity Bill Payment</h2>
 
         <form onSubmit={handleSubmit}>
+          {/* Disco Name */}
           <div className="mb-4">
-            <label htmlFor="discoName" className="block text-sm font-medium mb-1">
+            <label htmlFor="provider" className="block text-sm font-medium mb-1">
               Disco name*
             </label>
             <select
-              id="discoName"
-              name="discoName"
-              value={formData.discoName}
+              id="provider"
+              name="provider"
+              value={formData.provider}
               onChange={handleChange}
+              required
               className="w-full p-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
             >
               <option value="">-------</option>
@@ -125,6 +171,7 @@ const ElectricityBillPayment = () => {
             </select>
           </div>
 
+          {/* Meter Number */}
           <div className="mb-4">
             <label htmlFor="meterNumber" className="block text-sm font-medium mb-1">
               Meter number*
@@ -135,28 +182,25 @@ const ElectricityBillPayment = () => {
               name="meterNumber"
               value={formData.meterNumber}
               onChange={handleChange}
+              required
               className="w-full p-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
             />
           </div>
 
           <div className="mb-4">
-            <label htmlFor="meterType" className="block text-sm font-medium mb-1">
-              Meter Type*
+            <label htmlFor="phone" className="block text-sm font-medium mb-1">
+              Customer phone*
             </label>
-            <select
-              id="meterType"
-              name="meterType"
-              value={formData.meterType}
+            <input
+              type="text"
+              id="phone"
+              name="phone"
+              value={formData.phone}
               onChange={handleChange}
+              required
+              placeholder="customer phone number"
               className="w-full p-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
-            >
-              <option value="">-------</option>
-              {meterTypes.map((type) => (
-                <option key={type.value} value={type.value}>
-                  {type.label}
-                </option>
-              ))}
-            </select>
+            />
           </div>
 
           <div className="mb-4">
@@ -169,23 +213,31 @@ const ElectricityBillPayment = () => {
               name="amount"
               value={formData.amount}
               onChange={handleChange}
+              required
               className="w-full p-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
             />
           </div>
 
+          {/* Meter Type */}
           <div className="mb-4">
-            <label htmlFor="customerPhone" className="block text-sm font-medium mb-1">
-              Customer phone*
+            <label htmlFor="variation_code" className="block text-sm font-medium mb-1">
+              Meter Type*
             </label>
-            <input
-              type="text"
-              id="customerPhone"
-              name="customerPhone"
-              value={formData.customerPhone}
+            <select
+              id="variation_code"
+              name="variation_code"
+              value={formData.variation_code}
               onChange={handleChange}
-              placeholder="customer phone number"
+              required
               className="w-full p-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
-            />
+            >
+              <option value="">-------</option>
+              {variation_code.map((type) => (
+                <option key={type.value} value={type.value}>
+                  {type.label}
+                </option>
+              ))}
+            </select>
           </div>
 
           <button
@@ -200,14 +252,22 @@ const ElectricityBillPayment = () => {
         </form>
       </div>
 
+      {/* Modal */}
       {modal.show && (
         <div className="fixed inset-0 bg-gray-800 bg-opacity-50 flex items-center justify-center">
           <div className="bg-white p-6 rounded shadow-md w-full max-w-sm">
-            <h3 className={`text-lg font-bold mb-2 ${modal.type === "error" ? "text-red-500" : "text-green-500"}`}>
+            <h3
+              className={`text-lg font-bold mb-2 ${
+                modal.type === "error" ? "text-red-500" : "text-green-500"
+              }`}
+            >
               {modal.type === "error" ? "Error" : "Success"}
             </h3>
             <p className="mb-4">{modal.message}</p>
-            <button onClick={closeModal} className="bg-blue-600 text-white py-2 px-4 rounded hover:bg-blue-700 w-full">
+            <button
+              onClick={closeModal}
+              className="bg-blue-600 text-white py-2 px-4 rounded hover:bg-blue-700 w-full"
+            >
               Close
             </button>
           </div>

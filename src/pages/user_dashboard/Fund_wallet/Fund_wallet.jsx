@@ -52,7 +52,8 @@ export default function Fund_wallet() {
   });
 
   const result = await response.json();
-console.log(result)
+  console.log(result)
+  
   if (!response.ok || result.error) {
     setError(result.message || "Payment failed");
     setIsDialogOpen(true);
