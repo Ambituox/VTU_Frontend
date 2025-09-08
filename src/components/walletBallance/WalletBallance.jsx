@@ -30,7 +30,7 @@ useEffect(() => {
       }
     },
     onerror(err) {
-      console.error("SSE error:", err);
+      // console.error("SSE error:", err);
       setError("Connection lost. Retrying...");
     },
   });

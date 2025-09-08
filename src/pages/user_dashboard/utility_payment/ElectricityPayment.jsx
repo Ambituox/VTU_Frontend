@@ -20,18 +20,18 @@ const ElectricityBillPayment = () => {
   const [loading, setLoading] = useState(false);
 
   const discos = [
-    { value: "abuja", label: "Abuja Electric" },
-    { value: "eko", label: "Eko Electric" },
-    { value: "ibadan", label: "Ibadan Electric" },
-    { value: "ikeja", label: "Ikeja Electric" },
-    { value: "jos-electric", label: "Jos Electric" },
-    { value: "kaduna-electric", label: "Kaduna Electric" },
-    { value: "kano-electric", label: "Kano Electric" },
-    { value: "portharcourt-electric", label: "Port Harcourt Electric" },
-    { value: "aba-electric", label: "Aba Electric" },
-    { value: "yola-electric", label: "Yola Electric" },
-    { value: "benin-electric", label: "Benin Electric" },
-    { value: "enugu-electric", label: "Enugu Electric" },
+    { value: "Abuja", label: "Abuja Electric" },
+    { value: "Eko", label: "Eko Electric" },
+    { value: "Ibadan", label: "Ibadan Electric" },
+    { value: "Ikeja", label: "Ikeja Electric" },
+    { value: "Jos", label: "Jos Electric" },
+    { value: "Kaduna", label: "Kaduna Electric" },
+    { value: "Kano", label: "Kano Electric" },
+    { value: "Portharcourt", label: "Port Harcourt Electric" },
+    { value: "Aba", label: "Aba Electric" },
+    { value: "Yola", label: "Yola Electric" },
+    { value: "Benin", label: "Benin Electric" },
+    { value: "Enugu", label: "Enugu Electric" },
   ];
 
   const variation_code = [
@@ -160,7 +160,7 @@ const ElectricityBillPayment = () => {
               value={formData.provider}
               onChange={handleChange}
               required
-              className="w-full p-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full p-2 border uppercase border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
             >
               <option value="">-------</option>
               {discos.map((disco) => (

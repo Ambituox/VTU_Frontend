@@ -33,10 +33,18 @@ const AirtimeTopUpForm = () => {
     return phoneRegex.test(number);
   };
 
+  const validateAmount = (amount) => {
+    const value = Number(amount);
+    return !isNaN(value) && value >= 50;
+  };
+  
+
   const handleSubmit = async (e) => {
     e.preventDefault();
 
     const { network, phone, amount } = formData;
+
+    const numericAmount = parseFloat(amount);
 
     if (!network || !phone || !amount) {
       setModal({
@@ -56,6 +64,25 @@ const AirtimeTopUpForm = () => {
       return;
     }
 
+    // Amount validation based on network
+    if (network === "MTN" && numericAmount < 100) {
+      setModal({
+        show: true,
+        type: "error",
+        message: "MTN airtime top-up must be at least ₦100"
+      });
+      return;
+    }
+
+    if (network !== "MTN" && numericAmount < 50) {
+      setModal({
+        show: true,
+        type: "error",
+        message: "Airtime top-up must be at least ₦50"
+      });
+      return;
+    }
+
     setLoading(true);
     setError("");
 
@@ -70,14 +97,17 @@ const AirtimeTopUpForm = () => {
         body: JSON.stringify(formData),
       });
 
+      // 08112158397
+
       const result = await response.json();
 
-      console.log(result)
-      if (!response.ok || result.error) {
+      console.log(result);
+      // console.log(existingUser);
+      if (!response.ok || result.status == 'error') {
         setModal({
           show: true,
           type: 'error',
-          message: result.error || "Payment failed"
+          message: result.error || result.data.response.api_response
         });
         setLoading(false);
         return;
@@ -87,7 +117,7 @@ const AirtimeTopUpForm = () => {
       setModal({
         show: true,
         type: 'success',
-        message: result.message || 'Airtime top-up successful!'
+        message: result.data.response.api_response || 'Airtime top-up successful!'
       });
       setLoading(false);
       
@@ -107,8 +137,6 @@ const AirtimeTopUpForm = () => {
     setModal({ show: false, type: '', message: '' });
   };
 
-  console.log(formData)
-
   return (
     <div className="pb-10">
       <OutstandingDebtNotice />
@@ -126,7 +154,7 @@ const AirtimeTopUpForm = () => {
                 className="w-full p-2 border uppercase border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
               >
                 <option value="">-------</option>
-                <option value="mtn">MTN</option>
+                <option value="MTN">MTN</option>
                 <option value="Airtel">AIRTEL</option>
                 <option value="Glo">GLO</option>
                 <option value="9mobile">9MOBILE</option>
@@ -149,7 +177,7 @@ const AirtimeTopUpForm = () => {
             <div className="mb-4">
               <label htmlFor="phone" className="block text-sm font-medium mb-1">Mobile Number*</label>
               <input
-                type="number"
+                type="text"
                 id="phone"
                 name="phone"
                 value={formData.phone}
@@ -160,11 +188,12 @@ const AirtimeTopUpForm = () => {
             <div className="mb-4">
               <label htmlFor="amount" className="block text-sm font-medium mb-1">Amount*</label>
               <input
-                type="number"
+                type="text"
                 id="amount"
                 name="amount"
                 value={formData.amount}
                 onChange={handleChange}
+                placeholder={formData.network === "MTN" ? "100 - above" : "50 - above"}
                 className="w-full p-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
               />
             </div>

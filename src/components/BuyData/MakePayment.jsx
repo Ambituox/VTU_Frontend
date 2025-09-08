@@ -65,17 +65,17 @@ export default function MakePayment() {
 
       const result = await response.json();
       
-      console.log(result);
+      console.log(result.data);
 
-      if (!response.ok || result.status === 'error') {
-        setError(result.message || "Payment failed");
+      if (!response.ok || result.data.status === 'failed') {
+        setError(result.data.api_response || "Payment failed");
         setIsDialogOpen(true); // Show error dialog
         // console.log(result);
         setLoading(false);
         return;
       }
 
-      setSuccess(result.message);
+      setSuccess(result.data.api_response);
       setIsDialogOpen(true);
       setLoading(false);
     } catch (err) {
@@ -102,7 +102,7 @@ export default function MakePayment() {
         <div className="absolute top-2 left-2">
           <button className="bg-blue-500 py-2 px-4 rounded-lg font-semibold text-white" onClick={handleBack}>Back</button>
         </div>
-        <h2 className="text-2xl font-bold text-center">Make Payment</h2>
+        <h2 className="text-2xl font-bold text-center">Buy Now</h2>
 
         <div className="mt-4 p-4 border rounded space-y-3">
           <label className="block">
@@ -152,9 +152,9 @@ export default function MakePayment() {
 
         {/* Error Dialog Modal */}
         {isDialogOpen && (
-          <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
+          <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 px-3">
             <div className="bg-white p-6 rounded-lg shadow-lg max-w-md">
-              <h3 className={`${success ? 'text-green-600' : 'text-red-600'} text-lg font-bold`}>Payment {success ? 'Success' : 'Error'}</h3>
+              <h3 className={`${success ? 'text-green-600' : 'text-red-600'} text-lg font-bold`}>{success ? 'Success' : 'Error'}</h3>
               <p className="text-gray-700 mt-2">{success ? success : error}</p>
               <button
                 onClick={() => setIsDialogOpen(false)}

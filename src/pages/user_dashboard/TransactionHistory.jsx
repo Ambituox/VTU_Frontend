@@ -1,8 +1,10 @@
 import { jwtDecode } from "jwt-decode";
 import React, { useEffect, useState } from "react";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 import { signOutUserSuccess } from "../../store/userReducers";
 import { FiRefreshCw } from "react-icons/fi";
+
+const API_BASE_URL = import.meta.env.API_BASE_URL || "https://vtu-xpwk.onrender.com";
 
 // Skeleton loading row
 const SkeletonRow = () => (
@@ -17,6 +19,8 @@ const SkeletonRow = () => (
 
 function TransactionsHistory() {
   const { existingUser } = useSelector((state) => state.user);
+  const dispatch = useDispatch();
+
   const [transactions, setTransactions] = useState([]);
   const [filteredTransactions, setFilteredTransactions] = useState([]);
   const [filter, setFilter] = useState("all");
@@ -29,7 +33,7 @@ function TransactionsHistory() {
   const fetchTransactions = async () => {
     try {
       setLoading(true);
-      const response = await fetch("https://vtu-xpwk.onrender.com/api/v1/get-profile", {
+      const response = await fetch(`${API_BASE_URL}/api/v1/get-profile`, {
         method: "GET",
         headers: {
           "Content-Type": "application/json",
@@ -65,7 +69,7 @@ function TransactionsHistory() {
         return;
       }
     }
-  }, [existingUser]);
+  }, [existingUser, dispatch]);
 
   // Handle transaction filtering
   const handleFilterChange = (type) => {
@@ -79,7 +83,20 @@ function TransactionsHistory() {
     let filtered = [...transactions];
 
     if (type !== "all") {
-      filtered = filtered.filter((tx) => tx.type === type);
+      filtered = filtered.filter((tx) => {
+        const normalizedType = (tx.type || "").toLowerCase();
+
+        if (type === "fund_wallet") {
+          return normalizedType === "fund_wallet" || normalizedType === "fund wallet";
+        }
+        if (type === "data") {
+          return normalizedType === "data";
+        }
+        if (type === "airtime") {
+          return normalizedType === "airtime";
+        }
+        return normalizedType === type;
+      });
     }
 
     if (query.trim() !== "") {
@@ -101,7 +118,10 @@ function TransactionsHistory() {
   // Pagination logic
   const indexOfLastTx = currentPage * transactionsPerPage;
   const indexOfFirstTx = indexOfLastTx - transactionsPerPage;
-  const currentTransactions = filteredTransactions.slice(indexOfFirstTx, indexOfLastTx);
+  const currentTransactions = filteredTransactions.slice(
+    indexOfFirstTx,
+    indexOfLastTx
+  );
   const totalPages = Math.ceil(filteredTransactions.length / transactionsPerPage);
 
   const paginate = (pageNumber) => setCurrentPage(pageNumber);
@@ -110,16 +130,28 @@ function TransactionsHistory() {
     <div className="py-8 md:px-4 px-2 max-w-6xl mx-auto">
       <div className="flex justify-between items-center">
         <div className="mb-4 flex gap-2 items-center lg:flex-nowrap flex-1 min-w-0 flex-wrap">
-          <button onClick={() => handleFilterChange("all")} className="px-4 py-2 bg-blue-500 text-gray-50 rounded">
+          <button
+            onClick={() => handleFilterChange("all")}
+            className="px-4 py-2 bg-blue-500 text-gray-50 rounded"
+          >
             All
           </button>
-          <button onClick={() => handleFilterChange("fund_wallet")} className="px-4 py-2 bg-green-200 rounded">
+          <button
+            onClick={() => handleFilterChange("fund_wallet")}
+            className="px-4 py-2 bg-green-200 rounded"
+          >
             Fund Wallet
           </button>
-          <button onClick={() => handleFilterChange("data_plan")} className="px-4 py-2 bg-blue-200 rounded">
+          <button
+            onClick={() => handleFilterChange("data")}
+            className="px-4 py-2 bg-blue-200 rounded"
+          >
             Data Plan
           </button>
-          <button onClick={() => handleFilterChange("airtime")} className="px-4 py-2 bg-blue-200 rounded">
+          <button
+            onClick={() => handleFilterChange("airtime")}
+            className="px-4 py-2 bg-yellow-200 rounded"
+          >
             Airtime
           </button>
           <input
@@ -130,7 +162,10 @@ function TransactionsHistory() {
             className="border px-4 py-2 rounded w-full max-w-xs focus:outline-blue-400"
           />
         </div>
-        <button onClick={fetchTransactions} className="flex items-center gap-2 bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 transition">
+        <button
+          onClick={fetchTransactions}
+          className="flex items-center gap-2 bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 transition"
+        >
           <FiRefreshCw className={`${loading ? "animate-spin" : ""}`} />
           {loading ? "Refreshing..." : "Refresh"}
         </button>
@@ -140,13 +175,27 @@ function TransactionsHistory() {
         <table className="min-w-full table-auto">
           <thead className="bg-gray-100">
             <tr className="text-gray-50">
-              <th className="px-4 py-2 border border-blue-400 bg-blue-500 rounded-tl-md text-start">#</th>
-              <th className="px-4 py-2 border border-blue-400 bg-blue-500 text-start">Description</th>
-              <th className="px-4 py-2 border border-blue-400 bg-blue-500 text-start">Amount</th>
-              <th className="px-4 py-2 border border-blue-400 bg-blue-500 text-start">Type</th>
-              <th className="px-4 py-2 border border-blue-400 bg-blue-500 text-start">Status</th>
-              <th className="px-4 py-2 border border-blue-400 bg-blue-500 text-start">Date</th>
-              <th className="px-4 py-2 border border-blue-400 bg-blue-500 rounded-tr-md text-start">Time</th>
+              <th className="px-4 py-2 border border-blue-400 bg-blue-500 rounded-tl-md text-start">
+                #
+              </th>
+              <th className="px-4 py-2 border border-blue-400 bg-blue-500 text-start">
+                Description
+              </th>
+              <th className="px-4 py-2 border border-blue-400 bg-blue-500 text-start">
+                Amount
+              </th>
+              <th className="px-4 py-2 border border-blue-400 bg-blue-500 text-start">
+                Type
+              </th>
+              <th className="px-4 py-2 border border-blue-400 bg-blue-500 text-start">
+                Status
+              </th>
+              <th className="px-4 py-2 border border-blue-400 bg-blue-500 text-start">
+                Date
+              </th>
+              <th className="px-4 py-2 border border-blue-400 bg-blue-500 rounded-tr-md text-start">
+                Time
+              </th>
             </tr>
           </thead>
           <tbody>
@@ -165,12 +214,24 @@ function TransactionsHistory() {
                   minute: "2-digit",
                 });
 
+                const normalizedType = (tx.type || "").toLowerCase();
+                let displayType =
+                  normalizedType === "fund_wallet" || normalizedType === "fund wallet"
+                    ? "Fund Wallet"
+                    : tx.type;
+
                 return (
                   <tr key={index} className="text-start text-sm text-gray-500">
-                    <td className="border px-4 py-2">{indexOfFirstTx + index + 1}</td>
-                    <td className="border px-4 py-2 truncate">{tx.metadata?.paymentDescription}</td>
-                    <td className="border px-4 py-2">₦{tx.amount.toLocaleString()}</td>
-                    <td className="border px-4 py-2 capitalize">{tx.type}</td>
+                    <td className="border px-4 py-2">
+                      {indexOfFirstTx + index + 1}
+                    </td>
+                    <td className="border px-4 py-2 truncate">
+                      {tx.metadata?.paymentDescription}
+                    </td>
+                    <td className="border px-4 py-2">
+                      ₦{tx.amount.toLocaleString()}
+                    </td>
+                    <td className="border px-4 py-2 capitalize">{displayType}</td>
                     <td className="border px-4 py-2 capitalize">{tx.status}</td>
                     <td className="border px-4 py-2">{date}</td>
                     <td className="border px-4 py-2">{time}</td>
@@ -194,7 +255,11 @@ function TransactionsHistory() {
             <button
               key={i}
               onClick={() => paginate(i + 1)}
-              className={`px-3 py-1 rounded border ${currentPage === i + 1 ? "bg-blue-500 text-white" : "bg-white text-black"}`}
+              className={`px-3 py-1 rounded border ${
+                currentPage === i + 1
+                  ? "bg-blue-500 text-white"
+                  : "bg-white text-black"
+              }`}
             >
               {i + 1}
             </button>
