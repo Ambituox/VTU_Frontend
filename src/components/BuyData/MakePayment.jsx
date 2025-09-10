@@ -13,8 +13,6 @@ export default function MakePayment() {
   const paymentData = location.state; // Retrieve data
 
   const { serviceType } = useServiceType();
-  
-  console.log(serviceType)
 
   // Initialize form data state
   const [formData, setFormData] = useState({

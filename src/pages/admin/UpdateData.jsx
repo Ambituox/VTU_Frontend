@@ -12,21 +12,21 @@ const UpdateData = () => {
   const location = useLocation();
   const navigate = useNavigate();
 
-  const { plan } = location.state || {};
+  const { size } = location.state || {};
   const [showModal, setShowModal] = useState(false);
   const [alertType, setAlertType] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
 
   const [formData, setFormData] = useState({
-    networkProvider: plan?.networkProvider || '',
-    plan: plan?.plan || '',
-    duration: plan?.duration || '',
-    amount: plan?.price || '',
+    networkProvider: size?.networkProvider || '',
+    size: size?.size || '',
+    duration: size?.duration || '',
+    amount: size?.price || '',
   });
 
   useEffect(() => {
-    if (!plan) {
+    if (!size) {
       setShowModal(true);
   
       // Redirect after 3 seconds
@@ -36,7 +36,7 @@ const UpdateData = () => {
   
       return () => clearTimeout(timer);
     }
-  }, [plan, navigate]);
+  }, [size, navigate]);
   
 
   const handleChange = (e) => {
@@ -53,7 +53,7 @@ const UpdateData = () => {
         `${API_BASE_URL}/api/v1/admin/update-data`,
         {
           networkProvider: formData.networkProvider,
-          plan: formData.plan,
+          size: formData.size,
           duration: formData.duration,
           price: formData.amount,
         },
@@ -66,10 +66,10 @@ const UpdateData = () => {
       );
     
       if (data.error) {
-        setError(data.error || 'Failed to update data plan');
+        setError(data.error || 'Failed to update data size');
         setAlertType("error");
       } else {
-        setError(data.message || 'Data plan updated successfully!');
+        setError(data.message || 'Data size updated successfully!');
         setAlertType("success");
       }
 
@@ -78,7 +78,7 @@ const UpdateData = () => {
       }, 3000);
       
     } catch (err) {
-      setError(err.response?.data?.error || err.message || 'Failed to update data plan');
+      setError(err.response?.data?.error || err.message || 'Failed to update data size');
       setAlertType("error");
 
       setTimeout(() => {
@@ -99,7 +99,7 @@ const UpdateData = () => {
         <div className="absolute top-2 left-2">
           <button className="bg-blue-500 py-2 px-4 rounded-lg font-semibold text-white" onClick={handleBack}>Back</button>
         </div>
-        <h2 className="text-2xl font-semibold text-center">Update Data Plan</h2>
+        <h2 className="text-2xl font-semibold text-center">Update Data size</h2>
         <div className="md:p-4 bg-white rounded-lg mt-6">
           <div className="grid md:grid-cols-2 grid-cols-1 gap-3">
             <label className="block my-2">
@@ -112,8 +112,8 @@ const UpdateData = () => {
             </label>
 
             <label className="block my-2">
-              <span className="text-gray-700">Plan</span>
-              <input type="text" name="plan" value={formData.plan} onChange={handleChange} className="mt-1 block w-full p-3 border rounded" />
+              <span className="text-gray-700">size</span>
+              <input type="text" name="size" value={formData.size} onChange={handleChange} className="mt-1 block w-full p-3 border rounded" />
             </label>
           </div>
 
@@ -146,13 +146,13 @@ const UpdateData = () => {
         </AnimatePresence>
       </div>
 
-      {/* Modal for missing plan */}
+      {/* Modal for missing size */}
       {showModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
           <div className="bg-white p-6 rounded-lg shadow-lg max-w-sm w-full">
-            <h2 className="text-xl font-semibold mb-4 text-red-600">Plan Not Found</h2>
+            <h2 className="text-xl font-semibold mb-4 text-red-600">size Not Found</h2>
             <p className="mb-6 text-gray-700">
-              The data plan you're trying to update wasn't found. Please go to the pricing page to select a valid plan.
+              The data size you're trying to update wasn't found. Please go to the pricing page to select a valid size.
             </p>
             <div className="flex justify-end space-x-3">
               {/* <button

@@ -3,6 +3,7 @@ import React, { useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { signOutUserSuccess } from "../../store/userReducers";
 import { FiRefreshCw } from "react-icons/fi";
+import { useServiceType } from "../../components/SwitchServiceType/ServiceTypeContext";
 
 const API_BASE_URL = import.meta.env.API_BASE_URL || "https://vtu-xpwk.onrender.com";
 
@@ -21,6 +22,8 @@ function TransactionsHistory() {
   const { existingUser } = useSelector((state) => state.user);
   const dispatch = useDispatch();
 
+  const { serviceType } = useServiceType();
+    
   const [transactions, setTransactions] = useState([]);
   const [filteredTransactions, setFilteredTransactions] = useState([]);
   const [filter, setFilter] = useState("all");
@@ -37,7 +40,8 @@ function TransactionsHistory() {
         method: "GET",
         headers: {
           "Content-Type": "application/json",
-          Authorization: `Bearer ${existingUser?.token}`,
+          "Authorization": `Bearer ${existingUser?.token}`,
+          'X-Service-Type' : serviceType
         },
       });
 
@@ -90,10 +94,12 @@ function TransactionsHistory() {
           return normalizedType === "fund_wallet" || normalizedType === "fund wallet";
         }
         if (type === "data") {
-          return normalizedType === "data";
+          // Matches "data", "data_purchase", "buy_data" etc.
+          return normalizedType.includes("data");
         }
         if (type === "airtime") {
-          return normalizedType === "airtime";
+          // Matches "airtime", "airtime_purchase", "buy_airtime" etc.
+          return normalizedType.includes("airtime");
         }
         return normalizedType === type;
       });
@@ -222,15 +228,9 @@ function TransactionsHistory() {
 
                 return (
                   <tr key={index} className="text-start text-sm text-gray-500">
-                    <td className="border px-4 py-2">
-                      {indexOfFirstTx + index + 1}
-                    </td>
-                    <td className="border px-4 py-2 truncate">
-                      {tx.metadata?.paymentDescription}
-                    </td>
-                    <td className="border px-4 py-2">
-                      ₦{tx.amount.toLocaleString()}
-                    </td>
+                    <td className="border px-4 py-2">{indexOfFirstTx + index + 1}</td>
+                    <td className="border px-4 py-2 truncate">{tx.metadata?.paymentDescription}</td>
+                    <td className="border px-4 py-2">₦{tx.amount.toLocaleString()}</td>
                     <td className="border px-4 py-2 capitalize">{displayType}</td>
                     <td className="border px-4 py-2 capitalize">{tx.status}</td>
                     <td className="border px-4 py-2">{date}</td>
@@ -241,7 +241,13 @@ function TransactionsHistory() {
             ) : (
               <tr>
                 <td colSpan="7" className="text-center py-4 text-gray-500">
-                  No transactions found.
+                  {filter === "airtime"
+                    ? "No Airtime transactions found."
+                    : filter === "data"
+                    ? "No Data transactions found."
+                    : filter === "fund_wallet"
+                    ? "No Fund Wallet transactions found."
+                    : "No transactions found."}
                 </td>
               </tr>
             )}

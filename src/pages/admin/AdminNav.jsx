@@ -18,6 +18,7 @@ const navSections = [
     title: "User Management",
     routes: [
       { label: "All Users", path: "admin/all-users" },
+      { label: "All Transactions", path: "all-transaction-history" },
     //   { label: "User Requests", path: "/admin/requests" },
     ],
   },

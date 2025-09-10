@@ -219,7 +219,7 @@ export default function BuyDataPlan() {
                                 <button
                                   onClick={() =>
                                     navigate("/profile/data-top-up/buy-now", {
-                                      state: plan,
+                                      state: size,
                                     })
                                   }
                                   className="mt-3 bg-white border-none text-black font-semibold px-3 py-2 rounded hover:bg-gray-800 hover:text-white text-sm transition"
