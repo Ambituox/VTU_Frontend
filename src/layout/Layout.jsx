@@ -45,11 +45,16 @@ const Sidebar = ({ isOpen, toggleSidebar }) => {
   // Local state to store the fetched user profile data
   const [user, setUser] = useState([]);
 
+  // console.log(existingUser);
+
   useEffect(() => {
     // Ensure existingUser and existingUser.data are defined
     if (existingUser.data && existingUser.data.role === 'admin') {
       setIsAdmin(true);
-    } else {
+    } else if(existingUser && existingUser.role === 'admin') {
+      setIsAdmin(true);
+    }
+    else {
       console.log("No current user or user data available.");
     }
   }, [existingUser]);
@@ -104,7 +109,7 @@ const Sidebar = ({ isOpen, toggleSidebar }) => {
           </div>
           <div>
             <h1 className="text-sm font-semibold text-white/60 capitalize">
-             Hi, {existingUser?.data?.firstName || "User"}
+             Hi, {existingUser?.data?.firstName || existingUser.firstName || "User"}
             </h1>
             <p className="text-sm text-white/40">
               {

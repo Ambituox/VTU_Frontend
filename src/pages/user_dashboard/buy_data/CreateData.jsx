@@ -2,8 +2,8 @@ import React, { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useSelector } from "react-redux";
 
-const API_BASE_URL =
-  import.meta.env.API_BASE_URL || "https://vtu-xpwk.onrender.com";
+const token = localStorage.getItem("authToken");
+const API_BASE_URL = import.meta.env.API_BASE_URL || "https://vtu-xpwk.onrender.com";
 
 const networkProviders = ["MTN", "GLO", "AIRTEL", "9MOBILE"];
 
@@ -11,7 +11,7 @@ const networkProviders = ["MTN", "GLO", "AIRTEL", "9MOBILE"];
 const serviceTypesMap = {
   MTN: ["mtn_sme", "mtn_gifting", "mtn_datashare"],
   GLO: ["glo_data", "glo_sme"],
-  AIRTEL: ["airtel_sme"],
+  AIRTEL: ["airtel_sme", "airtel_cg"],
   "9MOBILE": ["etisalat_data"],
 };
 
@@ -75,21 +75,21 @@ export default function CreateDataComponent() {
       price: datasize.price,
     };
 
-    // console.log(payload);
+    console.log(payload);
 
     try {
       const response = await fetch(`${API_BASE_URL}/api/v1/admin/create-data`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          Authorization: `Bearer ${existingUser.token}`,
+          Authorization: `Bearer ${existingUser.token || token}`,
         },
         body: JSON.stringify(payload),
       });
 
       const result = await response.json();
 
-      // console.log(result);
+      console.log(result);
 
       if (!response.ok || result.error) {
         setMessage(result.error || "Failed to create data size");

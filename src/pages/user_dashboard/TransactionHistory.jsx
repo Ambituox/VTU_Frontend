@@ -7,6 +7,8 @@ import { signOutUserSuccess } from "../../store/userReducers";
 const API_BASE_URL =
   import.meta.env.API_BASE_URL || "https://vtu-xpwk.onrender.com";
 
+const token = localStorage.getItem("authToken");
+
 // Skeleton loading row
 const SkeletonRow = () => (
   <tr className="animate-pulse text-gray-400">
@@ -40,7 +42,7 @@ function TransactionHistory() {
           method: "GET",
           headers: {
             "Content-Type": "application/json",
-            Authorization: `Bearer ${existingUser?.token}`,
+            Authorization: `Bearer ${token}`,
           },
         }
       );
@@ -63,8 +65,8 @@ function TransactionHistory() {
   }, []);
 
   useEffect(() => {
-    if (existingUser?.token) {
-      const decoded = jwtDecode(existingUser.token);
+    if (existingUser?.token || token) {
+      const decoded = jwtDecode(existingUser.token || token);
       const isExpired = decoded.exp * 1000 < Date.now();
 
       if (isExpired) {
@@ -273,7 +275,19 @@ function TransactionHistory() {
                       {displayType}
                     </td>
                     <td className="border px-4 py-2 capitalize">
-                      {tx.status || "N/A"}
+                      <span
+                        className={`px-2 py-1 rounded text-white text-xs font-semibold ${
+                          tx.status?.toLowerCase() === "success"
+                            ? "bg-green-500"
+                            : tx.status?.toLowerCase() === "failed"
+                            ? "bg-red-500"
+                            : tx.status?.toLowerCase() === "pending"
+                            ? "bg-purple-500"
+                            : "bg-gray-400"
+                        }`}
+                      >
+                        {tx.status || "N/A"}
+                      </span>
                     </td>
                     <td className="border px-4 py-2">{date}</td>
                     <td className="border px-4 py-2">{time}</td>

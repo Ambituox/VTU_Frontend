@@ -7,6 +7,7 @@ import { useNavigate, Link } from "react-router-dom";
 import { FiRefreshCw } from "react-icons/fi";
 import { Dialog, Transition } from "@headlessui/react";
 
+const token = localStorage.getItem("authToken");
 const API_BASE_URL = import.meta.env.API_BASE_URL || "https://vtu-xpwk.onrender.com";
 
 function classNames(...classes) {
@@ -19,12 +20,21 @@ export default function Pricing() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [isErrorOpen, setIsErrorOpen] = useState(false);
+  const [isAdmin, setIsAdmin] = useState(false);
   const navigate = useNavigate();
 
   const { existingUser } = useSelector((state) => state.user);
-  const isAdmin = existingUser?.data?.role === "admin"; // ✅ check if admin
-
-  // console.log(isAdmin)
+  useEffect(() => {
+      // Ensure existingUser and existingUser.data are defined
+      if (existingUser.data && existingUser.data.role === 'admin') {
+        setIsAdmin(true);
+      } else if(existingUser && existingUser.role === 'admin') {
+        setIsAdmin(true);
+      }
+      else {
+        console.log("No current user or user data available.");
+      }
+    }, [existingUser]);
 
   const [currentPage, setCurrentPage] = useState({});
   const itemsPerPage = 8;
@@ -32,7 +42,7 @@ export default function Pricing() {
   const fetchData = () => {
     setLoading(true);
     fetch(`${API_BASE_URL}/api/v1/admin/get-all-data`, {
-      headers: { Authorization: `Bearer ${existingUser.token}` },
+      headers: { Authorization: `Bearer ${existingUser.token || token}` },
     })
       .then((response) => {
         if (!response.ok) {

@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { FaUserAlt } from "react-icons/fa";
 import { useDispatch, useSelector } from "react-redux";
 import {updateSuccess} from '../../../store/userReducers'
+
 const API_BASE_URL = import.meta.env.API_BASE_URL || "https://vtu-xpwk.onrender.com";
 
 const token = localStorage.getItem("authToken");
@@ -34,7 +35,7 @@ const UserProfile = () => {
         });
   
         const data = await res.json();
-        console.log(data);
+        // console.log(data);
   
         if (!res.ok) {
           alert(data.message || "Failed to fetch profile");
@@ -134,8 +135,8 @@ const UserProfile = () => {
       setLoading(false);
     }
   };
-  
-  console.log(previewImage);
+
+  // console.log(previewImage);
 
   return (
     <div className="flex items-center pb-20 pt-5 justify-center min-h-screen bg-blue-50 px-4">
@@ -147,21 +148,12 @@ const UserProfile = () => {
         {/* Profile Image */}
         <div className="flex flex-col items-center mb-6">
           {previewImage ? (
-            <img
-              src={previewImage}
-              alt="Profile"
-              className="w-28 h-28 rounded-full object-cover border-4 border-blue-300"
-            />
+            <img src={previewImage} alt="Profile" className="w-28 h-28 rounded-full object-cover border-4 border-blue-300"/>
           ) : (
             <FaUserAlt className="w-28 h-28 text-blue-400" />
           )}
           {isEditing && (
-            <input
-              type="file"
-              accept="image/*"
-              onChange={handleImageChange}
-              className="mt-3 text-sm"
-            />
+            <input type="file" accept="image/*" onChange={handleImageChange} className="mt-3 text-sm"/>
           )}
         </div>
 
@@ -169,75 +161,37 @@ const UserProfile = () => {
             <div className="grid grid-cols-2 gap-2">
             <div>
               <label className="block text-sm font-medium text-blue-700">First Name</label>
-              <input
-                type="text"
-                name="firstName"
-                value={formData.firstName}
-                onChange={handleChange}
-                disabled={!isEditing}
-                className="w-full p-3 border rounded-lg bg-blue-50 disabled:bg-gray-100 border-blue-200 focus:ring-2 focus:ring-blue-400"
-              />
+              <input type="text" name="firstName" value={formData.firstName} onChange={handleChange} disabled={!isEditing} className="w-full p-3 border rounded-lg bg-blue-50 disabled:bg-gray-100 border-blue-200 focus:ring-2 focus:ring-blue-400"/>
             </div>
             <div>
               <label className="block text-sm font-medium text-blue-700">Last Name</label>
-              <input
-                type="text"
-                name="lastName"
-                value={formData.lastName}
-                onChange={handleChange}
-                disabled={!isEditing}
-                className="w-full p-3 border rounded-lg bg-blue-50 disabled:bg-gray-100 border-blue-200 focus:ring-2 focus:ring-blue-400"
-              />
+              <input type="text" name="lastName" value={formData.lastName} onChange={handleChange} disabled={!isEditing} className="w-full p-3 border rounded-lg bg-blue-50 disabled:bg-gray-100 border-blue-200 focus:ring-2 focus:ring-blue-400"/>
             </div>
             </div>
-          <div>
-            <label className="block text-sm font-medium text-blue-700">Email</label>
-            <input
-              type="email"
-              name="email"
-              value={formData.email}
-              onChange={handleChange}
-              disabled={!isEditing}
-              className="w-full p-3 border rounded-lg bg-blue-50 disabled:bg-gray-100 border-blue-200 focus:ring-2 focus:ring-blue-400"
-            />
-          </div>
-          <div>
-            <label className="block text-sm font-medium text-blue-700">Phone</label>
-            <input
-              type="text"
-              name="phone"
-              value={formData.phone}
-              onChange={handleChange}
-              disabled={!isEditing}
-              className="w-full p-3 border rounded-lg bg-blue-50 disabled:bg-gray-100 border-blue-200 focus:ring-2 focus:ring-blue-400"
-            />
+          <div className="grid grid-cols-2 gap-2">
+            <div>
+              <label className="block text-sm font-medium text-blue-700">Email</label>
+              <input type="email" name="email" value={formData.email} onChange={handleChange} disabled={!isEditing} className="w-full p-3 border rounded-lg bg-blue-50 disabled:bg-gray-100 border-blue-200 focus:ring-2 focus:ring-blue-400"/>
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-blue-700">Phone</label>
+              <input type="text" name="phone" value={formData.phone} onChange={handleChange} disabled={!isEditing} className="w-full p-3 border rounded-lg bg-blue-50 disabled:bg-gray-100 border-blue-200 focus:ring-2 focus:ring-blue-400"/>
+            </div>
           </div>
 
           {/* Action buttons */}
           <div className="flex justify-between items-center mt-6">
             {isEditing ? (
               <>
-                <button
-                  type="button"
-                  onClick={() => setIsEditing(false)}
-                  className="py-2 px-4 bg-red-500 text-white rounded-lg shadow-md hover:bg-red-600 transition"
-                >
+                <button type="button" onClick={() => setIsEditing(false)} className="py-2 px-4 bg-red-500 text-white rounded-lg shadow-md hover:bg-red-600 transition"> 
                   Cancel
                 </button>
-                <button
-                  type="submit"
-                  disabled={loading}
-                  className="py-2 px-4 bg-blue-600 text-white rounded-lg shadow-md hover:bg-blue-700 transition disabled:bg-gray-400"
-                >
+                <button type="submit" disabled={loading} className="py-2 px-4 bg-blue-600 text-white rounded-lg shadow-md hover:bg-blue-700 transition disabled:bg-gray-400">
                   {loading ? "Saving..." : "Save Changes"}
                 </button>
               </>
             ) : (
-              <button
-                type="button"
-                onClick={() => setIsEditing(true)}
-                className="py-2 px-6 bg-blue-600 text-white rounded-lg shadow-md hover:bg-blue-700 transition"
-              >
+              <button type="button" onClick={() => setIsEditing(true)} className="py-2 px-6 bg-blue-600 text-white rounded-lg shadow-md hover:bg-blue-700 transition">
                 Edit Profile
               </button>
             )}

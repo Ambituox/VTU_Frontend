@@ -14,6 +14,7 @@ export default function MakePayment() {
 
   const { serviceType } = useServiceType();
 
+  
   // Initialize form data state
   const [formData, setFormData] = useState({
     networkProvider: paymentData?.networkProvider,
@@ -23,6 +24,8 @@ export default function MakePayment() {
     mobile_number: '',
     price: paymentData?.price,
   });
+
+  // console.log();
 
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
@@ -95,8 +98,12 @@ export default function MakePayment() {
 
   return (
     <div className="">
-      <OutstandingDebtNotice />
-      <div className="relative max-w-md mx-auto mb-20 mt-5 p-6 bg-white shadow-lg rounded-lg">
+      {
+        formData.serviceType === 'airtel_sme' ? <OutstandingDebtNotice message={`If your SIM has any Outstanding Balance or Debt with Airtel. \n Do not BUY this plan if you are Owing Airtel (Borrowed Card or Data). Please buy another *AIRTEL PLAN* (Corporate Gifting).`} /> 
+        : formData.serviceType === 'airtel' ? '' :  '' //<OutstandingDebtNotice message=""/>
+      }
+      
+      <div className="relative max-w-md sm:mx-auto mb-20 mt-5 border mx-2 p-6 bg-white shadow-lg rounded-lg">
         <div className="absolute top-2 left-2">
           <button className="bg-blue-500 py-2 px-4 rounded-lg font-semibold text-white" onClick={handleBack}>Back</button>
         </div>

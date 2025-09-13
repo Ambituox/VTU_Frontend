@@ -13,6 +13,7 @@ export default function BuyDataNow() {
   const location = useLocation();
   const data = location.state; // Retrieve data from navigation
 
+  console.log(data)
   let navigate = useNavigate(); // Initialize useNavigate hook
   // Log the data to ensure it's available
   // console.log("Data in BuyDataNow:", data);

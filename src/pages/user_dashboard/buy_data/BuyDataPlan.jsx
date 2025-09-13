@@ -6,6 +6,7 @@ import { useNavigate } from "react-router-dom";
 import { FiRefreshCw } from "react-icons/fi";
 import { Dialog, Transition } from "@headlessui/react";
 
+const token = localStorage.getItem("authToken");
 const API_BASE_URL =
   import.meta.env.API_BASE_URL || "https://vtu-xpwk.onrender.com";
 
@@ -29,7 +30,7 @@ export default function BuyDataPlan() {
   const fetchData = () => {
     setLoading(true);
     fetch(`${API_BASE_URL}/api/v1/admin/get-all-data`, {
-      headers: { Authorization: `Bearer ${existingUser.token}` },
+      headers: { Authorization: `Bearer ${existingUser.token || token}` },
     })
       .then((response) => {
         if (!response.ok) {
@@ -206,7 +207,7 @@ export default function BuyDataPlan() {
                                 )} flex flex-col justify-center items-center p-4 rounded-lg`}
                               >
                                 <p className="mt-2 text-sm text-center font-semibold">
-                                  {plan.size}
+                                  {plan.size || plan.plan}
                                 </p>
                                 <p className="mt-2 flex items-center font-bold text-lg">
                                   <TbCurrencyNaira /> {plan.price}

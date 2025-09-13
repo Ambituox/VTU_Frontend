@@ -5,7 +5,7 @@ import axios from 'axios';
 import { motion, AnimatePresence } from "framer-motion";
 
 const API_BASE_URL = import.meta.env.API_BASE_URL || 'https://vtu-xpwk.onrender.com';
-
+const token = localStorage.getItem("authToken");
 // ✅ Service type options per network
 const serviceTypesMap = {
   MTN: ["mtn_sme", "mtn_gifting", "mtn_datashare"],
@@ -22,6 +22,8 @@ const UpdateData = () => {
 
   // ✅ Correctly destructure `plan`
   const { plan } = location.state || {};
+
+  console.log(plan)
 
   const [showModal, setShowModal] = useState(false);
   const [alertType, setAlertType] = useState("");
@@ -59,7 +61,7 @@ const UpdateData = () => {
         {
           headers: {
             'Content-Type': 'application/json',
-            'Authorization': `Bearer ${existingUser.token}`,
+            'Authorization': `Bearer ${existingUser.token || token}`,
           },
         }
       );
@@ -138,29 +140,31 @@ const UpdateData = () => {
             </label>
           </div>
 
-          {/* Size */}
-          <label className="block my-2">
-            <span className="text-gray-700">Size</span>
-            <input 
-              type="text" 
-              name="size" 
-              value={formData.size} 
-              onChange={handleChange} 
-              className="mt-1 block w-full p-3 border rounded" 
-            />
-          </label>
+          <div className="grid grid-cols-2 gap-2">
+            <label className="block my-2">
+              <span className="text-gray-700">Size</span>
+              <input 
+                type="text" 
+                name="size" 
+                value={formData.size} 
+                onChange={handleChange} 
+                className="mt-1 block w-full p-3 border rounded" 
+              />
+            </label>
 
-          {/* Duration */}
-          <label className="block my-2">
-            <span className="text-gray-700">Duration</span>
-            <input 
-              type="text" 
-              name="duration" 
-              value={formData.duration} 
-              onChange={handleChange} 
-              className="mt-1 block w-full p-3 border rounded" 
-            />
-          </label>
+            {/* Duration */}
+            <label className="block my-2">
+              <span className="text-gray-700">Duration</span>
+              <input 
+                type="text" 
+                name="duration" 
+                value={formData.duration} 
+                onChange={handleChange} 
+                className="mt-1 block w-full p-3 border rounded" 
+              />
+            </label>
+          </div>
+          {/* Size */}
 
           {/* Amount */}
           <label className="block my-2">

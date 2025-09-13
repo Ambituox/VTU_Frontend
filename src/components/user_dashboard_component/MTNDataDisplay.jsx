@@ -5,6 +5,7 @@ import { TbCurrencyNaira } from "react-icons/tb";
 import { FiRefreshCw } from "react-icons/fi";
 import { Dialog, Transition } from "@headlessui/react";
 
+const token = localStorage.getItem("authToken");
 const API_BASE_URL = import.meta.env.API_BASE_URL || "https://vtu-xpwk.onrender.com";
 
 // Helper to normalize network names to uppercase
@@ -23,7 +24,7 @@ export default function MTNDataDisplay() {
     setLoading(true);
     try {
       const res = await fetch(`${API_BASE_URL}/api/v1/admin/get-all-data`, {
-        headers: { Authorization: `Bearer ${existingUser?.token}` },
+        headers: { Authorization: `Bearer ${existingUser?.token || token}` },
       });
       if (!res.ok) throw new Error(`Error fetching plans: ${res.statusText}`);
       const data = await res.json();
