@@ -99,8 +99,7 @@ export default function MakePayment() {
   return (
     <div className="">
       {
-        formData.serviceType === 'airtel_sme' ? <OutstandingDebtNotice message={`If your SIM has any Outstanding Balance or Debt with Airtel. \n Do not BUY this plan if you are Owing Airtel (Borrowed Card or Data). Please buy another *AIRTEL PLAN* (Corporate Gifting).`} /> 
-        : formData.serviceType === 'airtel' ? '' :  '' //<OutstandingDebtNotice message=""/>
+        formData.serviceType === 'airtel_sme' && <OutstandingDebtNotice message={`If your SIM has any Outstanding Balance or Debt with Airtel. \n Do not BUY this plan if you are Owing Airtel (Borrowed Card or Data). Please buy another *AIRTEL PLAN* (Corporate Gifting).`} />
       }
       
       <div className="relative max-w-md sm:mx-auto mb-20 mt-5 border mx-2 p-6 bg-white shadow-lg rounded-lg">
