@@ -1,10 +1,18 @@
-import { useState, useEffect } from 'react'; 
-import { useLocation, useParams, useNavigate, Link } from 'react-router-dom';
+import { useState } from 'react'; 
+import { useLocation, useParams, useNavigate } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import axios from 'axios';
 import { motion, AnimatePresence } from "framer-motion";
 
 const API_BASE_URL = import.meta.env.API_BASE_URL || 'https://vtu-xpwk.onrender.com';
+
+// ✅ Service type options per network
+const serviceTypesMap = {
+  MTN: ["mtn_sme", "mtn_gifting", "mtn_datashare"],
+  GLO: ["glo_data", "glo_sme"],
+  AIRTEL: ["airtel_sme"],
+  "9MOBILE": ["etisalat_data"],
+};
 
 const UpdateData = () => {
   const { networkProvider } = useParams();
@@ -12,32 +20,22 @@ const UpdateData = () => {
   const location = useLocation();
   const navigate = useNavigate();
 
-  const { size } = location.state || {};
+  // ✅ Correctly destructure `plan`
+  const { plan } = location.state || {};
+
   const [showModal, setShowModal] = useState(false);
   const [alertType, setAlertType] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
 
+  // ✅ Initialize formData
   const [formData, setFormData] = useState({
-    networkProvider: size?.networkProvider || '',
-    size: size?.size || '',
-    duration: size?.duration || '',
-    amount: size?.price || '',
+    networkProvider: plan?.networkProvider || '',
+    serviceType: plan?.serviceType || '',
+    size: plan?.size || '',
+    duration: plan?.duration || '',
+    amount: plan?.price || '',
   });
-
-  useEffect(() => {
-    if (!size) {
-      setShowModal(true);
-  
-      // Redirect after 3 seconds
-      const timer = setTimeout(() => {
-        navigate('/profile/pricing');
-      }, 3000);
-  
-      return () => clearTimeout(timer);
-    }
-  }, [size, navigate]);
-  
 
   const handleChange = (e) => {
     setFormData((prev) => ({
@@ -53,6 +51,7 @@ const UpdateData = () => {
         `${API_BASE_URL}/api/v1/admin/update-data`,
         {
           networkProvider: formData.networkProvider,
+          serviceType: formData.serviceType,
           size: formData.size,
           duration: formData.duration,
           price: formData.amount,
@@ -66,10 +65,10 @@ const UpdateData = () => {
       );
     
       if (data.error) {
-        setError(data.error || 'Failed to update data size');
+        setError(data.error || 'Failed to update data plan');
         setAlertType("error");
       } else {
-        setError(data.message || 'Data size updated successfully!');
+        setError(data.message || 'Data plan updated successfully!');
         setAlertType("success");
       }
 
@@ -78,7 +77,7 @@ const UpdateData = () => {
       }, 3000);
       
     } catch (err) {
-      setError(err.response?.data?.error || err.message || 'Failed to update data size');
+      setError(err.response?.data?.error || err.message || 'Failed to update data plan');
       setAlertType("error");
 
       setTimeout(() => {
@@ -93,45 +92,98 @@ const UpdateData = () => {
     navigate(-1);
   };
 
+  // ✅ Service types for the selected network
+  const availableServiceTypes = serviceTypesMap[formData.networkProvider] || [];
+
   return (
     <div className=" md:py-20 py-10 px-3 rounded-lg">
       <div className="max-w-md mx-auto border border-gray-200 bg-white p-3 rounded-lg shadow-md relative">
         <div className="absolute top-2 left-2">
           <button className="bg-blue-500 py-2 px-4 rounded-lg font-semibold text-white" onClick={handleBack}>Back</button>
         </div>
-        <h2 className="text-2xl font-semibold text-center">Update Data size</h2>
+        <h2 className="text-2xl font-semibold text-center">Update Data Plan</h2>
         <div className="md:p-4 bg-white rounded-lg mt-6">
-          <div className="grid md:grid-cols-2 grid-cols-1 gap-3">
+          <div className="grid grid-cols-2 gap-2">
+            {/* Network Provider */}
             <label className="block my-2">
               <span className="text-gray-700">Network Provider</span>
-              <select name="networkProvider" value={formData.networkProvider} onChange={handleChange} className="mt-1 block w-full p-3 border rounded">
+              <select 
+                name="networkProvider" 
+                value={formData.networkProvider} 
+                onChange={handleChange} 
+                className="mt-1 block w-full p-3 border rounded"
+              >
                 {['MTN', 'AIRTEL', 'GLO', '9MOBILE'].map((network, index) => (
                   <option key={index} value={network}>{network}</option>
                 ))}
               </select>
             </label>
 
+            {/* Service Type (Dynamic by Network) */}
             <label className="block my-2">
-              <span className="text-gray-700">size</span>
-              <input type="text" name="size" value={formData.size} onChange={handleChange} className="mt-1 block w-full p-3 border rounded" />
+              <span className="text-gray-700">Service Type</span>
+              <select
+                name="serviceType"
+                value={formData.serviceType}
+                onChange={handleChange}
+                className="mt-1 block w-full p-3 border rounded"
+              >
+                <option value="">Select service type</option>
+                {availableServiceTypes.map((stype, index) => (
+                  <option key={index} value={stype}>
+                    {stype.replace(/_/g, " ").toUpperCase()}
+                  </option>
+                ))}
+              </select>
             </label>
           </div>
 
+          {/* Size */}
+          <label className="block my-2">
+            <span className="text-gray-700">Size</span>
+            <input 
+              type="text" 
+              name="size" 
+              value={formData.size} 
+              onChange={handleChange} 
+              className="mt-1 block w-full p-3 border rounded" 
+            />
+          </label>
+
+          {/* Duration */}
           <label className="block my-2">
             <span className="text-gray-700">Duration</span>
-            <input type="text" name="duration" value={formData.duration} onChange={handleChange} className="mt-1 block w-full p-3 border rounded" />
+            <input 
+              type="text" 
+              name="duration" 
+              value={formData.duration} 
+              onChange={handleChange} 
+              className="mt-1 block w-full p-3 border rounded" 
+            />
           </label>
 
+          {/* Amount */}
           <label className="block my-2">
             <span className="text-gray-700">Amount</span>
-            <input type="text" name="amount" value={formData.amount} onChange={handleChange} className="mt-1 block w-full p-3 border rounded" />
+            <input 
+              type="text" 
+              name="amount" 
+              value={formData.amount} 
+              onChange={handleChange} 
+              className="mt-1 block w-full p-3 border rounded" 
+            />
           </label>
 
-          <button onClick={handleUpdate} className='mt-4 bg-green-500 w-full font-semibold p-3 text-white rounded-md'>
+          {/* Update Button */}
+          <button 
+            onClick={handleUpdate} 
+            className='mt-4 bg-green-500 w-full font-semibold p-3 text-white rounded-md'
+          >
             {loading ? 'Updating...' : 'Update Data'}
           </button>
         </div>
 
+        {/* Alert */}
         <AnimatePresence>
           {error && (
             <motion.div
@@ -146,25 +198,14 @@ const UpdateData = () => {
         </AnimatePresence>
       </div>
 
-      {/* Modal for missing size */}
+      {/* Modal for missing plan */}
       {showModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
           <div className="bg-white p-6 rounded-lg shadow-lg max-w-sm w-full">
-            <h2 className="text-xl font-semibold mb-4 text-red-600">size Not Found</h2>
+            <h2 className="text-xl font-semibold mb-4 text-red-600">Plan Not Found</h2>
             <p className="mb-6 text-gray-700">
-              The data size you're trying to update wasn't found. Please go to the pricing page to select a valid size.
+              The data plan you're trying to update wasn't found. Please go to the pricing page to select a valid plan.
             </p>
-            <div className="flex justify-end space-x-3">
-              {/* <button
-                onClick={() => setShowModal(false)}
-                className="px-4 py-2 bg-gray-200 rounded hover:bg-gray-300"
-              >
-                Cancel
-              </button> */}
-              {/* <button className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600">
-                <Link to={'/profile/pricing'}>Go to Pricing</Link>
-              </button> */}
-            </div>
           </div>
         </div>
       )}

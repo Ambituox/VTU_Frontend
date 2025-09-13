@@ -1,11 +1,11 @@
 import { jwtDecode } from "jwt-decode";
 import React, { useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import { signOutUserSuccess } from "../../store/userReducers";
 import { FiRefreshCw } from "react-icons/fi";
-import { useServiceType } from "../../components/SwitchServiceType/ServiceTypeContext";
+import { signOutUserSuccess } from "../../store/userReducers";
 
-const API_BASE_URL = import.meta.env.API_BASE_URL || "https://vtu-xpwk.onrender.com";
+const API_BASE_URL =
+  import.meta.env.API_BASE_URL || "https://vtu-xpwk.onrender.com";
 
 // Skeleton loading row
 const SkeletonRow = () => (
@@ -18,12 +18,10 @@ const SkeletonRow = () => (
   </tr>
 );
 
-function TransactionsHistory() {
+function TransactionHistory() {
   const { existingUser } = useSelector((state) => state.user);
   const dispatch = useDispatch();
 
-  const { serviceType } = useServiceType();
-    
   const [transactions, setTransactions] = useState([]);
   const [filteredTransactions, setFilteredTransactions] = useState([]);
   const [filter, setFilter] = useState("all");
@@ -32,28 +30,30 @@ function TransactionsHistory() {
   const transactionsPerPage = 7;
   const [loading, setLoading] = useState(false);
 
-  // Fetch profile and extract transactions
+  // Fetch ALL transactions from admin endpoint
   const fetchTransactions = async () => {
     try {
       setLoading(true);
-      const response = await fetch(`${API_BASE_URL}/api/v1/get-profile`, {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-          "Authorization": `Bearer ${existingUser?.token}`,
-          'X-Service-Type' : serviceType
-        },
-      });
+      const response = await fetch(
+        `${API_BASE_URL}/api/v1/user-transactions`,
+        {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${existingUser?.token}`,
+          },
+        }
+      );
 
       const result = await response.json();
 
-      if (result?.data?.transactions) {
-        setTransactions(result.data.transactions);
-        setFilteredTransactions(result.data.transactions);
-        setLoading(false);
+      if (result?.data) {
+        setTransactions(result.data);
+        setFilteredTransactions(result.data);
       }
     } catch (error) {
-      console.error("Failed to fetch transactions:", error);
+      console.error("Failed to fetch all transactions:", error);
+    } finally {
       setLoading(false);
     }
   };
@@ -86,29 +86,40 @@ function TransactionsHistory() {
   const applyFilters = (type, query) => {
     let filtered = [...transactions];
 
+    // Filter by transaction type
     if (type !== "all") {
       filtered = filtered.filter((tx) => {
         const normalizedType = (tx.type || "").toLowerCase();
-
         if (type === "fund_wallet") {
-          return normalizedType === "fund_wallet" || normalizedType === "fund wallet";
+          return (
+            normalizedType === "fund_wallet" || normalizedType === "fund wallet"
+          );
         }
         if (type === "data") {
-          // Matches "data", "data_purchase", "buy_data" etc.
           return normalizedType.includes("data");
         }
         if (type === "airtime") {
-          // Matches "airtime", "airtime_purchase", "buy_airtime" etc.
           return normalizedType.includes("airtime");
         }
         return normalizedType === type;
       });
     }
 
+    // Filter by type via search
     if (query.trim() !== "") {
-      filtered = filtered.filter((tx) =>
-        tx.metadata?.paymentDescription?.toLowerCase().includes(query.toLowerCase())
-      );
+      const lower = query.toLowerCase();
+      filtered = filtered.filter((tx) => {
+        const normalizedType = (tx.type || "").toLowerCase();
+        const description =
+          tx.description ||
+          tx.metadata?.paymentDescription ||
+          "";
+
+        return (
+          normalizedType.includes(lower) ||
+          description.toLowerCase().includes(lower)
+        );
+      });
     }
 
     setFilteredTransactions(filtered);
@@ -128,43 +139,46 @@ function TransactionsHistory() {
     indexOfFirstTx,
     indexOfLastTx
   );
-  const totalPages = Math.ceil(filteredTransactions.length / transactionsPerPage);
-
-  const paginate = (pageNumber) => setCurrentPage(pageNumber);
+  const totalPages = Math.ceil(
+    filteredTransactions.length / transactionsPerPage
+  );
 
   return (
-    <div className="py-8 md:px-4 px-2 max-w-6xl mx-auto">
+    <div className="py-8 md:px-4 px-2 max-w-7xl mx-auto">
+      {/* Filters & Refresh */}
       <div className="flex justify-between items-center">
         <div className="mb-4 flex gap-2 items-center lg:flex-nowrap flex-1 min-w-0 flex-wrap">
-          <button
-            onClick={() => handleFilterChange("all")}
-            className="px-4 py-2 bg-blue-500 text-gray-50 rounded"
-          >
-            All
-          </button>
-          <button
-            onClick={() => handleFilterChange("fund_wallet")}
-            className="px-4 py-2 bg-green-200 rounded"
-          >
-            Fund Wallet
-          </button>
-          <button
-            onClick={() => handleFilterChange("data")}
-            className="px-4 py-2 bg-blue-200 rounded"
-          >
-            Data Plan
-          </button>
-          <button
-            onClick={() => handleFilterChange("airtime")}
-            className="px-4 py-2 bg-yellow-200 rounded"
-          >
-            Airtime
-          </button>
+          {["all", "fund_wallet", "data", "airtime"].map((type) => (
+            <button
+              key={type}
+              onClick={() => handleFilterChange(type)}
+              className={`px-4 py-2 rounded transition ${
+                filter === type
+                  ? "bg-blue-900 text-white"
+                  : type === "fund_wallet"
+                  ? "bg-green-200"
+                  : type === "data"
+                  ? "bg-blue-200"
+                  : type === "airtime"
+                  ? "bg-yellow-200"
+                  : "bg-blue-500 text-white"
+              }`}
+            >
+              {type === "all"
+                ? "All"
+                : type === "fund_wallet"
+                ? "Fund Wallet"
+                : type === "data"
+                ? "Data Plan"
+                : "Airtime"}
+            </button>
+          ))}
+
           <input
             type="text"
             value={searchQuery}
             onChange={handleSearchChange}
-            placeholder="Search description..."
+            placeholder="Search by type or description..."
             className="border px-4 py-2 rounded w-full max-w-xs focus:outline-blue-400"
           />
         </div>
@@ -177,6 +191,7 @@ function TransactionsHistory() {
         </button>
       </div>
 
+      {/* Transactions Table */}
       <div className="overflow-x-auto bg-white shadow-md rounded-lg px-2 py-5">
         <table className="min-w-full table-auto">
           <thead className="bg-gray-100">
@@ -206,33 +221,60 @@ function TransactionsHistory() {
           </thead>
           <tbody>
             {loading ? (
-              Array.from({ length: 10 }).map((_, i) => <SkeletonRow key={i} />)
+              Array.from({ length: 7 }).map((_, i) => <SkeletonRow key={i} />)
             ) : currentTransactions.length > 0 ? (
               currentTransactions.map((tx, index) => {
-                const date = new Date(tx.createdAt).toLocaleDateString("en-US", {
-                  year: "numeric",
-                  month: "short",
-                  day: "numeric",
-                });
+                const date = tx.createdAt
+                  ? new Date(tx.createdAt).toLocaleDateString("en-US", {
+                      year: "numeric",
+                      month: "short",
+                      day: "numeric",
+                    })
+                  : "N/A";
 
-                const time = new Date(tx.createdAt).toLocaleTimeString("en-US", {
-                  hour: "2-digit",
-                  minute: "2-digit",
-                });
+                const time = tx.createdAt
+                  ? new Date(tx.createdAt).toLocaleTimeString("en-US", {
+                      hour: "2-digit",
+                      minute: "2-digit",
+                    })
+                  : "N/A";
 
                 const normalizedType = (tx.type || "").toLowerCase();
-                let displayType =
-                  normalizedType === "fund_wallet" || normalizedType === "fund wallet"
-                    ? "Fund Wallet"
-                    : tx.type;
+                let displayType = "Other";
+
+                if (
+                  normalizedType === "fund_wallet" ||
+                  normalizedType === "fund wallet"
+                ) {
+                  displayType = "Fund Wallet";
+                } else if (normalizedType.includes("airtime")) {
+                  displayType = "Airtime";
+                } else if (normalizedType.includes("data")) {
+                  displayType = "Data";
+                }
+
+                const description =
+                  tx.description ||
+                  tx.metadata?.paymentDescription ||
+                  "No Description";
 
                 return (
                   <tr key={index} className="text-start text-sm text-gray-500">
-                    <td className="border px-4 py-2">{indexOfFirstTx + index + 1}</td>
-                    <td className="border px-4 py-2 truncate">{tx.metadata?.paymentDescription}</td>
-                    <td className="border px-4 py-2">₦{tx.amount.toLocaleString()}</td>
-                    <td className="border px-4 py-2 capitalize">{displayType}</td>
-                    <td className="border px-4 py-2 capitalize">{tx.status}</td>
+                    <td className="border px-4 py-2">
+                      {indexOfFirstTx + index + 1}
+                    </td>
+                    <td className="border px-4 py-2 truncate">{description}</td>
+                    <td className="border px-4 py-2">
+                      {typeof tx.amount === "number"
+                        ? `₦${tx.amount.toLocaleString()}`
+                        : "₦0"}
+                    </td>
+                    <td className="border px-4 py-2 capitalize">
+                      {displayType}
+                    </td>
+                    <td className="border px-4 py-2 capitalize">
+                      {tx.status || "N/A"}
+                    </td>
                     <td className="border px-4 py-2">{date}</td>
                     <td className="border px-4 py-2">{time}</td>
                   </tr>
@@ -255,25 +297,32 @@ function TransactionsHistory() {
         </table>
       </div>
 
+      {/* Pagination */}
       {totalPages > 1 && (
-        <div className="flex justify-center mt-4 space-x-2">
-          {Array.from({ length: totalPages }, (_, i) => (
-            <button
-              key={i}
-              onClick={() => paginate(i + 1)}
-              className={`px-3 py-1 rounded border ${
-                currentPage === i + 1
-                  ? "bg-blue-500 text-white"
-                  : "bg-white text-black"
-              }`}
-            >
-              {i + 1}
-            </button>
-          ))}
+        <div className="flex justify-center items-center mt-4 space-x-4">
+          <button
+            onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
+            disabled={currentPage === 1}
+            className="px-4 py-2 border rounded bg-gray-200 disabled:opacity-50"
+          >
+            Prev
+          </button>
+          <span>
+            Page {currentPage} of {totalPages}
+          </span>
+          <button
+            onClick={() =>
+              setCurrentPage((prev) => Math.min(prev + 1, totalPages))
+            }
+            disabled={currentPage === totalPages}
+            className="px-4 py-2 border rounded bg-gray-200 disabled:opacity-50"
+          >
+            Next
+          </button>
         </div>
       )}
     </div>
   );
 }
 
-export default TransactionsHistory;
+export default TransactionHistory;

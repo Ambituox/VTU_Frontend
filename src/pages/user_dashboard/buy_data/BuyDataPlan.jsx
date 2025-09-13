@@ -38,21 +38,17 @@ export default function BuyDataPlan() {
         return response.json();
       })
       .then((data) => {
-        // Group by networkProvider -> serviceType
         const groupedData = {};
-
         data.forEach((plan) => {
           const net = plan.networkProvider?.toUpperCase();
           const type = plan.serviceType?.toUpperCase();
-
           if (!groupedData[net]) groupedData[net] = {};
           if (!groupedData[net][type]) groupedData[net][type] = [];
           groupedData[net][type].push(plan);
         });
-
         setDataPlans(groupedData);
 
-        // Reset pagination
+        // reset pagination
         const initialPage = {};
         Object.keys(groupedData).forEach((net) => {
           Object.keys(groupedData[net]).forEach((stype) => {
@@ -73,6 +69,7 @@ export default function BuyDataPlan() {
     fetchData();
   }, []);
 
+  // ✅ background colors
   const getBgColor = (network) => {
     switch (network) {
       case "MTN":
@@ -91,7 +88,7 @@ export default function BuyDataPlan() {
   const getTextColor = (network) => {
     switch (network) {
       case "MTN":
-        return "text-gray-800";
+        return "text-gray-900";
       default:
         return "text-white";
     }
@@ -101,13 +98,11 @@ export default function BuyDataPlan() {
     setCurrentPage((prev) => ({ ...prev, [key]: newPage }));
   };
 
-  // Utility to format serviceType nicely
   const formatServiceType = (type) => {
     if (!type) return "";
     return type.replace(/_/g, " ").toUpperCase();
   };
 
-  // Choose a network to render (default to MTN if available)
   const selectedNetwork = Object.keys(dataPlans)[selectedIndex] || null;
   const serviceTypes = selectedNetwork ? Object.keys(dataPlans[selectedNetwork]) : [];
 
@@ -125,22 +120,31 @@ export default function BuyDataPlan() {
           </button>
         </div>
 
-        {/* Top-level network tabs */}
         <Tab.Group selectedIndex={selectedIndex} onChange={setSelectedIndex}>
+          {/* Top-level networks */}
           <Tab.List className="relative flex space-x-3 rounded-xl bg-slate-800 p-3 overflow-x-auto whitespace-nowrap">
             {Object.keys(dataPlans).map((network) => (
               <Tab
                 key={network}
                 className={({ selected }) =>
                   classNames(
-                    "min-w-[100px] rounded-lg py-3.5 text-sm font-medium leading-5",
+                    "min-w-[100px] rounded-lg py-2 text-sm font-medium leading-5",
                     selected
                       ? "bg-white text-blue-700 shadow"
                       : "text-blue-100 bg-blue-400 hover:bg-blue-400 hover:text-white"
                   )
                 }
               >
-                {network}
+                <div className="flex items-center gap-2 justify-center">
+                  <div
+                    className={`w-6 h-6 flex items-center justify-center rounded-full text-xs font-bold ${getBgColor(
+                      network
+                    )} ${getTextColor(network)}`}
+                  >
+                    {network.charAt(0)}
+                  </div>
+                  {network}
+                </div>
               </Tab>
             ))}
           </Tab.List>
@@ -149,13 +153,13 @@ export default function BuyDataPlan() {
           <div className="mt-3">
             {serviceTypes.length > 0 ? (
               <Tab.Group>
-                <Tab.List className="tab-list-container flex space-x-3 overflow-x-auto whitespace-nowrap bg-gray-200 p-2 rounded-lg">
+                <Tab.List className="flex space-x-3 overflow-x-auto whitespace-nowrap bg-gray-200 p-2 rounded-lg">
                   {serviceTypes.map((stype) => (
                     <Tab
                       key={stype}
                       className={({ selected }) =>
                         classNames(
-                          " min-w-[120px] px-4 py-2 rounded-lg text-sm font-medium",
+                          "min-w-[120px] px-4 py-2 rounded-lg text-sm font-medium",
                           selected
                             ? "bg-blue-600 text-white"
                             : "bg-gray-300 text-gray-700 hover:bg-gray-400"
@@ -187,13 +191,8 @@ export default function BuyDataPlan() {
                           [...Array(4)].map((_, i) => (
                             <div
                               key={i}
-                              className="bg-gray-200 animate-pulse h-40 rounded-lg flex flex-col justify-center items-center p-4"
-                            >
-                              <div className="w-16 h-4 bg-gray-300 rounded mb-2"></div>
-                              <div className="w-12 h-4 bg-gray-300 rounded mb-2"></div>
-                              <div className="w-20 h-4 bg-gray-300 rounded"></div>
-                              <div className="px-10 py-4 bg-gray-300 rounded mt-2"></div>
-                            </div>
+                              className="bg-gray-200 animate-pulse h-40 rounded-lg"
+                            ></div>
                           ))
                         ) : currentPlans.length > 0 ? (
                           <>
@@ -204,25 +203,22 @@ export default function BuyDataPlan() {
                                   selectedNetwork
                                 )} ${getTextColor(
                                   selectedNetwork
-                                )} relative flex justify-center items-center flex-col p-4 border rounded-lg`}
+                                )} flex flex-col justify-center items-center p-4 rounded-lg`}
                               >
-                                <p className="mt-2 text-sm text-center">
-                                  {plan.size} Plan Size
+                                <p className="mt-2 text-sm text-center font-semibold">
+                                  {plan.size}
                                 </p>
-                                <p className="mt-2 flex items-center font-semibold text-lg">
-                                  <TbCurrencyNaira />
-                                  {plan.price}
+                                <p className="mt-2 flex items-center font-bold text-lg">
+                                  <TbCurrencyNaira /> {plan.price}
                                 </p>
-                                <p className="mt-2 text-sm ">
-                                  {plan.duration}
-                                </p>
+                                <p className="mt-2 text-sm">{plan.duration}</p>
                                 <button
                                   onClick={() =>
                                     navigate("/profile/data-top-up/buy-now", {
-                                      state: size,
+                                      state: plan,
                                     })
                                   }
-                                  className="mt-3 bg-white border-none text-black font-semibold px-3 py-2 rounded hover:bg-gray-800 hover:text-white text-sm transition"
+                                  className="mt-3 bg-white text-black font-semibold px-3 py-2 rounded hover:bg-gray-800 hover:text-white text-sm transition"
                                 >
                                   Buy Now
                                 </button>
@@ -237,7 +233,7 @@ export default function BuyDataPlan() {
                                     handlePageChange(key, currentPage[key] - 1)
                                   }
                                   disabled={currentPage[key] === 1}
-                                  className="px-3 py-1 rounded bg-gray-300 hover:bg-gray-400 disabled:opacity-50 disabled:cursor-not-allowed"
+                                  className="px-3 py-1 rounded bg-gray-300 hover:bg-gray-400 disabled:opacity-50"
                                 >
                                   Prev
                                 </button>
@@ -262,7 +258,7 @@ export default function BuyDataPlan() {
                                     handlePageChange(key, currentPage[key] + 1)
                                   }
                                   disabled={currentPage[key] === totalPages}
-                                  className="px-3 py-1 rounded bg-gray-300 hover:bg-gray-400 disabled:opacity-50 disabled:cursor-not-allowed"
+                                  className="px-3 py-1 rounded bg-gray-300 hover:bg-gray-400 disabled:opacity-50"
                                 >
                                   Next
                                 </button>
@@ -319,7 +315,7 @@ export default function BuyDataPlan() {
                 <div className="mt-4">
                   <button
                     type="button"
-                    className="inline-flex justify-center px-4 py-2 text-sm font-medium text-white bg-red-600 border border-transparent rounded-md hover:bg-red-700 focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-red-500"
+                    className="px-4 py-2 text-sm font-medium text-white bg-red-600 rounded hover:bg-red-700"
                     onClick={() => setIsErrorOpen(false)}
                   >
                     Close
