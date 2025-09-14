@@ -264,7 +264,7 @@ export default function Layout() {
           </div>
 
           {/* Floating WhatsApp Icon */}
-          <Link to={'https://wa.me/09134841368'}>
+          <Link to={'https://wa.me/07062194220'}>
             <div className="text-white flex justify-center items-center fixed bottom-8 right-5 h-[40px] w-[40px] bg-green-500 animate-bounce rounded-full">
               <FaWhatsapp />
             </div>

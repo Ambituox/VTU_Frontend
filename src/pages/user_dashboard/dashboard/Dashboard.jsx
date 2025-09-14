@@ -35,14 +35,14 @@ const DashboardHeader = () => {
 
 const Services = () => {
   const services = [
-    { logo: "/buyData.jpg", title: "Bulk Reseller Data", link: "/bulk-reseller-data" },
-    { logo: "/airtime.svg", title: "VTU Airtime Top-up", link: "/vtu-airtime" },
-    { logo: "/tvSub.jpg", title: "Cable Subscription", link: "/cable-subscription" },
-    { logo: "/epins.jpg", title: "Exam Scratch Card", link: "/exam-scratch-card" },
-    { logo: "/pin-coupon.png", title: "Bulk Data", link: "/bulk-data" },
-    { logo: "/electric.png", title: "Electricity Bills Payment", link: "/electricity-bills" },
-    { logo: "/payment-gateway.jpg", title: "Automatic Payment Gateway", link: "/payment-gateway" },
-    { logo: "/referral.png", title: "My Referrals", link: "/referrals" },
+    // { logo: "/buyData.jpg", title: "Bulk Reseller Data", link: "data-top-up" },
+    { logo: "/airtime.svg", title: "VTU Airtime Top-up", link: "airtime-recharge-card" },
+    { logo: "/tvSub.jpg", title: "Cable Subscription", link: "cable-providers" },
+    // { logo: "/epins.jpg", title: "Exam Scratch Card", link: "/exam-scratch-card" },
+    { logo: "/pin-coupon.png", title: "Bulk Data", link: "data-top-up" },
+    { logo: "/electric.png", title: "Electricity Bills Payment", link: "electricity-bills" },
+    // { logo: "/payment-gateway.jpg", title: "Automatic Payment Gateway", link: "/payment-gateway" },
+    // { logo: "/referral.png", title: "My Referrals", link: "/referrals" },
   ];
 
   return (

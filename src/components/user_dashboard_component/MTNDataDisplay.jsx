@@ -26,7 +26,11 @@ export default function MTNDataDisplay() {
       const res = await fetch(`${API_BASE_URL}/api/v1/admin/get-all-data`, {
         headers: { Authorization: `Bearer ${existingUser?.token || token}` },
       });
-      if (!res.ok) throw new Error(`Error fetching plans: ${res.statusText}`);
+      if (!res.ok){
+        console.log(`Error fetching plans: ${res.statusText}`);
+        // throw new Error(``);
+      }
+
       const data = await res.json();
       setPlans(data);
     } catch (error) {
@@ -96,12 +100,10 @@ export default function MTNDataDisplay() {
       <div className="max-w-6xl mx-auto md:p-6 md:bg-white mt-10 rounded-lg">
         <div className="flex justify-between items-center mb-6">
           <h1 className="md:text-3xl text-xl font-bold text-gray-800">Our Best Plan</h1>
-          <button
-            onClick={fetchPlans}
-            className="flex items-center gap-2 bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 transition"
-            disabled={loading}
-          >
-            <span className={`bg-white p-1 rounded-full text-white`}>
+          <button onClick={fetchPlans}
+            className="flex items-center gap-2 text-white px-4 py-2 rounded bg-blue-600 hover:bg-blue-600 transition"
+            disabled={loading}>
+            <span className={`bg-white p-1 rounded-full text-blue-500`}>
                 <FiRefreshCw className={loading ? "animate-spin" : ""} />
             </span>
             {loading ? "Refreshing..." : "Refresh"}

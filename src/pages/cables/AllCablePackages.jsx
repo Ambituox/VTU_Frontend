@@ -1,6 +1,5 @@
-// CablePackages.jsx
 import React, { useEffect, useState } from "react";
-import { FiRefreshCw } from "react-icons/fi";
+import { FiRefreshCw, FiEdit } from "react-icons/fi";
 import { useSelector } from "react-redux";
 import { useLocation, useNavigate } from "react-router-dom";
 
@@ -42,7 +41,16 @@ export default function AllCablePackages() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [showErrorModal, setShowErrorModal] = useState(false);
+  const [isAdmin, setIsAdmin] = useState(false);
+
   const { existingUser } = useSelector((state) => state.user);
+
+  // Check if user is admin
+  useEffect(() => {
+    if (existingUser?.data?.role === "admin" || existingUser?.role === "admin") {
+      setIsAdmin(true);
+    }
+  }, [existingUser]);
 
   // Pagination states
   const [currentPage, setCurrentPage] = useState(1);
@@ -63,6 +71,7 @@ export default function AllCablePackages() {
       });
 
       const data = await res.json();
+
       if (!res.ok) throw new Error(data.error || "Failed to fetch packages");
 
       const key = `${provider}_Packages`;
@@ -81,7 +90,11 @@ export default function AllCablePackages() {
   }, [provider]);
 
   const handleSelectPackage = (pkg) => {
-    navigate("/cable-subscribe", { state: { provider, selectedPackage: pkg } });
+    navigate("/profile/cable-packages/cable-providers/cable-subscribe", { state: { pkg } });
+  };
+
+  const handleEditPackage = (pkg) => {
+    navigate("/profile/cable-packages/update-cable", { state: { pkg } });
   };
 
   if (!provider) {
@@ -150,10 +163,7 @@ export default function AllCablePackages() {
         {loading && (
           <div className="grid grid-cols-2 md:grid-cols-3 gap-4 animate-pulse">
             {Array.from({ length: 6 }).map((_, i) => (
-              <div
-                key={i}
-                className="h-28 bg-gray-200 rounded-xl shadow-sm"
-              ></div>
+              <div key={i} className="h-28 bg-gray-200 rounded-xl shadow-sm"></div>
             ))}
           </div>
         )}
@@ -164,27 +174,34 @@ export default function AllCablePackages() {
             <div className="grid grid-cols-2 md:grid-cols-3 gap-6">
               {currentPackages.map((pkg) => (
                 <div
-                  key={pkg.value}
-                  className={`cursor-pointer ${colors.lightBg} border-blue-200 rounded-xl p-4 shadow-sm hover:shadow-lg transition ${colors.hover}`}
+                  key={pkg.title}
+                  className={`relative cursor-pointer ${colors.lightBg} border-blue-200 rounded-xl p-4 shadow-sm hover:shadow-lg transition ${colors.hover}`}
                 >
-                  <h3 className="text-lg font-semibold text-gray-900 text-center">
-                    {pkg.display_name}
+                  <h3 className="text-lg uppercase font-semibold text-gray-900 text-center">
+                    {pkg.serviceType}
                   </h3>
-                  <p className="text-gray-500 text-sm mt-1 text-center">
-                    {pkg.value.replace(/-/g, " ").toUpperCase()}
+                  <p className="text-gray-500 text-sm mt-3 text-center">
+                    {pkg.title.replace(/-/g, " ").toUpperCase()}
                   </p>
-                  <p
-                    className={`text-xl text-center font-bold mt-4 ${colors.text}`}
-                  >
-                    ₦{pkg.price}
+                  <p className={`text-xl text-center font-bold mt-4 ${colors.text}`}>
+                    ₦{pkg.price.toLocaleString()}
                   </p>
                   <div
                     className={`flex justify-center my-3 ${colors.bg} py-2 rounded-md text-white`}
                   >
-                    <button onClick={() => handleSelectPackage(pkg)}>
-                      Subscribe Now
-                    </button>
+                    <button onClick={() => handleSelectPackage(pkg)}>Subscribe Now</button>
                   </div>
+
+                  {/* Admin Edit Icon */}
+                  {isAdmin && (
+                    <button
+                      onClick={() => handleEditPackage(pkg)}
+                      className="absolute bottom-3 right-3 text-gray-700 hover:text-gray-900 p-2 rounded-full bg-white shadow-md transition"
+                      title="Edit Package"
+                    >
+                      <FiEdit size={18} />
+                    </button>
+                  )}
                 </div>
               ))}
             </div>
@@ -193,9 +210,7 @@ export default function AllCablePackages() {
             {totalPages > 1 && (
               <div className="flex justify-center items-center mt-8 gap-2">
                 <button
-                  onClick={() =>
-                    setCurrentPage((prev) => Math.max(prev - 1, 1))
-                  }
+                  onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
                   disabled={currentPage === 1}
                   className="px-3 py-1 rounded bg-gray-200 hover:bg-gray-300 disabled:opacity-50"
                 >
@@ -215,11 +230,7 @@ export default function AllCablePackages() {
                   </button>
                 ))}
                 <button
-                  onClick={() =>
-                    setCurrentPage((prev) =>
-                      Math.min(prev + 1, totalPages)
-                    )
-                  }
+                  onClick={() => setCurrentPage((prev) => Math.min(prev + 1, totalPages))}
                   disabled={currentPage === totalPages}
                   className="px-3 py-1 rounded bg-gray-200 hover:bg-gray-300 disabled:opacity-50"
                 >

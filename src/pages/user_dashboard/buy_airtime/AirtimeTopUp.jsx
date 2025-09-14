@@ -138,8 +138,8 @@ const AirtimeTopUpForm = () => {
   };
 
   return (
-    <div className="pb-10">
-      <OutstandingDebtNotice />
+    <div className="py-10">
+      {/* <OutstandingDebtNotice /> */}
       <div className=" flex items-center justify-center p-3">
         <div className="bg-white md:p-6 p-3 rounded-lg shadow-md w-full max-w-md">
           <h2 className="text-2xl font-bold mb-4 text-center">Airtime TopUp</h2>

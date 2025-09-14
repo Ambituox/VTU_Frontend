@@ -38,8 +38,12 @@ const UserProfile = () => {
         // console.log(data);
   
         if (!res.ok) {
-          alert(data.message || "Failed to fetch profile");
-          return;
+          // If it's rate limiting, handle gracefully
+          if (res.status === 429) {
+            throw new Error("Too many requests. Please slow down and try again later.");
+          }
+          const text = await res.text();
+          throw new Error(text || "Failed to fetch transactions");
         }
   
         const { firstName, lastName, email, phone, image } = data.data;

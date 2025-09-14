@@ -60,7 +60,7 @@ const UpdateData = () => {
         body: JSON.stringify({
           networkProvider: formData.networkProvider,
           serviceType: formData.serviceType,
-          size: formData.size,
+          plan: formData.size,
           duration: formData.duration,
           price: formData.amount,
         }),

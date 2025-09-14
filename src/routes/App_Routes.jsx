@@ -39,6 +39,7 @@ import AdminServiceTypeForm from '../pages/admin/AdminServiceTypeForm';
 import AllTransactions from '../pages/AllTransactions';
 import CablesProviders from '../pages/cables/CablesProviders';
 import AllCablePackages from '../pages/cables/AllCablePackages';
+import CableSubscribeForm from '../pages/cables/CableSubscribeForm';
 
 export default function AppRoutes() {
   const { existingUser } = useSelector((state) => state.user);
@@ -74,7 +75,7 @@ export default function AppRoutes() {
             <Route path="services" element={<NetworkPlan />} />
             <Route path='data-top-up' element={<DataPlanForm/>}/>
             <Route path='airtime-recharge-card' element={<AirtimeTopUp/>}/>
-            <Route path='utility-payment' element={<ElectricityBillPayment/>}/>
+            <Route path='electricity-bills' element={<ElectricityBillPayment/>}/>
             <Route path='cable-tv-subscription' element={<CableSubscription/>}/>
             <Route path='pricing' element={<PricingComponent/>}/>
             <Route path='user-detail' element={<UserProfile/>}/>
@@ -93,6 +94,7 @@ export default function AppRoutes() {
 
             <Route path='cable-providers' element={<CablesProviders/>}/>
             <Route path='cable-packages/cable-providers' element={<AllCablePackages/>}/>
+            <Route path='cable-packages/cable-providers/cable-subscribe' element={<CableSubscribeForm/>}/>
              
             <Route path='data-top-up/buy-now/make-payment' element={<MakePayment/>}/>
             <Route path='data-top-up/buy-now/make-payment/verify-payment' element={<VerifyPayment/>}/>

@@ -53,7 +53,7 @@ export default function Services_links() {
                 <AccordionDetails>
                     <ul className="text-slate-300 flex flex-col gap-1 list-disc pl-10">
                         <li className='hover:text-blue-500 hover:translate-x-2 duration-150'>
-                            <Link to={'utility-payment'} className='hover:text-blue-500 hover:translate-x-2 duration-150'>Electricity Payment</Link>
+                            <Link to={'electricity-bills'} className='hover:text-blue-500 hover:translate-x-2 duration-150'>Electricity Payment</Link>
                         </li>
                         <li className='hover:text-blue-500 hover:translate-x-2 duration-150'>
                             <Link to={'cable-providers'} className='hover:text-blue-500 hover:translate-x-2 duration-150'>Cable Subscription</Link>
