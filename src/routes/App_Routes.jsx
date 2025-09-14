@@ -37,6 +37,8 @@ import AllUsers from '../pages/admin/all_user/AllUsers';
 import NetworkPlan from '../pages/user_dashboard/buy_data/NetworkPlan';
 import AdminServiceTypeForm from '../pages/admin/AdminServiceTypeForm';
 import AllTransactions from '../pages/AllTransactions';
+import CablesProviders from '../pages/cables/CablesProviders';
+import AllCablePackages from '../pages/cables/AllCablePackages';
 
 export default function AppRoutes() {
   const { existingUser } = useSelector((state) => state.user);
@@ -88,6 +90,9 @@ export default function AppRoutes() {
 
             <Route path='funding-transaction-history' element={<Fund_wallet/>}/>
             <Route path='transaction-history' element={<TransactionHistory/>}/>
+
+            <Route path='cable-providers' element={<CablesProviders/>}/>
+            <Route path='cable-packages/cable-providers' element={<AllCablePackages/>}/>
              
             <Route path='data-top-up/buy-now/make-payment' element={<MakePayment/>}/>
             <Route path='data-top-up/buy-now/make-payment/verify-payment' element={<VerifyPayment/>}/>

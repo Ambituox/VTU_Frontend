@@ -116,7 +116,9 @@ export default function BuyDataPlan() {
             onClick={fetchData}
             className="flex items-center gap-2 bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 transition"
           >
-            <FiRefreshCw className={`${loading ? "animate-spin" : ""}`} />
+            <span className={`bg-white p-1 rounded-full text-white`}>
+              <FiRefreshCw className={loading ? "animate-spin" : ""} />
+            </span>
             {loading ? "Refreshing..." : "Refresh"}
           </button>
         </div>

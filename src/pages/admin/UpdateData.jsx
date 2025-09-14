@@ -23,7 +23,7 @@ const UpdateData = () => {
   // ✅ Correctly destructure `plan`
   const { plan } = location.state || {};
 
-  console.log(plan)
+  // console.log(plan)
 
   const [showModal, setShowModal] = useState(false);
   const [alertType, setAlertType] = useState("");
@@ -46,44 +46,48 @@ const UpdateData = () => {
     }));
   };
 
+  console.log(formData);
+
   const handleUpdate = async () => {
     setLoading(true);
     try {
-      const { data } = await axios.put(
-        `${API_BASE_URL}/api/v1/admin/update-data`,
-        {
+      const response = await fetch(`${API_BASE_URL}/api/v1/admin/update-data`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${existingUser?.token || token}`,
+        },
+        body: JSON.stringify({
           networkProvider: formData.networkProvider,
           serviceType: formData.serviceType,
           size: formData.size,
           duration: formData.duration,
           price: formData.amount,
-        },
-        {
-          headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${existingUser.token || token}`,
-          },
-        }
-      );
-    
-      if (data.error) {
-        setError(data.error || 'Failed to update data plan');
+        }),
+      });
+
+      const data = await response.json();
+
+      console.log(data)
+
+      if (!response.ok || data.status === false) {
+        setError(data.error || "Failed to update data plan");
         setAlertType("error");
       } else {
-        setError(data.message || 'Data plan updated successfully!');
+        setError(data.message || "Data plan updated successfully!");
         setAlertType("success");
       }
 
       setTimeout(() => {
-        setError('');
+        setError("");
       }, 3000);
-      
+
     } catch (err) {
-      setError(err.response?.data?.error || err.message || 'Failed to update data plan');
+      setError(err.message || "Failed to update data plan");
       setAlertType("error");
 
       setTimeout(() => {
-        setError('');
+        setError("");
       }, 3000);
     } finally {
       setLoading(false);
