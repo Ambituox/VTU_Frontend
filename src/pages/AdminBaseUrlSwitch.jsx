@@ -23,12 +23,12 @@ export default function AdminBaseUrlSwitch() {
     <div className="max-w-lg mx-auto mt-20 p-6 bg-white rounded-2xl shadow-lg border border-gray-200">
         {/* Headline */}
         <h2 className="text-2xl font-bold text-gray-800 mb-2 text-center">
-            API Endpoint Manager
+            Server Manager
         </h2>
 
         {/* Subtitle / Description */}
         <p className="text-gray-600 text-center mb-6">
-            Easily switch between your <span className="font-semibold">Default</span> and <span className="font-semibold">Backup</span> API endpoints.  
+            Easily switch between your <span className="font-semibold">Default</span> and <span className="font-semibold">Backup</span> Server.  
             This helps ensure reliability in case one server is down.
         </p>
 
@@ -42,7 +42,7 @@ export default function AdminBaseUrlSwitch() {
                 </button>
 
                 <div className="text-sm text-gray-700 text-center">
-                    <p className="mb-3">🔗 <span className="font-semibold">Current Base URL:</span></p>
+                    <p className="mb-3">🔗 <span className="font-semibold">Current Server:</span></p>
                     <code className="bg-gray-100 px-3 py-1 rounded-md text-blue-700 text-sm">
                         {activeUrl}
                     </code>
