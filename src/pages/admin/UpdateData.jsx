@@ -3,8 +3,8 @@ import { useLocation, useParams, useNavigate } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import axios from 'axios';
 import { motion, AnimatePresence } from "framer-motion";
+import { getBaseUrl } from '../../config';
 
-const API_BASE_URL = import.meta.env.API_BASE_URL || 'https://vtu-xpwk.onrender.com';
 const token = localStorage.getItem("authToken");
 // ✅ Service type options per network
 const serviceTypesMap = {
@@ -48,10 +48,13 @@ const UpdateData = () => {
 
   console.log(formData);
 
-  const handleUpdate = async () => {
+  const handleUpdate = async (e) => {
+    e.preventDefault();
+
     setLoading(true);
+
     try {
-      const response = await fetch(`${API_BASE_URL}/api/v1/admin/update-data`, {
+      const response = await fetch(`${getBaseUrl()}/api/v1/admin/update-data`, {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
@@ -70,7 +73,7 @@ const UpdateData = () => {
 
       console.log(data)
 
-      if (!response.ok || data.status === false) {
+      if (!response.ok || data.error) {
         setError(data.error || "Failed to update data plan");
         setAlertType("error");
       } else {
@@ -108,7 +111,7 @@ const UpdateData = () => {
           <button className="bg-blue-500 py-2 px-4 rounded-lg font-semibold text-white" onClick={handleBack}>Back</button>
         </div>
         <h2 className="text-2xl font-semibold text-center">Update Data Plan</h2>
-        <div className="md:p-4 bg-white rounded-lg mt-6">
+        <form onSubmit={handleUpdate} className="md:p-4 bg-white rounded-lg mt-6">
           <div className="grid grid-cols-2 gap-2">
             {/* Network Provider */}
             <label className="block my-2">
@@ -183,13 +186,12 @@ const UpdateData = () => {
           </label>
 
           {/* Update Button */}
-          <button 
-            onClick={handleUpdate} 
+          <button type='submit'
             className='mt-4 bg-green-500 w-full font-semibold p-3 text-white rounded-md'
           >
             {loading ? 'Updating...' : 'Update Data'}
           </button>
-        </div>
+        </form>
 
         {/* Alert */}
         <AnimatePresence>

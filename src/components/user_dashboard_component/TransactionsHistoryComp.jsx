@@ -3,6 +3,7 @@ import React, { useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { signOutUserSuccess } from "../../store/userReducers";
 import { FiRefreshCw } from "react-icons/fi";
+import { getBaseUrl } from "../../config";
 
 const token = localStorage.getItem("authToken");
 
@@ -122,10 +123,9 @@ function TransactionsHistoryComp() {
   const fetchTransactions = async () => {
     try {
       setLoading(true);
-      const response = await fetch("https://vtu-xpwk.onrender.com/api/v1/user-transactions", {
+      const response = await fetch(`${getBaseUrl()}/api/v1/user-transactions`, {
         method: "GET",
         headers: {
-          "Content-Type": "application/json",
           Authorization: `Bearer ${existingUser?.token || token}`,
         },
       });
@@ -212,17 +212,20 @@ function TransactionsHistoryComp() {
       <div className="flex justify-between items-center">
         {/* Filters + Search */}
         <div className="mb-4 flex gap-2 items-center lg:flex-nowrap flex-1 min-w-0 flex-wrap">
-          <button onClick={() => handleFilterChange("all")} className="px-4 py-2 bg-blue-500 text-white rounded">
+          <button onClick={() => handleFilterChange("all")} className="md:px-4 px-3 py-2 text-sm bg-blue-500 text-white rounded">
             All
           </button>
-          <button onClick={() => handleFilterChange("fund_wallet")} className="px-4 py-2 bg-green-200 rounded">
+          <button onClick={() => handleFilterChange("fund_wallet")} className="md:px-4 px-2 py-2 text-sm bg-green-200 rounded">
             Fund Wallet
           </button>
-          <button onClick={() => handleFilterChange("data_plan")} className="px-4 py-2 bg-blue-200 rounded">
+          <button onClick={() => handleFilterChange("data")} className="md:px-4 px-2 py-2 text-sm bg-blue-200 rounded">
             Data Plan
           </button>
-          <button onClick={() => handleFilterChange("airtime")} className="px-4 py-2 bg-blue-200 rounded">
-            Airtime
+          <button onClick={() => handleFilterChange("electricity")} className="md:px-4 px-2 py-2 text-sm bg-yellow-200 rounded">
+            Electricity
+          </button>
+          <button onClick={() => handleFilterChange("tv")} className="md:px-4 px-2 py-2 text-sm bg-red-200 rounded">
+            TV Cable
           </button>
           <input
             type="text"

@@ -2,11 +2,10 @@ import { jwtDecode } from "jwt-decode";
 import React, { useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { FiRefreshCw } from "react-icons/fi";
-import { signOutUserSuccess } from "../store/userReducers";
+import { signOutUserSuccess } from "../../store/userReducers";
+import { getBaseUrl } from "../../config";
 
 const token = localStorage.getItem("authToken");
-const API_BASE_URL =
-  import.meta.env.API_BASE_URL || "https://vtu-xpwk.onrender.com";
 
 // Skeleton loading row
 const SkeletonRow = () => (
@@ -128,7 +127,7 @@ function AllTransactions() {
     try {
       setLoading(true);
       const response = await fetch(
-        `${API_BASE_URL}/api/v1/admin/all-transactions`,
+        `${getBaseUrl()}/api/v1/admin/all-transactions`,
         {
           method: "GET",
           headers: {
@@ -177,6 +176,8 @@ function AllTransactions() {
         if (type === "fund_wallet") return normalizedType === "fund_wallet" || normalizedType === "fund wallet";
         if (type === "data") return normalizedType.includes("data");
         if (type === "airtime") return normalizedType.includes("airtime");
+        if (type === "electricity") return normalizedType.includes("electricity");
+        if (type === "tv") return normalizedType.includes("tv");
         return normalizedType === type;
       });
     }
@@ -212,11 +213,11 @@ function AllTransactions() {
       {/* Filters & Refresh */}
       <div className="flex justify-between items-center">
         <div className="mb-4 flex gap-2 items-center lg:flex-nowrap flex-1 min-w-0 flex-wrap">
-          {["all", "fund_wallet", "data", "airtime"].map((type) => (
+          {["all", "fund_wallet", "data", "airtime", "electricity", "tv"].map((type) => (
             <button
               key={type}
               onClick={() => handleFilterChange(type)}
-              className={`px-4 py-2 rounded transition ${
+              className={`md:px-4 px-2 py-2 text-sm rounded transition ${
                 filter === type
                   ? "bg-blue-900 text-white"
                   : type === "fund_wallet"
@@ -225,7 +226,11 @@ function AllTransactions() {
                   ? "bg-blue-200"
                   : type === "airtime"
                   ? "bg-yellow-200"
-                  : "bg-blue-500 text-white"
+                  : type === "electricity"
+                  ? "bg-purple-200"
+                  : type === "tv"
+                  ? "bg-red-200"
+                  : "bg-blue-500 text-white px-4"
               }`}
             >
               {type === "all"
@@ -234,7 +239,13 @@ function AllTransactions() {
                 ? "Fund Wallet"
                 : type === "data"
                 ? "Data Plan"
-                : "Airtime"}
+                : type === "airtime"
+                ? "Airtime"
+                : type === "electricity"
+                ? "Electricity"
+                : type === "tv"
+                ? "TV Cable"
+                : type}
             </button>
           ))}
 

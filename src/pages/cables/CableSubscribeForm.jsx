@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 import { useLocation } from "react-router-dom";
-
-const API_BASE_URL = "https://vtu-xpwk.onrender.com/api/v1";
+import { getBaseUrl } from "../../config";
 
 const CableSubscribeForm = () => {
   const location = useLocation();
@@ -34,7 +33,7 @@ const CableSubscribeForm = () => {
     const token = localStorage.getItem("authToken");
 
     try {
-      const res = await fetch(`${API_BASE_URL}/buy-tv-subscription`, {
+      const res = await fetch(`${getBaseUrl()}/buy-tv-subscription`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

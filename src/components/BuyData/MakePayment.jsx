@@ -3,8 +3,8 @@ import { useSelector } from "react-redux";
 import { useLocation, useNavigate } from "react-router-dom";
 import { useServiceType } from "../SwitchServiceType/ServiceTypeContext";
 import OutstandingDebtNotice from "../OutstandingDebtNotice";
+import { getBaseUrl } from "../../config";
 
-const API_BASE_URL = import.meta.env.API_BASE_URL || 'https://vtu-xpwk.onrender.com';
 const token = localStorage.getItem("authToken");
 
 export default function MakePayment() {
@@ -54,7 +54,7 @@ export default function MakePayment() {
     setError("");
 
     try {
-      const response = await fetch(`${API_BASE_URL}/api/v1/buy-data`, {
+      const response = await fetch(`${getBaseUrl()}/api/v1/buy-data`, {
         method: "POST",
         headers: { 
           'Authorization': `Bearer ${token}`,

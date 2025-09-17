@@ -2,9 +2,8 @@ import React, { useEffect, useState } from "react";
 import { FiRefreshCw, FiEdit } from "react-icons/fi";
 import { useSelector } from "react-redux";
 import { useLocation, useNavigate } from "react-router-dom";
+import { getBaseUrl } from "../../config";
 
-const API_BASE_URL =
-  import.meta.env.API_BASE_URL || "https://vtu-xpwk.onrender.com";
 const token = localStorage.getItem("authToken");
 
 // Provider themes
@@ -61,7 +60,7 @@ export default function AllCablePackages() {
     setLoading(true);
     setError("");
     try {
-      const res = await fetch(`${API_BASE_URL}/api/v1/get-all-tv-packages`, {
+      const res = await fetch(`${getBaseUrl()}/api/v1/get-all-tv-packages`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

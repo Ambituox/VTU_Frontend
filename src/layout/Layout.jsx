@@ -11,6 +11,7 @@ import { GrTransaction } from 'react-icons/gr';
 import AdminNav from '../pages/admin/AdminNav';
 import UserLogoutButton from '../components/user_dashboard_component/UserLogout';
 import WalletBalance from '../components/walletBallance/WalletBallance';
+import { getBaseUrl } from '../config';
 
 const mainlinks = [
   {
@@ -34,8 +35,6 @@ const mainlinks = [
 ];
 
 export const SidebarLinkContext = createContext();
-
-const API_BASE_URL = import.meta.env.API_BASE_URL || 'https://vtu-xpwk.onrender.com';
 
 const Sidebar = ({ isOpen, toggleSidebar }) => {
   // Access the existingUser from Redux store to get the token
@@ -65,7 +64,7 @@ const Sidebar = ({ isOpen, toggleSidebar }) => {
     const fetchUserProfile = async () => {
       try {
         // Send GET request to the profile API endpoint
-        const response = await fetch(`${API_BASE_URL}/api/v1/get-profile`, {
+        const response = await fetch(`${getBaseUrl()}/api/v1/get-profile`, {
           method: "GET",
           headers: {
             // Send the token in the Authorization header

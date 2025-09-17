@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useMemo } from "react";
 import { BiEditAlt } from "react-icons/bi";
+import { getBaseUrl } from "../../../config";
 
 const ITEMS_PER_PAGE = 8;
 
@@ -17,11 +18,10 @@ export default function AllUsersTable({ isAdmin = true }) {
       try {
         const token = localStorage.getItem("authToken"); // if you still use token
         const res = await fetch(
-          "https://vtu-xpwk.onrender.com/api/v1/admin/all-users",
+          `${getBaseUrl()}/api/v1/admin/all-users`,
           {
             method: "GET",
             headers: {
-              "Content-Type": "application/json",
               Authorization: `Bearer ${token}`, // pass token
             },
             credentials: "include", // allow cookies (if backend sends them)

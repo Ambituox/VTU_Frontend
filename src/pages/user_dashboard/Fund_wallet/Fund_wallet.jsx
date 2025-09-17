@@ -3,8 +3,7 @@ import React, { useState } from "react";
 import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { signOutUserSuccess } from "../../../store/userReducers";
-
-const API_BASE_URL = import.meta.env.API_BASE_URL || 'https://vtu-xpwk.onrender.com';
+import { getBaseUrl } from "../../../config";
 
 export default function Fund_wallet() {
   const navigate = useNavigate();
@@ -42,7 +41,7 @@ export default function Fund_wallet() {
     setLoading(true);
     setError("");
   try {
-  const response = await fetch(`${API_BASE_URL}/api/v1/make-payment`, {
+  const response = await fetch(`${getBaseUrl()}/api/v1/make-payment`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -85,7 +84,7 @@ export default function Fund_wallet() {
   };
 
   return (
-    <div className="relative max-w-md md:mx-auto md:my-20 my-10 p-6 mx-2 bg-white shadow-lg rounded-lg">
+    <div className="relative max-w-md mx-auto md:my-20 my-10 p-6 mx-2 bg-white shadow-lg rounded-lg">
       <div className="absolute top-2 left-2">
         <button className="bg-blue-500 py-2 px-4 rounded-lg font-semibold text-white" onClick={handleBack}>Back</button>
       </div>

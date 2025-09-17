@@ -19,7 +19,6 @@ import ApiComponent from '../pages/user_dashboard/developer/DeveloperApis';
 import ResetPassword from '../pages/auth/ResetPassword';
 import ChangePassword from '../pages/user_dashboard/profile/ChangePassword';
 import AccountPin from '../pages/user_dashboard/profile/AccountPin';
-import CableSubscription from '../pages/user_dashboard/utility_payment/CableTvSubscription';
 import VerifyAccount from '../pages/auth/VerifyAccount';
 import VerifyEmailWithOTP from '../pages/auth/VerifyEmailWithOTP';
 import Private_Route from '../components/private/PrivateRoute';
@@ -31,18 +30,18 @@ import BuyDataNow from '../components/BuyData/BuyDataNow';
 import VerifyPayment from '../pages/user_dashboard/buy_airtime/VerifyPayment';
 import CreateData from '../pages/user_dashboard/buy_data/CreateData';
 import TransactionHistory from '../pages/user_dashboard/TransactionHistory';
-import { useSelector } from 'react-redux';
 import NotFound from '../pages/NotFound/NotFound';
 import AllUsers from '../pages/admin/all_user/AllUsers';
 import NetworkPlan from '../pages/user_dashboard/buy_data/NetworkPlan';
 import AdminServiceTypeForm from '../pages/admin/AdminServiceTypeForm';
-import AllTransactions from '../pages/AllTransactions';
 import CablesProviders from '../pages/cables/CablesProviders';
 import AllCablePackages from '../pages/cables/AllCablePackages';
 import CableSubscribeForm from '../pages/cables/CableSubscribeForm';
+import UpdateCableForm from '../pages/cables/UpdateCableForm';
+import AdminBaseUrlSwitch from '../pages/AdminBaseUrlSwitch';
+import AllTransactions from '../pages/admin/AllTransactions';
 
 export default function AppRoutes() {
-  const { existingUser } = useSelector((state) => state.user);
 
   return (
     <Router>
@@ -76,7 +75,6 @@ export default function AppRoutes() {
             <Route path='data-top-up' element={<DataPlanForm/>}/>
             <Route path='airtime-recharge-card' element={<AirtimeTopUp/>}/>
             <Route path='electricity-bills' element={<ElectricityBillPayment/>}/>
-            <Route path='cable-tv-subscription' element={<CableSubscription/>}/>
             <Route path='pricing' element={<PricingComponent/>}/>
             <Route path='user-detail' element={<UserProfile/>}/>
             <Route path='documentation' element={<ApiComponent/>}/>
@@ -87,6 +85,7 @@ export default function AppRoutes() {
             {/* <Route path='admin/update-data/:id' element={<UpdateData/>}/> */}
             <Route path='admin/update-data/' element={<UpdateData/>}/>
             <Route path='admin/change-service-type' element={<AdminServiceTypeForm/>}/>
+            <Route path='admin/switch-url' element={<AdminBaseUrlSwitch/>}/>
             <Route path='all-transaction-history' element={<AllTransactions/>}/>
 
             <Route path='funding-transaction-history' element={<Fund_wallet/>}/>
@@ -95,6 +94,7 @@ export default function AppRoutes() {
             <Route path='cable-providers' element={<CablesProviders/>}/>
             <Route path='cable-packages/cable-providers' element={<AllCablePackages/>}/>
             <Route path='cable-packages/cable-providers/cable-subscribe' element={<CableSubscribeForm/>}/>
+            <Route path='cable-packages/update-cable' element={<UpdateCableForm/>}/>
              
             <Route path='data-top-up/buy-now/make-payment' element={<MakePayment/>}/>
             <Route path='data-top-up/buy-now/make-payment/verify-payment' element={<VerifyPayment/>}/>

@@ -6,9 +6,9 @@ import { useSelector } from "react-redux";
 import { useNavigate, Link } from "react-router-dom";
 import { FiRefreshCw } from "react-icons/fi";
 import { Dialog, Transition } from "@headlessui/react";
+import { getBaseUrl } from "../../../config";
 
 const token = localStorage.getItem("authToken");
-const API_BASE_URL = import.meta.env.API_BASE_URL || "https://vtu-xpwk.onrender.com";
 
 function classNames(...classes) {
   return classes.filter(Boolean).join(" ");
@@ -41,7 +41,7 @@ export default function Pricing() {
 
   const fetchData = () => {
     setLoading(true);
-    fetch(`${API_BASE_URL}/api/v1/admin/get-all-data`, {
+    fetch(`${getBaseUrl()}/api/v1/admin/get-all-data`, {
       headers: { Authorization: `Bearer ${existingUser.token || token}` },
     })
       .then((response) => {

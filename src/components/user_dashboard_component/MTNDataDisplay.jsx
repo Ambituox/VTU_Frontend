@@ -4,9 +4,9 @@ import { useNavigate } from "react-router-dom";
 import { TbCurrencyNaira } from "react-icons/tb";
 import { FiRefreshCw } from "react-icons/fi";
 import { Dialog, Transition } from "@headlessui/react";
+import { getBaseUrl } from "../../config";
 
 const token = localStorage.getItem("authToken");
-const API_BASE_URL = import.meta.env.API_BASE_URL || "https://vtu-xpwk.onrender.com";
 
 // Helper to normalize network names to uppercase
 const normalizeNetwork = (name) => name.toUpperCase();
@@ -23,7 +23,7 @@ export default function MTNDataDisplay() {
   const fetchPlans = async () => {
     setLoading(true);
     try {
-      const res = await fetch(`${API_BASE_URL}/api/v1/admin/get-all-data`, {
+      const res = await fetch(`${getBaseUrl()}/api/v1/admin/get-all-data`, {
         headers: { Authorization: `Bearer ${existingUser?.token || token}` },
       });
       if (!res.ok){

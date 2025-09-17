@@ -23,10 +23,10 @@ const navSections = [
     ],
   },
   {
-    title: "Change Service Type",
+    title: "Admin Management",
     routes: [
       { label: "Change Service", path: "admin/change-service-type" },
-    //   { label: "User Requests", path: "/admin/requests" },
+      { label: "Switch URL", path: "admin/switch-url" },
     ],
   },
   // Add more sections as needed

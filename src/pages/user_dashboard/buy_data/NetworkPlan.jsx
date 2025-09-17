@@ -3,8 +3,7 @@ import { useSelector } from "react-redux";
 import { useLocation, useNavigate } from "react-router-dom";
 import { TbCurrencyNaira } from "react-icons/tb";
 import { Tab } from "@headlessui/react";
-
-const API_BASE_URL = import.meta.env.API_BASE_URL || "https://vtu-xpwk.onrender.com";
+import { getBaseUrl } from "../../../config";
 
 // Utils
 const classNames = (...classes) => classes.filter(Boolean).join(" ");
@@ -50,7 +49,7 @@ const NetworkPlan = () => {
   useEffect(() => {
     const fetchPlans = async () => {
       try {
-        const res = await fetch(`${API_BASE_URL}/api/v1/admin/get-all-data`, {
+        const res = await fetch(`${getBaseUrl()}/api/v1/admin/get-all-data`, {
           headers: { Authorization: `Bearer ${existingUser.token}` },
         });
         const result = await res.json();

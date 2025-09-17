@@ -2,8 +2,7 @@ import React, { useEffect, useState } from "react";
 import { FaUserAlt } from "react-icons/fa";
 import { useDispatch, useSelector } from "react-redux";
 import {updateSuccess} from '../../../store/userReducers'
-
-const API_BASE_URL = import.meta.env.API_BASE_URL || "https://vtu-xpwk.onrender.com";
+import { getBaseUrl } from "../../../config";
 
 const token = localStorage.getItem("authToken");
 
@@ -27,7 +26,7 @@ const UserProfile = () => {
   useEffect(() => {
     const fetchProfile = async () => {
       try {
-        const res = await fetch(`${API_BASE_URL}/api/v1/get-profile`, {
+        const res = await fetch(`${getBaseUrl()}/api/v1/get-profile`, {
           method: "GET",
           headers: {
             Authorization: `Bearer ${token}`,

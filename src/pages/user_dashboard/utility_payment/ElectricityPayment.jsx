@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 import { useSelector } from "react-redux";
-
-const API_BASE_URL = import.meta.env.API_BASE_URL || 'https://vtu-xpwk.onrender.com';
+import { getBaseUrl } from "../../../config";
 
 const ElectricityBillPayment = () => {
   const [formData, setFormData] = useState({
@@ -89,7 +88,7 @@ const ElectricityBillPayment = () => {
     };
 
     try {
-      const response = await fetch(`${API_BASE_URL}/api/v1/buy-electricity`, {
+      const response = await fetch(`${getBaseUrl()}/api/v1/buy-electricity`, {
         method: "POST",
         headers: { 
           "Content-Type": "application/json",

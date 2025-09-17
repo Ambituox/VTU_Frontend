@@ -128,7 +128,7 @@ div:hover .tooltip {
   height: 3px; /* horizontal scrollbar height */
 }
 .sidebarOverflow::-webkit-scrollbar {
-  width: 5px; /* horizontal scrollbar height */
+  width: 7px; /* horizontal scrollbar height */
 }
 
 .sidebarOverflow::-webkit-scrollbar-thumb {

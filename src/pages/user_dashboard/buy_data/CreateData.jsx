@@ -1,9 +1,9 @@
 import React, { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useSelector } from "react-redux";
+import { getBaseUrl } from "../../../config";
 
 const token = localStorage.getItem("authToken");
-const API_BASE_URL = import.meta.env.API_BASE_URL || "https://vtu-xpwk.onrender.com";
 
 const networkProviders = ["MTN", "GLO", "AIRTEL", "9MOBILE"];
 
@@ -78,7 +78,7 @@ export default function CreateDataComponent() {
     console.log(payload);
 
     try {
-      const response = await fetch(`${API_BASE_URL}/api/v1/admin/create-data`, {
+      const response = await fetch(`${getBaseUrl()}/api/v1/admin/create-data`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

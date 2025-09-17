@@ -2,10 +2,9 @@
 import React, { useState } from 'react';
 import { useServiceType } from '../../../components/SwitchServiceType/ServiceTypeContext';
 import { useSelector } from 'react-redux';
-import OutstandingDebtNotice from '../../../components/OutstandingDebtNotice';
+import { getBaseUrl } from '../../../config';
 
 const token = localStorage.getItem("authToken");
-const API_BASE_URL = import.meta.env.API_BASE_URL || 'https://vtu-xpwk.onrender.com';
 
 const AirtimeTopUpForm = () => {
   const [formData, setFormData] = useState({
@@ -87,7 +86,7 @@ const AirtimeTopUpForm = () => {
     setError("");
 
     try {
-      const response = await fetch(`${API_BASE_URL}/api/v1/buy-airtime`, {
+      const response = await fetch(`${getBaseUrl()}/api/v1/buy-airtime`, {
         method: "POST",
         headers: { 
           'Authorization': `Bearer ${token}`,
